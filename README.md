@@ -11,13 +11,14 @@ Personal portfolio of **Mohamed Ahmed**, a Frontend Engineer (3+ years) speciali
 
 | Section | Purpose |
 | --- | --- |
-| Hero | Positioning statement: frontend engineering + AI agentic systems |
+| Hero | Positioning statement: frontend engineering + AI agentic systems, 3D agent network |
 | About | Short bio, quick facts, education |
-| Experience | Timeline: Global Dynamics, Forever Events, Grwan Group, ASDC |
 | Selected Work | Case studies: LeanGo platform suite, LMS, Crime & Legal Center, Diaflower |
-| AI Agentic Engineering | Multi-agent workflows, tooling, automation showcase |
+| AI Agentic Engineering | Multi-agent pipeline terminal, workflow explainer |
+| Experience | Timeline: Global Dynamics, Forever Events, Grwan Group, ASDC |
 | Skills | Frontend core, backend, infrastructure |
-| Contact | Email, LinkedIn, GitHub, CV download |
+| Contact | Closing CTA: email, LinkedIn, GitHub, CV download |
+| Footer | Wordmark, contact links, copyright |
 
 ## Tech Stack
 
