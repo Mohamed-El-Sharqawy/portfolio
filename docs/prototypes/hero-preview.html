@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hero Prototype — Mohamed Ahmed Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #09090b;
+    --panel: #101013;
+    --text: #fafafa;
+    --muted: #a1a1aa;
+    --faint: #52525b;
+    --line: #27272a;
+    --accent: #10b981;
+    --accent-bright: #34d399;
+    --accent-dim: #064e3b;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Geist", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono { font-family: "Geist Mono", ui-monospace, monospace; }
+
+  /* ---------- switcher ---------- */
+  .switcher {
+    position: fixed; inset: 0 0 auto 0; z-index: 50;
+    display: flex; align-items: center; gap: 4px;
+    padding: 10px 20px;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .switcher a {
+    font-family: "Geist Mono", monospace;
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); text-decoration: none;
+    padding: 6px 12px; border-radius: 999px;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+  }
+  .switcher a:hover { color: var(--text); border-color: var(--line); }
+  .switcher a.active { color: var(--accent-bright); border-color: var(--accent-dim); }
+  .switcher .tag {
+    margin-left: auto; font-family: "Geist Mono", monospace;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--faint);
+  }
+
+  /* ---------- shared hero mock ---------- */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px; height: 68px;
+    border-bottom: 1px solid var(--line);
+    position: relative; z-index: 5;
+  }
+  .hero-nav .logo { font-weight: 700; font-size: 15px; letter-spacing: -0.02em; }
+  .hero-nav .logo span { color: var(--accent-bright); }
+  .hero-nav ul { display: flex; gap: 28px; list-style: none; }
+  .hero-nav ul a {
+    font-size: 13px; color: var(--muted); text-decoration: none;
+    transition: color 0.15s ease;
+  }
+  .hero-nav ul a:hover { color: var(--text); }
+  .nav-cta {
+    font-family: "Geist Mono", monospace; font-size: 12px;
+    color: var(--accent-bright) !important;
+    border: 1px solid var(--accent-dim); border-radius: 999px;
+    padding: 7px 16px;
+    transition: all 0.15s ease;
+  }
+  .nav-cta:hover { background: var(--accent-dim); }
+
+  .hero-body {
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    align-items: center;
+    padding: 0 48px;
+    position: relative;
+  }
+  .hero-copy { max-width: 640px; padding: 80px 0 60px; }
+  .eyebrow {
+    font-family: "Geist Mono", monospace;
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--accent-bright);
+    margin-bottom: 22px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .eyebrow::before {
+    content: ""; width: 22px; height: 1px; background: var(--accent);
+  }
+  .hero h1 {
+    font-size: clamp(46px, 6.6vw, 96px);
+    line-height: 1.0;
+    letter-spacing: -0.04em;
+    font-weight: 600;
+  }
+  .hero h1 .accent { color: var(--accent-bright); font-style: italic; }
+  .hero-sub {
+    margin-top: 26px;
+    color: var(--muted);
+    font-size: clamp(15px, 1.25vw, 18px);
+    line-height: 1.6;
+    max-width: 54ch;
+  }
+  .hero-sub strong { color: var(--text); font-weight: 500; }
+  .hero-ctas { display: flex; gap: 14px; margin-top: 36px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 14px; font-weight: 500;
+    padding: 13px 26px; border-radius: 10px;
+    text-decoration: none; white-space: nowrap;
+    transition: transform 0.12s ease, background 0.15s ease, border-color 0.15s ease;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--accent); color: #052e21; }
+  .btn-primary:hover { background: var(--accent-bright); }
+  .btn-ghost { border: 1px solid var(--line); color: var(--text); }
+  .btn-ghost:hover { border-color: var(--faint); }
+  .btn-ghost .arrow { color: var(--accent-bright); }
+
+  .proof-strip {
+    display: flex; gap: 0; margin-top: 56px;
+    border-top: 1px solid var(--line);
+    padding-top: 20px;
+  }
+  .proof {
+    padding-right: 32px; margin-right: 32px;
+    border-right: 1px solid var(--line);
+  }
+  .proof:last-child { border-right: 0; margin-right: 0; padding-right: 0; }
+  .proof .n {
+    font-family: "Geist Mono", monospace;
+    font-size: clamp(20px, 1.7vw, 26px); color: var(--text); font-weight: 500;
+  }
+  .proof .n em { color: var(--accent-bright); font-style: normal; }
+  .proof .l {
+    font-size: 11.5px; color: var(--faint); margin-top: 4px;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-visual {
+    position: relative; height: 100%;
+    min-height: 420px;
+  }
+  .hero-label {
+    position: absolute; top: 20px; right: 24px; z-index: 6;
+    font-family: "Geist Mono", monospace;
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--faint);
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 6px 12px;
+    background: color-mix(in srgb, var(--bg) 70%, transparent);
+    backdrop-filter: blur(6px);
+  }
+
+  /* ---------- option 1: type-only ---------- */
+  #hero-1 .grid-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 80% 70% at 70% 45%, black 20%, transparent 75%);
+    opacity: 0.5;
+  }
+  #hero-1 .scanline {
+    position: absolute; left: 0; right: 0; height: 1px; z-index: 1;
+    background: linear-gradient(90deg, transparent, var(--accent) 30%, var(--accent) 70%, transparent);
+    opacity: 0.35;
+    animation: scan 7s linear infinite;
+  }
+  @keyframes scan { 0% { top: 12%; } 100% { top: 92%; } }
+
+  .type-stack { position: relative; z-index: 2; }
+  .type-ghost {
+    font-family: "Geist Mono", monospace;
+    font-size: clamp(16px, 1.7vw, 24px);
+    color: var(--faint);
+    line-height: 2;
+    border-left: 1px solid var(--line);
+    padding-left: 24px;
+    margin-top: 30px;
+  }
+  .type-ghost .k { color: var(--accent-bright); }
+  .type-ghost .cursor {
+    display: inline-block; width: 9px; height: 18px;
+    background: var(--accent);
+    vertical-align: -3px; margin-left: 2px;
+    animation: blink 1.1s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ---------- option 2: 3d ---------- */
+  #three-wrap { touch-action: pan-y; }
+  #three-canvas { width: 100%; height: 100%; display: block; }
+  #hero-2 .hero-copy { z-index: 3; }
+  .hud {
+    position: absolute; z-index: 5;
+    font-family: "Geist Mono", monospace;
+    font-size: 10.5px; color: var(--faint);
+    letter-spacing: 0.08em;
+  }
+  .hud.tl { top: 24px; left: 28px; }
+  .hud.bl { bottom: 28px; right: 28px; text-align: right; }
+  .hud .live { color: var(--accent-bright); }
+  .hud .live::before {
+    content: ""; display: inline-block; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent);
+    margin-right: 7px; vertical-align: 1px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 50% { opacity: 0.3; } }
+
+  /* ---------- notes ---------- */
+  .notes {
+    padding: 90px 48px 120px;
+    max-width: 1080px; margin: 0 auto;
+  }
+  .notes h2 {
+    font-size: 30px; letter-spacing: -0.02em; font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .notes .sub { color: var(--muted); margin-bottom: 44px; max-width: 60ch; line-height: 1.6; }
+  .notes table { width: 100%; border-collapse: collapse; }
+  .notes th {
+    font-family: "Geist Mono", monospace; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.16em;
+    color: var(--faint); text-align: left;
+    padding: 0 16px 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .notes td {
+    padding: 18px 16px 18px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 14px; color: var(--muted); line-height: 1.6;
+    vertical-align: top;
+  }
+  .notes td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
+  .notes td .win { color: var(--accent-bright); }
+  .notes caption { caption-side: bottom; text-align: left; padding-top: 20px; }
+
+  @media (max-width: 900px) {
+    .hero-body { grid-template-columns: 1fr; padding: 0 24px; }
+    .hero-nav { padding: 0 24px; }
+    .hero-nav ul { display: none; }
+    .hero-visual { width: 100%; min-height: 52vh; order: 2; }
+    .hero-copy { padding: 32px 0 24px; }
+    .hero h1 { font-size: clamp(40px, 10.5vw, 64px); }
+    .proof-strip { flex-wrap: wrap; gap: 18px 0; }
+    .proof { padding-right: 20px; margin-right: 20px; }
+    .proof:nth-child(3) { display: none; }
+    .notes { padding: 70px 24px 100px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .scanline, .cursor, .hud .live::before { animation: none; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="switcher mono">
+  <a href="#hero-1" class="active">01 · Type-only</a>
+  <a href="#hero-2">02 · 3D accent</a>
+  <a href="#notes">Decision factors</a>
+  <span class="tag">prototype · dark terminal</span>
+</nav>
+
+<!-- ================= OPTION 1 : TYPE-ONLY ================= -->
+<section class="hero" id="hero-1">
+  <div class="grid-bg"></div>
+  <div class="scanline"></div>
+  <div class="hero-label">Option 1 — Type-only</div>
+  <header class="hero-nav">
+    <div class="logo">m<span>.</span>ahmed</div>
+    <ul>
+      <li><a href="#">Work</a></li>
+      <li><a href="#">Experience</a></li>
+      <li><a href="#">Agentic AI</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <a href="#" class="nav-cta mono">~/get-in-touch</a>
+  </header>
+  <div class="hero-body">
+    <div class="hero-copy type-stack">
+      <p class="eyebrow">Mohamed Ahmed — Cairo · Remote</p>
+      <h1>Frontend engineer<br />building systems that<br /><span class="accent">ship themselves.</span></h1>
+      <p class="hero-sub">
+        3+ years across SaaS platforms, ERP dashboards, and national-scale
+        enterprise systems serving <strong>1M+ users</strong> — now orchestrating
+        <strong>AI agent teams</strong> that plan, build, review, and deploy
+        entire projects.
+      </p>
+      <div class="hero-ctas">
+        <a href="#" class="btn btn-primary">Get in touch</a>
+        <a href="#" class="btn btn-ghost">View work <span class="arrow">↓</span></a>
+      </div>
+      <div class="proof-strip">
+        <div class="proof">
+          <div class="n">3<em>+</em> yrs</div>
+          <div class="l">Production frontend</div>
+        </div>
+        <div class="proof">
+          <div class="n">1M<em>+</em></div>
+          <div class="l">Users on systems I built</div>
+        </div>
+        <div class="proof">
+          <div class="n">4 <em>·</em> 3</div>
+          <div class="l">Companies · countries served</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual type-stack">
+      <div class="type-ghost">
+        <span class="k">const</span> profile = {<br />
+        &nbsp;&nbsp;role: <span class="k">"frontend-engineer"</span>,<br />
+        &nbsp;&nbsp;focus: [<span class="k">"react"</span>, <span class="k">"next.js"</span>, <span class="k">"typescript"</span>],<br />
+        &nbsp;&nbsp;edge: <span class="k">"ai-agentic-workflows"</span>,<br />
+        &nbsp;&nbsp;ships: <span class="k">"national-scale systems"</span>,<br />
+        };<span class="cursor"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= OPTION 2 : 3D ACCENT ================= -->
+<section class="hero" id="hero-2">
+  <div class="hero-label">Option 2 — 3D accent (drag to rotate)</div>
+  <header class="hero-nav">
+    <div class="logo">m<span>.</span>ahmed</div>
+    <ul>
+      <li><a href="#">Work</a></li>
+      <li><a href="#">Experience</a></li>
+      <li><a href="#">Agentic AI</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <a href="#" class="nav-cta mono">~/get-in-touch</a>
+  </header>
+  <div class="hero-body">
+    <div class="hero-copy">
+      <p class="eyebrow">Mohamed Ahmed — Cairo · Remote</p>
+      <h1>Frontend engineer<br />building systems that<br /><span class="accent">ship themselves.</span></h1>
+      <p class="hero-sub">
+        3+ years across SaaS platforms, ERP dashboards, and national-scale
+        enterprise systems serving <strong>1M+ users</strong> — now orchestrating
+        <strong>AI agent teams</strong> that plan, build, review, and deploy
+        entire projects.
+      </p>
+      <div class="hero-ctas">
+        <a href="#" class="btn btn-primary">Get in touch</a>
+        <a href="#" class="btn btn-ghost">View work <span class="arrow">↓</span></a>
+      </div>
+      <div class="proof-strip">
+        <div class="proof">
+          <div class="n">3<em>+</em> yrs</div>
+          <div class="l">Production frontend</div>
+        </div>
+        <div class="proof">
+          <div class="n">1M<em>+</em></div>
+          <div class="l">Users on systems I built</div>
+        </div>
+        <div class="proof">
+          <div class="n">4 <em>·</em> 3</div>
+          <div class="l">Companies · countries served</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual" id="three-wrap">
+      <canvas id="three-canvas"></canvas>
+      <div class="hud tl">SYS · AGENT-ORCHESTRATOR<br />v3.1 — idle</div>
+      <div class="hud bl"><span class="live">7 agents online</span><br />plan → build → review → ship</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= NOTES ================= -->
+<section class="notes" id="notes">
+  <h2>Decision factors</h2>
+  <p class="sub">Both heroes share the same copy, CTAs, and proof strip — only the right side changes. In production, either version gets GSAP scroll choreography and respects reduced-motion.</p>
+  <table>
+    <thead>
+      <tr><th>Factor</th><th>Option 1 — Type-only</th><th>Option 2 — 3D accent</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>First impression</td>
+        <td>Confident, editorial, extremely fast to parse.</td>
+        <td><span class="win">Higher wow-factor — stands out in a stack of portfolios.</span> Signals WebGL/three.js skill instantly.</td>
+      </tr>
+      <tr>
+        <td>Performance budget</td>
+        <td><span class="win">Near-zero JS. Best possible Lighthouse.</span></td>
+        <td>+120–180KB gzipped (three.js). Mitigated: lazy-load after hydration, cut if LCP &gt; 2.5s.</td>
+      </tr>
+      <tr>
+        <td>On-brand for you</td>
+        <td>Reads senior + calm. The code snippet carries the "engineer" signal.</td>
+        <td><span class="win">Reads senior + creative.</span> The orbiting "agent constellation" directly visualizes your agentic-AI differentiator.</td>
+      </tr>
+      <tr>
+        <td>Maintenance risk</td>
+        <td>None.</td>
+        <td>Low — one canvas component, fallbacks defined, removed on reduced-motion.</td>
+      </tr>
+      <tr>
+        <td>Mobile</td>
+        <td>Identical experience.</td>
+        <td>Canvas moves below the headline; dpr capped; still 60fps on mid-range phones.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.180.0/build/three.module.js" } }
+</script>
+<script type="module">
+  import * as THREE from "three";
+
+  const wrap = document.getElementById("three-wrap");
+  const canvas = document.getElementById("three-canvas");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
+  camera.position.set(0, 0, 6.8);
+
+  const EMERALD = 0x10b981;
+  const EMERALD_BRIGHT = 0x34d399;
+  const R = 2.05; // network bounding radius — everything stays inside this sphere
+
+  const group = new THREE.Group();
+  scene.add(group);
+
+  // ---- orchestrator core ----
+  const core = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(0.62, 1),
+    new THREE.MeshBasicMaterial({ color: 0x06281e })
+  );
+  const coreEdge = new THREE.LineSegments(
+    new THREE.EdgesGeometry(core.geometry),
+    new THREE.LineBasicMaterial({ color: EMERALD_BRIGHT, transparent: true, opacity: 0.95 })
+  );
+  group.add(core, coreEdge);
+
+  // ---- agent nodes on a fibonacci sphere, inside R ----
+  const NODE_COUNT = 7;
+  const agents = [];
+  const edgePositions = [];
+
+  for (let i = 0; i < NODE_COUNT; i++) {
+    const y = 1 - (i / (NODE_COUNT - 1)) * 2;
+    const r = Math.sqrt(1 - y * y);
+    const theta = i * 2.399963;
+    const dist = R * (0.72 + (i % 2) * 0.22);
+    const pos = new THREE.Vector3(
+      Math.cos(theta) * r * dist,
+      y * dist * 0.82,
+      Math.sin(theta) * r * dist
+    );
+
+    const node = new THREE.Mesh(
+      new THREE.SphereGeometry(0.075, 14, 14),
+      new THREE.MeshBasicMaterial({ color: EMERALD_BRIGHT })
+    );
+    const halo = new THREE.Mesh(
+      new THREE.SphereGeometry(0.17, 12, 12),
+      new THREE.MeshBasicMaterial({ color: EMERALD, transparent: true, opacity: 0.16 })
+    );
+    node.add(halo);
+    node.position.copy(pos);
+    group.add(node);
+    agents.push({ node, home: pos.clone(), phase: i * 1.31, amp: 0.09 + (i % 3) * 0.035 });
+
+    edgePositions.push(0, 0, 0, pos.x, pos.y, pos.z); // core -> node
+  }
+
+  // workflow chain: plan -> build -> review -> ship (node-to-node edges)
+  const chain = [0, 3, 5, 2, 6];
+  for (let i = 0; i < chain.length - 1; i++) {
+    const a = agents[chain[i]].home, b = agents[chain[i + 1]].home;
+    edgePositions.push(a.x, a.y, a.z, b.x, b.y, b.z);
+  }
+
+  const edges = new THREE.LineSegments(
+    new THREE.BufferGeometry().setAttribute(
+      "position",
+      new THREE.Float32BufferAttribute(new Float32Array(edgePositions.length), 3)
+    ),
+    new THREE.LineBasicMaterial({ color: 0x3f3f46, transparent: true, opacity: 0.45 })
+  );
+  const edgeAttr = edges.geometry.getAttribute("position");
+  group.add(edges);
+
+  // ---- task pulses traveling from core to agents ----
+  const pulses = [];
+  for (let i = 0; i < 4; i++) {
+    const p = new THREE.Mesh(
+      new THREE.SphereGeometry(0.045, 10, 10),
+      new THREE.MeshBasicMaterial({ color: EMERALD_BRIGHT })
+    );
+    group.add(p);
+    pulses.push({ mesh: p, edge: i % NODE_COUNT, t: Math.random(), speed: 0.55 + Math.random() * 0.5 });
+  }
+
+  // ---- pointer parallax + drag rotation ----
+  let px = 0, py = 0, tx = 0, ty = 0;
+  addEventListener("pointermove", (e) => {
+    if (e.pointerType === "touch") return;
+    tx = (e.clientX / innerWidth - 0.5) * 0.45;
+    ty = (e.clientY / innerHeight - 0.5) * 0.3;
+  });
+
+  let dragging = false, lastX = 0, lastY = 0, velX = 0, velY = 0;
+  wrap.addEventListener("pointerdown", (e) => { dragging = true; lastX = e.clientX; lastY = e.clientY; });
+  addEventListener("pointerup", () => (dragging = false));
+  addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    velY = (e.clientX - lastX) * 0.005;
+    velX = (e.clientY - lastY) * 0.005;
+    lastX = e.clientX; lastY = e.clientY;
+  });
+
+  function resize() {
+    const w = wrap.clientWidth, h = wrap.clientHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    camera.position.z = w / h < 1 ? 8.8 : 6.8;
+  }
+  new ResizeObserver(resize).observe(wrap);
+  resize();
+
+  const a = new THREE.Vector3();
+  let t = 0;
+  renderer.setAnimationLoop(() => {
+    t += 0.016;
+    px += (tx - px) * 0.04;
+    py += (ty - py) * 0.04;
+
+    if (!reduce) group.rotation.y += 0.0028 + velY;
+    group.rotation.x = py + velX;
+    velX *= 0.94; velY *= 0.94;
+
+    if (!reduce) {
+      coreEdge.rotation.y += 0.004;
+      for (const ag of agents) {
+        ag.node.position.y = ag.home.y + Math.sin(t * 0.9 + ag.phase) * ag.amp;
+        ag.node.position.x = ag.home.x + Math.cos(t * 0.7 + ag.phase) * ag.amp * 0.6;
+      }
+      // core -> node edges track bobbing nodes
+      for (let i = 0; i < NODE_COUNT; i++) {
+        const p = agents[i].node.position;
+        edgeAttr.setXYZ(i * 2, 0, 0, 0);
+        edgeAttr.setXYZ(i * 2 + 1, p.x, p.y, p.z);
+      }
+      edgeAttr.needsUpdate = true;
+      for (const p of pulses) {
+        p.t += 0.016 * p.speed;
+        if (p.t > 1) { p.t = 0; p.edge = Math.floor(Math.random() * NODE_COUNT); }
+        const target = agents[p.edge].node.position;
+        p.mesh.position.lerpVectors(a.set(0, 0, 0), target, p.t);
+      }
+    }
+    renderer.render(scene, camera);
+  });
+</script>
+
+<script>
+  // switcher active state
+  const links = [...document.querySelectorAll(".switcher a[href^='#']")];
+  const obs = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          links.forEach((l) => l.classList.toggle("active", l.getAttribute("href") === "#" + e.target.id));
+        }
+      }
+    },
+    { threshold: 0.4 }
+  );
+  document.querySelectorAll(".hero, .notes").forEach((s) => obs.observe(s));
+</script>
+</body>
+</html>

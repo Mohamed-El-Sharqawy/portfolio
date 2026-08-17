@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mohamed Ahmed — Portfolio
+
+Personal portfolio of **Mohamed Ahmed**, a Frontend Engineer (3+ years) specializing in SaaS platforms, ERP dashboards, and large-scale enterprise systems, with deep expertise in **AI agentic engineering** — orchestrating multi-agent workflows that design, build, review, and ship entire projects.
+
+- **CV (PDF):** [/mohamed-ahmed-cv.pdf](/mohamed-ahmed-cv.pdf)
+- **LinkedIn:** [mohamed-elsharqawi](https://linkedin.com/in/mohamed-elsharqawi)
+- **GitHub:** [Mohamed-El-Sharqawy](https://github.com/Mohamed-El-Sharqawy)
+- **Email:** dev.elbehery@gmail.com
+
+## Sections
+
+| Section | Purpose |
+| --- | --- |
+| Hero | Positioning statement: frontend engineering + AI agentic systems |
+| About | Short bio, quick facts, education |
+| Experience | Timeline: Global Dynamics, Forever Events, Grwan Group, ASDC |
+| Selected Work | Case studies: LeanGo platform suite, LMS, Crime & Legal Center, Diaflower |
+| AI Agentic Engineering | Multi-agent workflows, tooling, automation showcase |
+| Skills | Frontend core, backend, infrastructure |
+| Contact | Email, LinkedIn, GitHub, CV download |
+
+## Tech Stack
+
+- **Framework:** [Next.js](https://nextjs.org) 16 (App Router, RSC-first)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS v4
+- **Animation:** GSAP + ScrollTrigger (`@gsap/react`)
+- **3D (hero):** Three.js via `@react-three/fiber` + `@react-three/drei`
+- **Hosting:** Vercel
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the dev server |
+| `npm run build` | Production build |
+| `npm run start` | Serve the production build |
+| `npm run lint` | Run ESLint |
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├── app/                  # Routes (App Router). page.tsx is a Server Component
+│   ├── layout.tsx        # Root layout: fonts, metadata, global providers
+│   ├── page.tsx          # Home — server component composing section wrappers
+│   └── globals.css       # Tailwind v4 theme tokens
+├── components/
+│   ├── layout/           # Navbar, Footer, page shell
+│   ├── sections/         # One folder per page section (hero/, experience/, ...)
+│   └── ui/               # Reusable primitives (Button, Badge, Tag...)
+├── lib/                  # Utilities, constants, content data
+└── public/               # Static assets (CV PDF, images)
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Convention:** `page.tsx` stays a Server Component. Interactive islands (animations, 3D, nav state) are isolated `"use client"` wrappers composed inside it — so most of the page ships zero client JS.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deployment
 
-## Deploy on Vercel
+Pushes to `main` auto-deploy to Vercel. PRs get preview deployments.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+All rights reserved — this is personal work. See the [CV](/mohamed-ahmed-cv.pdf) for contact details.
