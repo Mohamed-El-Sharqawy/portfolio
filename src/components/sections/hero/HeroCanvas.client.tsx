@@ -43,7 +43,7 @@ function HeroModel({
     const box = new THREE.Box3().setFromObject(scene);
     const size = box.getSize(new THREE.Vector3());
     const center = box.getCenter(new THREE.Vector3());
-    const scale = 2.8 / Math.max(size.x, size.y, size.z);
+    const scale = 1.9 / Math.max(size.x, size.y, size.z);
     scene.scale.setScalar(scale);
     scene.position.copy(center).multiplyScalar(-scale);
     scene.traverse((child) => {
