@@ -20,3 +20,8 @@ body {
   background-color: #10b981;
   color: #052e21;
 }
+
+*:focus-visible {
+  outline: 2px solid rgb(16 185 129 / 0.6);
+  outline-offset: 2px;
+}
