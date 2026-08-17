@@ -43,7 +43,7 @@ function HeroModel({
     const box = new THREE.Box3().setFromObject(scene);
     const size = box.getSize(new THREE.Vector3());
     const center = box.getCenter(new THREE.Vector3());
-    const scale = 1.9 / Math.max(size.x, size.y, size.z);
+    const scale = 2.3 / Math.max(size.x, size.y, size.z);
     scene.scale.setScalar(scale);
     scene.position.copy(center).multiplyScalar(-scale);
     scene.traverse((child) => {
@@ -191,10 +191,6 @@ export default function HeroCanvas() {
 
   return (
     <div className="relative h-full min-h-[max(420px,52vh)] w-full">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.05),transparent_65%)]"
-      />
       <div
         className={`absolute inset-0 transition-opacity duration-1000 ${
           ready ? "opacity-100" : "opacity-0"
