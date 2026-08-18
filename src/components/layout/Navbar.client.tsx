@@ -3,13 +3,27 @@
 import { useState } from "react";
 import Link from "next/link";
 import Wordmark from "@/components/ui/Wordmark";
+import { getLenis } from "@/lib/smooth-scroll";
+import { prefersReducedMotion } from "@/lib/motion";
 
 const links = [
   { label: "Work", href: "#work" },
-  { label: "Experience", href: "#experience" },
   { label: "Agentic AI", href: "#agentic" },
+  { label: "Experience", href: "#experience" },
   { label: "Contact", href: "#contact" },
 ];
+
+function scrollTop() {
+  const lenis = getLenis();
+  if (lenis && !prefersReducedMotion()) {
+    lenis.scrollTo(0, {
+      duration: 1.2,
+      easing: (t: number) => 1 - Math.pow(1 - t, 3),
+    });
+    return;
+  }
+  window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? "auto" : "smooth" });
+}
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -17,7 +31,16 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-800 bg-zinc-950/80 backdrop-blur">
       <nav className="mx-auto flex h-[68px] max-w-[1200px] items-center justify-between px-6 md:px-10">
-        <Link href="/" aria-label="Mohamed Ahmed — home">
+        <Link
+          href={"/"}
+          aria-label="Mohamed Ahmed — home"
+          onClick={(event) => {
+            if (window.location.pathname === "/") {
+              event.preventDefault();
+              scrollTop();
+            }
+          }}
+        >
           <Wordmark />
         </Link>
 

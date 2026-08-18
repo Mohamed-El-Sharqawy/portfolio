@@ -11,6 +11,11 @@
   --font-mono: var(--font-geist-mono);
 }
 
+html,
+body {
+  overflow-x: clip;
+}
+
 body {
   background-color: #09090b;
   color: var(--color-zinc-50);
@@ -24,39 +29,6 @@ body {
 @keyframes marquee {
   to {
     transform: translateX(-50%);
-  }
-}
-
-.hero-scanline {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 12%;
-  height: 1px;
-  z-index: 1;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    #10b981 30%,
-    #10b981 70%,
-    transparent
-  );
-  opacity: 0.35;
-  animation: hero-scan 7s linear infinite;
-}
-
-@keyframes hero-scan {
-  0% {
-    top: 12%;
-  }
-  100% {
-    top: 92%;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-scanline {
-    animation: none;
   }
 }
 

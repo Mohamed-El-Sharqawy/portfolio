@@ -88,7 +88,7 @@ export function makeKnot(): SceneInstance {
     rings[0].rotation.z += 0.7 * dt;
   };
 
-  return { scene, camera, root, update, fitRadius: 2.9, minZ: 6, maxZ: 11 };
+  return { scene, camera, root, update, fitRadius: 3.1, minZ: 6, maxZ: 13 };
 }
 
 export function makeBlob(): SceneInstance {

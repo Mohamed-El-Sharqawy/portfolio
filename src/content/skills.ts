@@ -25,6 +25,17 @@ export const skills: SkillGroup[] = [
     ],
   },
   {
+    group: "Mobile",
+    items: [
+      { name: "React Native", icon: "react" },
+      { name: "Expo", icon: "expo" },
+      { name: "EAS Build", icon: "expo" },
+      { name: "React Native Reanimated", icon: "react" },
+      { name: "Expo Router", icon: "expo" },
+      { name: "TypeScript", icon: "typescript" },
+    ],
+  },
+  {
     group: "Backend & APIs",
     items: [
       { name: "Node.js", icon: "nodedotjs" },

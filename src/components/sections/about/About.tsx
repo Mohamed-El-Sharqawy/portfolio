@@ -1,18 +1,19 @@
 import Section from "@/components/ui/Section";
 import Reveal from "@/components/ui/Reveal.client";
 import { profile } from "@/content/profile";
-import { education } from "@/content/education";
 
 const quickFacts = [
   { label: "Location", value: profile.location.split(" · ")[0] },
-  { label: "Remote since", value: "2025" },
+  { label: "Remote since", value: "2023" },
   {
     label: "Education",
-    value: `${education[0].credential} — ${education[0].institution}`,
+    value:
+      "BSc Computing — Open University (UK) <br>· BSc Computer Science — Arab Open University (Cairo)",
   },
   {
     label: "Focus areas",
-    value: "Frontend architecture · Next.js · AI agent orchestration",
+    value:
+      "Frontend-first, full-stack capable — shipping production-ready web and mobile apps · Next.js · AI agent orchestration",
   },
 ];
 
@@ -51,7 +52,16 @@ export default function About() {
                 <dt className="font-mono text-xs uppercase tracking-widest text-zinc-500">
                   {fact.label}
                 </dt>
-                <dd className="mt-1.5 text-sm text-zinc-200">{fact.value}</dd>
+                <dd className="mt-1.5 text-sm text-zinc-200">
+                  {fact.label === "Education" ? (
+                    <>
+                      BSc Computer Science — Open University (UK) <br />
+                      BSc Computer Science — Arab Open University (Cairo)
+                    </>
+                  ) : (
+                    fact.value
+                  )}
+                </dd>
               </div>
             ))}
           </dl>

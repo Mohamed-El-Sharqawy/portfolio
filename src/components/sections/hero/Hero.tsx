@@ -23,10 +23,9 @@ export default function Hero() {
     >
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 left-1/2 z-0 w-screen -translate-x-1/2"
+        className="pointer-events-none absolute inset-y-0 left-1/2 -z-20 w-screen -translate-x-1/2"
       >
-        <div className="absolute inset-0 opacity-50 [background-image:linear-gradient(#27272a_1px,transparent_1px),linear-gradient(90deg,#27272a_1px,transparent_1px)] [background-size:56px_56px] [mask-image:radial-gradient(ellipse_80%_70%_at_70%_45%,black_20%,transparent_75%)]" />
-        <div className="hero-scanline" />
+        <div className="absolute inset-0 opacity-50 [background-image:linear-gradient(#27272a_1px,transparent_1px),linear-gradient(90deg,#27272a_1px,transparent_1px)] [background-size:56px_56px] [mask-image:radial-gradient(ellipse_80%_70%_at_50%_50%,black_20%,transparent_75%)]" />
       </div>
       <div className="relative z-10 flex flex-col justify-center">
         <Reveal y={12}>
@@ -84,14 +83,12 @@ export default function Hero() {
           </div>
         </Reveal>
       </div>
-      <div className="relative z-10 lg:h-full">
-        <div
-          data-scene="knot"
-          data-interactive
-          aria-hidden
-          className="h-full min-h-[max(420px,52vh)] w-full cursor-grab touch-pan-y active:cursor-grabbing"
-        />
-      </div>
+      <div
+        data-scene="knot"
+        data-interactive
+        aria-hidden
+        className="relative z-0 mt-6 h-[52vh] w-full cursor-grab touch-pan-y active:cursor-grabbing lg:absolute lg:left-[78%] lg:top-1/2 lg:z-0 lg:mt-0 lg:h-[min(88vh,880px)] lg:w-[min(88vh,880px)] lg:-translate-x-1/2 lg:-translate-y-1/2"
+      />
     </section>
   );
 }
