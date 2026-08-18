@@ -212,7 +212,9 @@ export default function GitHubActivity() {
             className="grid grid-cols-[110px_1fr_auto] items-baseline gap-4 py-3 font-mono text-xs"
           >
             <span className="truncate text-emerald-400">{item.repo}</span>
-            <span className="truncate text-zinc-400">{item.message}</span>
+            <span className="truncate text-zinc-400">
+              {item.message || "pushed changes"}
+            </span>
             <span className="flex items-center gap-2 whitespace-nowrap text-zinc-600">
               {item.kind === "pr" ? (
                 <span className="rounded border border-emerald-900 px-1 py-px text-[10px] leading-4 text-emerald-400">

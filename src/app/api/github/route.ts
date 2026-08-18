@@ -1,6 +1,7 @@
 import {
   GITHUB_USERNAME,
   buildSnapshot,
+  type CommitFeedItem,
   type GithubSnapshot,
 } from "@/content/github";
 
@@ -14,8 +15,9 @@ const HEADERS = {
 const RESPONSE_CACHE_CONTROL =
   "public, max-age=3600, stale-while-revalidate=600";
 const FETCH_TIMEOUT_MS = 8000;
+const ENRICH_TIMEOUT_MS = 5000;
+const ENRICH_LIMIT = 8;
 const CACHE_TTL_MS = 30 * 60 * 1000;
-
 type SnapshotCache = {
   data: GithubSnapshot;
   expires: number;
@@ -23,11 +25,14 @@ type SnapshotCache = {
 
 let cache: SnapshotCache | null = null;
 
-async function fetchGithub(url: string): Promise<Response | null> {
+async function fetchGithub(
+  url: string,
+  timeoutMs = FETCH_TIMEOUT_MS,
+): Promise<Response | null> {
   try {
     return await fetch(url, {
       headers: HEADERS,
-      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+      signal: AbortSignal.timeout(timeoutMs),
     });
   } catch {
     return null;
@@ -41,6 +46,39 @@ async function readJson(response: Response | null): Promise<unknown> {
   } catch {
     return null;
   }
+}
+
+async function enrichFeed(feed: CommitFeedItem[]): Promise<void> {
+  const targets = feed
+    .map((item, index) => ({ item, index }))
+    .filter(
+      ({ item }) =>
+        item.kind === "push" &&
+        !item.message &&
+        item.head &&
+        item.fullRepo,
+    )
+    .slice(0, ENRICH_LIMIT);
+  await Promise.all(
+    targets.map(async ({ item, index }) => {
+      const response = await fetchGithub(
+        `https://api.github.com/repos/${item.fullRepo}/commits/${item.head}`,
+        ENRICH_TIMEOUT_MS,
+      );
+      if (!response) return;
+      const data = (await readJson(response)) as Record<
+        string,
+        unknown
+      > | null;
+      if (!data) return;
+      const commit = data.commit as Record<string, unknown> | undefined;
+      const message =
+        typeof commit?.message === "string"
+          ? commit.message.split("\n")[0]?.trim() ?? ""
+          : "";
+      if (message) feed[index] = { ...item, message };
+    }),
+  );
 }
 
 export async function GET() {
@@ -71,6 +109,8 @@ export async function GET() {
     Array.isArray(repos) ? repos : [],
     user,
   );
+
+  await enrichFeed(snapshot.feed);
 
   cache = { data: snapshot, expires: Date.now() + CACHE_TTL_MS };
 

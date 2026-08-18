@@ -3,6 +3,8 @@ export type CommitFeedItem = {
   message: string;
   kind: "push" | "pr";
   when: string;
+  head?: string;
+  fullRepo?: string;
 };
 
 export type ActiveRepo = {
@@ -83,22 +85,21 @@ function buildFeed(events: unknown[]): CommitFeedItem[] {
   for (const raw of events) {
     if (!isRecord(raw)) continue;
     const payload = isRecord(raw.payload) ? raw.payload : {};
-    const repo = isRecord(raw.repo)
-      ? shortRepoName(raw.repo.name)
-      : "";
+    const fullRepo = isRecord(raw.repo) ? asString(raw.repo.name) : "";
+    const repo = shortRepoName(fullRepo);
     const when = asString(raw.created_at);
     if (raw.type === "PushEvent") {
       const commits = Array.isArray(payload.commits) ? payload.commits : [];
       const first = commits.length > 0 && isRecord(commits[0]) ? commits[0] : null;
       const message = first ? firstLine(first.message) : "";
-      const size = asNumber(payload.size);
-      const fallback =
-        size > 0 ? `${size} commits` : commits.length > 0 ? `${commits.length} commits` : "pushed changes";
+      const head = asString(payload.head);
       items.push({
         repo,
-        message: message || fallback,
+        message,
         kind: "push",
         when,
+        head: head || undefined,
+        fullRepo: fullRepo || undefined,
       });
     } else if (raw.type === "PullRequestEvent") {
       if (!PR_ACTIONS.has(asString(payload.action))) continue;
