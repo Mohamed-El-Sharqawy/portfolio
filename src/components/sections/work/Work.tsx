@@ -10,7 +10,13 @@ const MAX_CHIPS = 5;
 export default function Work() {
   return (
     <Section id="work">
-      <Reveal>
+      <Reveal className="relative">
+        <div
+          data-scene="particles"
+          data-mobile="off"
+          aria-hidden
+          className="absolute -top-4 right-0 hidden h-[200px] w-[200px] lg:block"
+        />
         <h2 className="text-4xl tracking-tighter md:text-5xl">
           Selected work
         </h2>

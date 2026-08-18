@@ -1,4 +1,3 @@
-import dynamic from "next/dynamic";
 import Button from "@/components/ui/Button";
 import Reveal from "@/components/ui/Reveal.client";
 import Counter from "./Counter.client";
@@ -6,8 +5,6 @@ import WordReveal from "./WordReveal.client";
 import type { WordRevealLine } from "./WordReveal.client";
 import { heroProof, profile } from "@/content/profile";
 import { cn } from "@/lib/cn";
-
-const HeroCanvas = dynamic(() => import("./HeroCanvas.client"));
 
 const headline: WordRevealLine[] = [
   [{ text: "Frontend" }, { text: "engineer" }, { text: "building" }],
@@ -73,7 +70,12 @@ export default function Hero() {
         </Reveal>
       </div>
       <div className="lg:h-full">
-        <HeroCanvas />
+        <div
+          data-scene="knot"
+          data-interactive
+          aria-hidden
+          className="h-full min-h-[max(420px,52vh)] w-full cursor-grab touch-pan-y active:cursor-grabbing"
+        />
       </div>
     </section>
   );

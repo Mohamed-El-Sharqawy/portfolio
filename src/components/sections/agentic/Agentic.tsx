@@ -45,6 +45,11 @@ export default function Agentic() {
           you&apos;re reading was shipped this way.
         </p>
       </Reveal>
+      <div
+        data-scene="constellation"
+        aria-hidden
+        className="mx-auto h-40 w-full max-w-md md:h-48"
+      />
       <div className="relative mx-auto mt-16 max-w-3xl [perspective:900px]">
         <div
           aria-hidden

@@ -38,7 +38,13 @@ export default function About() {
             myself.
           </p>
         </Reveal>
-        <Reveal className="lg:border-l lg:border-zinc-800 lg:pl-10">
+        <Reveal className="relative lg:border-l lg:border-zinc-800 lg:pl-10">
+          <div
+            data-scene="blob"
+            data-mobile="off"
+            aria-hidden
+            className="absolute right-0 top-1/2 h-60 w-60 -translate-y-1/2"
+          />
           <dl className="space-y-6">
             {quickFacts.map((fact) => (
               <div key={fact.label}>
