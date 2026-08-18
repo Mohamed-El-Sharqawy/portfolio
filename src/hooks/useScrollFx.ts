@@ -7,10 +7,6 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-if (typeof window !== "undefined") {
-  window.addEventListener("load", () => ScrollTrigger.refresh());
-}
-
 type ScrollFxConfig = {
   dependencies?: unknown[];
   revertOnUpdate?: boolean;
