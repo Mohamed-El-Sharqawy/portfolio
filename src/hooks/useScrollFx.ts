@@ -7,6 +7,19 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
+let hydrationDone = typeof window === "undefined";
+const originalUpdate = ScrollTrigger.update;
+ScrollTrigger.update = (...args: Parameters<typeof originalUpdate>) => {
+  if (hydrationDone) return originalUpdate(...args);
+};
+
+if (typeof window !== "undefined") {
+  requestAnimationFrame(() => {
+    hydrationDone = true;
+    originalUpdate();
+  });
+}
+
 type ScrollFxConfig = {
   dependencies?: unknown[];
   revertOnUpdate?: boolean;

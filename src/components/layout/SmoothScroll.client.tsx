@@ -14,15 +14,10 @@ export default function SmoothScroll() {
     gsap.registerPlugin(ScrollTrigger);
     const lenis = new Lenis({ lerp: 0.12 });
     initLenis(lenis);
+    lenis.on("scroll", ScrollTrigger.update);
     const tick = (time: number) => lenis.raf(time * 1000);
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
-
-    let scrollListener: (() => void) | null = null;
-    const rafId = requestAnimationFrame(() => {
-      scrollListener = () => ScrollTrigger.update();
-      lenis.on("scroll", scrollListener);
-    });
 
     const onClick = (event: MouseEvent) => {
       const anchor = (event.target as HTMLElement).closest<
@@ -40,10 +35,9 @@ export default function SmoothScroll() {
     document.addEventListener("click", onClick);
 
     return () => {
-      cancelAnimationFrame(rafId);
       document.removeEventListener("click", onClick);
       gsap.ticker.remove(tick);
-      if (scrollListener) lenis.off("scroll", scrollListener);
+      lenis.off("scroll", ScrollTrigger.update);
       lenis.destroy();
       destroyLenis();
     };
