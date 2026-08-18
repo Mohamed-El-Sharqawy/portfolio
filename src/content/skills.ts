@@ -21,7 +21,7 @@ export const skills: SkillGroup[] = [
       { name: "GSAP", icon: "gsap" },
       { name: "Three.js", icon: "threedotjs" },
       { name: "Cypress", icon: "cypress" },
-      { name: "RTL Testing", icon: null },
+      { name: "RTL Testing", icon: "testinglibrary" },
       { name: "Turborepo", icon: "turborepo" },
     ],
   },
@@ -41,7 +41,7 @@ export const skills: SkillGroup[] = [
       { name: "MySQL", icon: "mysql" },
       { name: "MongoDB", icon: "mongodb" },
       { name: "Redis", icon: "redis" },
-      { name: "NATS", icon: null },
+      { name: "NATS", icon: "/icons/nats.svg" },
     ],
   },
   {

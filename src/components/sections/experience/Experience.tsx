@@ -14,7 +14,7 @@ export default function Experience() {
           data-scene="helix"
           data-mobile="off"
           aria-hidden
-          className="absolute -left-14 top-0 hidden h-full w-28 md:block"
+          className="absolute -left-7 top-0 hidden h-full w-14 md:block"
         />
         <ExperienceTimeline items={experience} />
       </Reveal>
