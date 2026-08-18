@@ -1,5 +1,8 @@
 import Section from "@/components/ui/Section";
 import Chip from "@/components/ui/Chip";
+import ChipStagger from "@/components/ui/ChipStagger.client";
+import Reveal from "@/components/ui/Reveal.client";
+import ParallaxIndex from "./ParallaxIndex.client";
 import { projects } from "@/content/projects";
 
 const MAX_CHIPS = 5;
@@ -7,11 +10,15 @@ const MAX_CHIPS = 5;
 export default function Work() {
   return (
     <Section id="work">
-      <h2 className="text-4xl tracking-tighter md:text-5xl">Selected work</h2>
-      <p className="mt-4 max-w-[60ch] text-zinc-500">
-        National-scale systems shipped for teams across Egypt, Dubai, Turkey and
-        Iraq.
-      </p>
+      <Reveal>
+        <h2 className="text-4xl tracking-tighter md:text-5xl">
+          Selected work
+        </h2>
+        <p className="mt-4 max-w-[60ch] text-zinc-500">
+          National-scale systems shipped for teams across Egypt, Dubai, Turkey
+          and Iraq.
+        </p>
+      </Reveal>
       <div className="mt-16">
         {projects.map((project, index) => {
           const visibleStack = project.stack.slice(0, MAX_CHIPS);
@@ -33,9 +40,9 @@ export default function Work() {
               </span>
               <div className="grid grid-cols-1 lg:grid-cols-[4fr_8fr] lg:gap-16">
                 <div>
-                  <p className="font-mono text-xs text-emerald-600">
+                  <ParallaxIndex>
                     {String(index + 1).padStart(2, "0")}
-                  </p>
+                  </ParallaxIndex>
                   <h3 className="mt-2 text-2xl font-semibold tracking-tight transition-colors group-hover:text-emerald-400">
                     {project.name}
                   </h3>
@@ -53,7 +60,7 @@ export default function Work() {
                   <p className="mt-3 max-w-[60ch] text-sm leading-relaxed text-zinc-400">
                     {project.description}
                   </p>
-                  <div className="mt-5 flex flex-wrap items-center gap-2">
+                  <ChipStagger className="mt-5 flex flex-wrap items-center gap-2">
                     {visibleStack.map((item) => (
                       <Chip key={item} label={item} />
                     ))}
@@ -62,7 +69,7 @@ export default function Work() {
                         +{overflowCount}
                       </span>
                     ) : null}
-                  </div>
+                  </ChipStagger>
                 </div>
               </div>
             </a>

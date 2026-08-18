@@ -21,6 +21,12 @@ body {
   color: #052e21;
 }
 
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 *:focus-visible {
   outline: 2px solid rgb(16 185 129 / 0.6);
   outline-offset: 2px;

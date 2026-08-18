@@ -1,4 +1,5 @@
 import Hero from "@/components/sections/hero/Hero";
+import Marquee from "@/components/ui/Marquee";
 import About from "@/components/sections/about/About";
 import Work from "@/components/sections/work/Work";
 import Agentic from "@/components/sections/agentic/Agentic";
@@ -10,6 +11,7 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <Marquee />
       <About />
       <Work />
       <Agentic />

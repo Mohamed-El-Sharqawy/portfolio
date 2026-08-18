@@ -2,33 +2,46 @@
 
 import { useRef } from "react";
 import type { ReactNode } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
+import { gsap, useGSAP } from "@/hooks/useScrollFx";
+import { DISTANCE, DURATION, EASE, prefersReducedMotion } from "@/lib/motion";
 import { cn } from "@/lib/cn";
-
-gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 type RevealProps = {
   children: ReactNode;
   className?: string;
+  delay?: number;
+  y?: number;
 };
 
-export default function Reveal({ children, className }: RevealProps) {
+export default function Reveal({
+  children,
+  className,
+  delay = 0,
+  y = DISTANCE,
+}: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        return;
-      }
-      gsap.from(ref.current, {
-        y: 24,
-        opacity: 0,
-        duration: 0.9,
-        ease: "power3.out",
-        scrollTrigger: { trigger: ref.current, start: "top 85%", once: true },
-      });
+      const el = ref.current;
+      if (!el || prefersReducedMotion()) return;
+      gsap.set(el, { willChange: "transform, opacity, filter" });
+      gsap.fromTo(
+        el,
+        { y, opacity: 0, filter: "blur(10px)" },
+        {
+          y: 0,
+          opacity: 1,
+          filter: "blur(0px)",
+          duration: DURATION,
+          delay,
+          ease: EASE,
+          onComplete: () => {
+            gsap.set(el, { clearProps: "willChange,filter" });
+          },
+          scrollTrigger: { trigger: el, start: "top 85%", once: true },
+        },
+      );
     },
     { scope: ref },
   );

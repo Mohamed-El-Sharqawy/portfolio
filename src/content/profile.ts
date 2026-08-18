@@ -29,4 +29,5 @@ export const heroProof: HeroProof[] = [
   { value: "3+", label: "Years production frontend" },
   { value: "1M+", label: "Users on systems I built" },
   { value: "4 · 3", label: "Companies · countries served" },
+  { value: "15+", label: "Systems shipped" },
 ];
