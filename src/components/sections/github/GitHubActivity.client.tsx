@@ -100,7 +100,14 @@ export default function GitHubActivity() {
   if (status === "loading" || !snapshot) return <Skeleton />;
 
   const stats = [
-    { value: snapshot.totalContributions90d, label: "contributions · 90 days", accent: false },
+    {
+      value: snapshot.totalContributions,
+      label:
+        snapshot.heatmapSpan === "year"
+          ? "contributions · 12 months"
+          : "contributions · 90 days",
+      accent: false,
+    },
     { value: snapshot.activeStreakDays, label: "current streak", accent: true },
     { value: snapshot.longestStreakDays, label: "longest streak", accent: false },
     { value: snapshot.publicRepos, label: "public repos", accent: false },
@@ -133,7 +140,11 @@ export default function GitHubActivity() {
           ))}
         </div>
         <div className="mt-2.5 flex items-center justify-between font-mono text-[10.5px] text-zinc-600">
-          <span>last 90 days</span>
+          <span>
+            {snapshot.heatmapSpan === "year"
+              ? "last 12 months"
+              : "last 90 days"}
+          </span>
           <span className="flex items-center gap-1">
             less
             {LEVEL_COLORS.map((color) => (

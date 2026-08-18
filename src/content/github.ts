@@ -25,7 +25,8 @@ export type GithubSnapshot = {
   username: string;
   lastActive: string;
   heatmap: HeatmapDay[];
-  totalContributions90d: number;
+  heatmapSpan: "90d" | "year";
+  totalContributions: number;
   activeStreakDays: number;
   longestStreakDays: number;
   publicRepos: number;
@@ -41,6 +42,40 @@ const HEATMAP_DAYS = 90;
 const FEED_LIMIT = 8;
 const ACTIVE_REPO_LIMIT = 3;
 const PR_ACTIONS = new Set(["opened", "closed", "merged"]);
+
+export type CalendarStats = {
+  total: number;
+  activeStreak: number;
+  longestStreak: number;
+};
+
+export function buildCalendar(
+  calendarDays: { date: string; count: number }[],
+): { heatmap: HeatmapDay[]; stats: CalendarStats } {
+  const heatmap = calendarDays.map((day) => ({
+    date: asString(day.date).slice(0, 10),
+    count: asNumber(day.count),
+  }));
+  let longest = 0;
+  let run = 0;
+  for (const day of heatmap) {
+    if (day.count > 0) {
+      run += 1;
+      if (run > longest) longest = run;
+    } else {
+      run = 0;
+    }
+  }
+  const lastIndex = heatmap.length - 1;
+  let index = lastIndex;
+  if (heatmap[index]?.count === 0) index -= 1;
+  let active = 0;
+  while (index >= 0 && (heatmap[index]?.count ?? 0) > 0) {
+    active += 1;
+    index -= 1;
+  }
+  return { heatmap, stats: { total: heatmap.reduce((t, d) => t + d.count, 0), activeStreak: active, longestStreak: longest } };
+}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
@@ -179,13 +214,18 @@ export function buildSnapshot(
   events: unknown[],
   repos: unknown[],
   user: unknown,
+  calendarDays?: { date: string; count: number }[],
 ): GithubSnapshot {
   const eventList = Array.isArray(events) ? events : [];
   const repoList = Array.isArray(repos) ? repos : [];
   const userRecord = isRecord(user) ? user : {};
   const generatedAt = new Date().toISOString();
-  const heatmap = buildHeatmap(eventList);
-  const streaks = computeStreaks(heatmap);
+  const eventHeatmap = buildHeatmap(eventList);
+  const streaks = computeStreaks(eventHeatmap);
+  const useCalendar = Array.isArray(calendarDays) && calendarDays.length >= 300;
+  const calendar = useCalendar
+    ? buildCalendar(calendarDays as { date: string; count: number }[])
+    : null;
   const publicRepos =
     typeof userRecord.public_repos === "number" && userRecord.public_repos >= 0
       ? userRecord.public_repos
@@ -194,10 +234,13 @@ export function buildSnapshot(
   return {
     username: asString(userRecord.login) || GITHUB_USERNAME,
     lastActive: latestEventAt(eventList) || generatedAt,
-    heatmap,
-    totalContributions90d: heatmap.reduce((total, day) => total + day.count, 0),
-    activeStreakDays: streaks.active,
-    longestStreakDays: streaks.longest,
+    heatmap: calendar ? calendar.heatmap : eventHeatmap,
+    heatmapSpan: calendar ? "year" : "90d",
+    totalContributions: calendar
+      ? calendar.stats.total
+      : eventHeatmap.reduce((total, day) => total + day.count, 0),
+    activeStreakDays: calendar ? calendar.stats.activeStreak : streaks.active,
+    longestStreakDays: calendar ? calendar.stats.longestStreak : streaks.longest,
     publicRepos,
     activeRepos: buildActiveRepos(repoList),
     feed: buildFeed(eventList),

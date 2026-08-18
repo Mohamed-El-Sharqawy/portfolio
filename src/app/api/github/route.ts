@@ -48,6 +48,81 @@ async function readJson(response: Response | null): Promise<unknown> {
   }
 }
 
+const CALENDAR_QUERY = `query($login: String!) {
+  user(login: $login) {
+    contributionsCollection {
+      contributionCalendar {
+        weeks {
+          contributionDays {
+            date
+            contributionCount
+          }
+        }
+      }
+    }
+  }
+}`;
+
+async function fetchCalendarDays(): Promise<
+  { date: string; count: number }[] | null
+> {
+  const token = process.env.GITHUB_TOKEN;
+  if (!token) return null;
+  try {
+    const response = await fetch("https://api.github.com/graphql", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "User-Agent": "portfolio-site",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query: CALENDAR_QUERY,
+        variables: { login: USERNAME },
+      }),
+      signal: AbortSignal.timeout(ENRICH_TIMEOUT_MS),
+    });
+    if (!response.ok) return null;
+    const data = (await response.json()) as {
+      data?: {
+        user?: {
+          contributionsCollection?: {
+            contributionCalendar?: {
+              weeks?: {
+                contributionDays?: {
+                  date?: unknown;
+                  contributionCount?: unknown;
+                }[];
+              }[];
+            };
+          };
+        };
+      };
+    };
+    const weeks =
+      data.data?.user?.contributionsCollection?.contributionCalendar
+        ?.weeks;
+    if (!Array.isArray(weeks)) return null;
+    const days: { date: string; count: number }[] = [];
+    for (const week of weeks) {
+      if (!week || !Array.isArray(week.contributionDays)) continue;
+      for (const day of week.contributionDays) {
+        if (!day) continue;
+        days.push({
+          date: typeof day.date === "string" ? day.date : "",
+          count:
+            typeof day.contributionCount === "number"
+              ? day.contributionCount
+              : 0,
+        });
+      }
+    }
+    return days.length >= 300 ? days : null;
+  } catch {
+    return null;
+  }
+}
+
 async function enrichFeed(feed: CommitFeedItem[]): Promise<void> {
   const targets = feed
     .map((item, index) => ({ item, index }))
@@ -98,16 +173,18 @@ export async function GET() {
     return Response.json({ error: "github_unavailable" }, { status: 502 });
   }
 
-  const [events, repos, user] = await Promise.all([
+  const [events, repos, user, calendarDays] = await Promise.all([
     readJson(eventsResponse),
     readJson(reposResponse),
     readJson(userResponse),
+    fetchCalendarDays(),
   ]);
 
   const snapshot = buildSnapshot(
     Array.isArray(events) ? events : [],
     Array.isArray(repos) ? repos : [],
     user,
+    calendarDays ?? undefined,
   );
 
   await enrichFeed(snapshot.feed);
