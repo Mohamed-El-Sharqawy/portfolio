@@ -61,7 +61,7 @@ export default function ExperienceTimeline({ items }: ExperienceTimelineProps) {
             <li
               key={`${item.company}-${item.period}`}
               className={cn(
-                "relative py-10 pl-10 first:pt-4",
+                "relative py-10 pl-8 first:pt-4 md:pl-14",
                 !isLast && "border-b border-zinc-900",
               )}
             >

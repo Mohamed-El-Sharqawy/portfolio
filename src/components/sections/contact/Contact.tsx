@@ -19,9 +19,9 @@ export default function Contact() {
         <h2 className="text-4xl font-semibold tracking-tighter text-zinc-50 md:text-6xl">
           Let&rsquo;s build something that ships.
         </h2>
-        <p className="mt-6 max-w-[52ch] text-balance text-base text-zinc-400 sm:text-lg">
-          Open to senior frontend and AI-agentic engineering roles — remote or
-          Cairo.
+        <p className="mt-6 max-w-[52ch] mx-auto text-balance text-zinc-400 sm:text-lg">
+          Open to frontend and AI-agentic engineering roles — remote, Cairo, or
+          relocation with visa sponsorship.
         </p>
       </Reveal>
       <Reveal delay={0.15}>
