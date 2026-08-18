@@ -7,19 +7,6 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-let hydrationDone = typeof window === "undefined";
-const originalUpdate = ScrollTrigger.update;
-ScrollTrigger.update = (...args: Parameters<typeof originalUpdate>) => {
-  if (hydrationDone) return originalUpdate(...args);
-};
-
-if (typeof window !== "undefined") {
-  requestAnimationFrame(() => {
-    hydrationDone = true;
-    originalUpdate();
-  });
-}
-
 type ScrollFxConfig = {
   dependencies?: unknown[];
   revertOnUpdate?: boolean;
@@ -32,15 +19,9 @@ export function useScrollFx<T extends HTMLElement = HTMLDivElement>(
   const ref = useRef<T>(null);
   useGSAP(
     () => {
-      if (!ref.current) return;
-      let cleanup: (() => void) | void;
-      const rafId = requestAnimationFrame(() => {
-        cleanup = effect(ref.current!);
-      });
-      return () => {
-        cancelAnimationFrame(rafId);
-        cleanup?.();
-      };
+      if (ref.current) {
+        return effect(ref.current);
+      }
     },
     { scope: ref, ...config },
   );

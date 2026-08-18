@@ -38,7 +38,7 @@ export default function ExperienceTimeline({ items }: ExperienceTimelineProps) {
         scale: 0,
         duration: 0.5,
         ease: "back.out(1.7)",
-        scrollTrigger: { trigger: dot, start: "top 80%", once: true },
+        scrollTrigger: { trigger: dot, start: "top 80%" },
       });
     });
   });

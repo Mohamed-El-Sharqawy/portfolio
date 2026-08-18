@@ -19,6 +19,10 @@ export default function SmoothScroll() {
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
 
+    requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+    });
+
     const onClick = (event: MouseEvent) => {
       const anchor = (event.target as HTMLElement).closest<
         HTMLAnchorElement

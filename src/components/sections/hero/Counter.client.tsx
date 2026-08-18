@@ -25,7 +25,7 @@ export default function Counter({ value }: CounterProps) {
       counter.el.textContent = "0";
     }
     const timeline = gsap.timeline({
-      scrollTrigger: { trigger: el, start: "top 92%", once: true },
+      scrollTrigger: { trigger: el, start: "top 92%" },
     });
     for (const counter of counters) {
       timeline.to(

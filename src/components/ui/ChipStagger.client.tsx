@@ -19,7 +19,7 @@ export default function ChipStagger({ children, className }: ChipStaggerProps) {
       duration: 0.5,
       ease: EASE,
       stagger: STAGGER,
-      scrollTrigger: { trigger: el, start: "top 88%", once: true },
+      scrollTrigger: { trigger: el, start: "top 88%" },
     });
   });
 

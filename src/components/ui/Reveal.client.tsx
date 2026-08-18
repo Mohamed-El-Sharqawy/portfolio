@@ -39,7 +39,7 @@ export default function Reveal({
           onComplete: () => {
             gsap.set(el, { clearProps: "willChange,filter" });
           },
-          scrollTrigger: { trigger: el, start: "top 85%", once: true },
+          scrollTrigger: { trigger: el, start: "top 85%" },
         },
       );
     },
