@@ -27,6 +27,39 @@ body {
   }
 }
 
+.hero-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 12%;
+  height: 1px;
+  z-index: 1;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #10b981 30%,
+    #10b981 70%,
+    transparent
+  );
+  opacity: 0.35;
+  animation: hero-scan 7s linear infinite;
+}
+
+@keyframes hero-scan {
+  0% {
+    top: 12%;
+  }
+  100% {
+    top: 92%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-scanline {
+    animation: none;
+  }
+}
+
 *:focus-visible {
   outline: 2px solid rgb(16 185 129 / 0.6);
   outline-offset: 2px;

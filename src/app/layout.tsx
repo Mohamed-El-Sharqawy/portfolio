@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/layout/Navbar.client";
 import Footer from "@/components/layout/Footer";
 import ScrollProgress from "@/components/layout/ScrollProgress.client";
+import SmoothScroll from "@/components/layout/SmoothScroll.client";
 import SceneDirector from "@/components/three/SceneDirector.client";
 import { profile } from "@/content/profile";
 import "./globals.css";
@@ -109,6 +110,7 @@ export default function RootLayout({
         />
         <Navbar />
         <SceneDirector />
+        <SmoothScroll />
         <main>{children}</main>
         <Footer />
         <ScrollProgress />
