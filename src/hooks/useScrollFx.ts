@@ -32,9 +32,15 @@ export function useScrollFx<T extends HTMLElement = HTMLDivElement>(
   const ref = useRef<T>(null);
   useGSAP(
     () => {
-      if (ref.current) {
-        return effect(ref.current);
-      }
+      if (!ref.current) return;
+      let cleanup: (() => void) | void;
+      const rafId = requestAnimationFrame(() => {
+        cleanup = effect(ref.current!);
+      });
+      return () => {
+        cancelAnimationFrame(rafId);
+        cleanup?.();
+      };
     },
     { scope: ref, ...config },
   );
