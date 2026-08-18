@@ -11,6 +11,11 @@
   --font-mono: var(--font-geist-mono);
 }
 
+html,
+body {
+  overflow-x: clip;
+}
+
 body {
   background-color: #09090b;
   color: var(--color-zinc-50);
@@ -19,6 +24,12 @@ body {
 ::selection {
   background-color: #10b981;
   color: #052e21;
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 *:focus-visible {

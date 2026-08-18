@@ -1,44 +1,81 @@
+export type Skill = {
+  name: string;
+  icon: string | null;
+};
+
 export type SkillGroup = {
   group: string;
-  items: string[];
+  items: Skill[];
 };
 
 export const skills: SkillGroup[] = [
   {
     group: "Core Frontend",
     items: [
-      "React",
-      "Next.js",
-      "TypeScript",
-      "JavaScript",
-      "Tailwind CSS",
-      "SASS",
-      "GSAP",
-      "Three.js",
+      { name: "React", icon: "react" },
+      { name: "Next.js", icon: "nextdotjs" },
+      { name: "TypeScript", icon: "typescript" },
+      { name: "JavaScript", icon: "javascript" },
+      { name: "Tailwind CSS", icon: "tailwindcss" },
+      { name: "SASS", icon: "sass" },
+      { name: "GSAP", icon: "gsap" },
+      { name: "Three.js", icon: "threedotjs" },
+      { name: "Cypress", icon: "cypress" },
+      { name: "RTL Testing", icon: "testinglibrary" },
+    ],
+  },
+  {
+    group: "Mobile",
+    items: [
+      { name: "React Native", icon: "react" },
+      { name: "Expo", icon: "expo" },
+      { name: "EAS Build", icon: "expo" },
+      { name: "React Native Reanimated", icon: "react" },
+      { name: "Expo Router", icon: "expo" },
+      { name: "TypeScript", icon: "typescript" },
     ],
   },
   {
     group: "Backend & APIs",
     items: [
-      "Node.js",
-      "Express",
-      "NestJS",
-      "Fastify",
-      "REST",
-      "GraphQL",
-      "MongoDB",
+      { name: "Node.js", icon: "nodedotjs" },
+      { name: "Express", icon: "express" },
+      { name: "NestJS", icon: "nestjs" },
+      { name: "Fastify", icon: "fastify" },
+      { name: "Hono", icon: "hono" },
+      { name: "Elysia", icon: "/icons/elysia.svg" },
+      { name: "Bun", icon: "bun" },
+      { name: "REST", icon: null },
+      { name: "GraphQL", icon: "graphql" },
+      { name: "PostgreSQL", icon: "postgresql" },
+      { name: "MySQL", icon: "mysql" },
+      { name: "MongoDB", icon: "mongodb" },
+      { name: "Redis", icon: "redis" },
+      { name: "NATS", icon: "/icons/nats.svg" },
     ],
   },
   {
     group: "Architecture & Infra",
     items: [
-      "System Design",
-      "SSR/SSG/ISR",
-      "Docker",
-      "CI/CD",
-      "Coolify",
-      "Testing",
-      "Agile",
+      { name: "System Design", icon: null },
+      { name: "SSR/SSG/ISR", icon: null },
+      { name: "Docker", icon: "docker" },
+      { name: "ECS", icon: null },
+      { name: "S3", icon: null },
+      { name: "MinIO", icon: "minio" },
+      { name: "CI/CD", icon: null },
+      { name: "Deployment", icon: null },
+      { name: "Turborepo", icon: "turborepo" },
+      { name: "pnpm Monorepo", icon: "pnpm" },
+      { name: "Bun Monorepo", icon: "bun" },
+      { name: "Cloudflare R2", icon: "cloudflare" },
+      { name: "Cloudflare Workers", icon: "cloudflare" },
+      { name: "OpenCode Agent", icon: null },
+      { name: "Hermes Agent", icon: null },
+      { name: "AI Workflows", icon: null },
+      { name: "Coolify", icon: null },
+      { name: "Testing", icon: null },
+      { name: "Agile", icon: null },
     ],
   },
 ];

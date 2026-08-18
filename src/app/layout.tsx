@@ -2,6 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/layout/Navbar.client";
 import Footer from "@/components/layout/Footer";
+import ScrollProgress from "@/components/layout/ScrollProgress.client";
+import SmoothScroll from "@/components/layout/SmoothScroll.client";
+import SceneDirector from "@/components/three/SceneDirector.client";
 import { profile } from "@/content/profile";
 import "./globals.css";
 
@@ -21,7 +24,7 @@ const description =
 const title = "Mohamed Ahmed — Frontend Engineer & AI Agentic Systems";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://portfolio-mohamed.vercel.app"),
+  metadataBase: new URL("https://portfolio.winningkart.tech"),
   title: {
     default: title,
     template: "%s — Mohamed Ahmed",
@@ -70,7 +73,7 @@ const personSchema = {
   name: profile.name,
   jobTitle: "Frontend Engineer",
   email: `mailto:${profile.email}`,
-  url: "https://portfolio-mohamed.vercel.app",
+  url: "https://portfolio.winningkart.tech",
   sameAs: [profile.linkedin, profile.github],
   address: {
     "@type": "PostalAddress",
@@ -106,8 +109,11 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
         />
         <Navbar />
+        <SceneDirector />
+        <SmoothScroll />
         <main>{children}</main>
         <Footer />
+        <ScrollProgress />
       </body>
     </html>
   );

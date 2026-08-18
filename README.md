@@ -27,7 +27,7 @@ Personal portfolio of **Mohamed Ahmed**, a Frontend Engineer (3+ years) speciali
 - **Styling:** Tailwind CSS v4
 - **Animation:** GSAP + ScrollTrigger (`@gsap/react`)
 - **3D (hero):** Three.js via `@react-three/fiber` + `@react-three/drei`
-- **Hosting:** Vercel
+- **Hosting:** Coolify on a Hostinger VPS
 
 ## Getting Started
 
@@ -65,9 +65,14 @@ src/
 
 **Convention:** `page.tsx` stays a Server Component. Interactive islands (animations, 3D, nav state) are isolated `"use client"` wrappers composed inside it — so most of the page ships zero client JS.
 
-## Deployment
+## Deployment — Coolify on Hostinger VPS
 
-Pushes to `main` auto-deploy to Vercel. PRs get preview deployments.
+The site deploys via [Coolify](https://coolify.io) on a Hostinger VPS behind **https://portfolio.winningkart.tech**.
+
+- **Setup**: import this repo in Coolify as a Next.js / Nixpacks app — build `npm run build`, start `npm run start`
+- **Environment**: add `GITHUB_TOKEN=<classic PAT, no scopes>` in the Coolify environment variables — required for the full-year contribution heatmap; without it the GitHub section falls back to the last 90 days of public events
+- **TLS**: Coolify's reverse proxy (Traefik/Caddy) issues and renews Let's Encrypt certificates for the domain
+- **Updates**: every push to `main` auto-deploys through Coolify's Git webhook
 
 ## License
 
