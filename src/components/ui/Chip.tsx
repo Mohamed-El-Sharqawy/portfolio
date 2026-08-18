@@ -16,7 +16,7 @@ export default function Chip({ label, icon, className }: ChipProps) {
     >
       {icon ? (
         <img
-          src={`https://cdn.simpleicons.org/${icon}/34d399`}
+          src={icon.startsWith("/") ? icon : `https://cdn.simpleicons.org/${icon}/34d399`}
           alt=""
           width={12}
           height={12}

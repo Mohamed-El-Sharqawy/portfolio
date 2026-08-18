@@ -33,7 +33,7 @@ export const skills: SkillGroup[] = [
       { name: "NestJS", icon: "nestjs" },
       { name: "Fastify", icon: "fastify" },
       { name: "Hono", icon: "hono" },
-      { name: "Elysia", icon: null },
+      { name: "Elysia", icon: "/icons/elysia.svg" },
       { name: "Bun", icon: "bun" },
       { name: "REST", icon: null },
       { name: "GraphQL", icon: "graphql" },
