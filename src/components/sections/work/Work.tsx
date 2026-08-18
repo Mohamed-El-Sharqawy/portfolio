@@ -1,12 +1,7 @@
 import Section from "@/components/ui/Section";
-import Chip from "@/components/ui/Chip";
-import ChipStagger from "@/components/ui/ChipStagger.client";
 import Reveal from "@/components/ui/Reveal.client";
-import ParallaxIndex from "./ParallaxIndex.client";
 import WorkRow from "./WorkRow.client";
 import { projects } from "@/content/projects";
-
-const MAX_CHIPS = 5;
 
 export default function Work() {
   return (
