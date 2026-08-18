@@ -17,8 +17,7 @@ export default function Work() {
           Selected work
         </h2>
         <p className="mt-4 max-w-[60ch] text-zinc-500">
-          National-scale systems shipped for teams across Egypt, Dubai, Turkey
-          and Iraq.
+          Systems I helped teams ship across Egypt, Dubai, Turkey and Iraq.
         </p>
       </Reveal>
       <div className="mt-16">

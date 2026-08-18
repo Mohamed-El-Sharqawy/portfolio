@@ -39,8 +39,9 @@ export default function Hero() {
         />
         <Reveal delay={0.25}>
           <p className="mt-6 max-w-[52ch] text-base leading-relaxed text-zinc-400 sm:text-lg">
-            3+ years across SaaS, ERP dashboards, and national-scale systems —
-            now orchestrating AI agent teams that build entire projects.
+            3+ years cooperating with teams on SaaS, ERP dashboards, and
+            national-scale systems — now orchestrating AI agent teams that
+            build entire projects.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <Button variant="primary" href="#contact">

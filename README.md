@@ -27,7 +27,7 @@ Personal portfolio of **Mohamed Ahmed**, a Frontend Engineer (3+ years) speciali
 - **Styling:** Tailwind CSS v4
 - **Animation:** GSAP + ScrollTrigger (`@gsap/react`)
 - **3D (hero):** Three.js via `@react-three/fiber` + `@react-three/drei`
-- **Hosting:** Vercel
+- **Hosting:** Hostinger VPS (self-managed, Nginx/Caddy + PM2)
 
 ## Getting Started
 
@@ -65,9 +65,22 @@ src/
 
 **Convention:** `page.tsx` stays a Server Component. Interactive islands (animations, 3D, nav state) are isolated `"use client"` wrappers composed inside it — so most of the page ships zero client JS.
 
-## Deployment
+## Deployment — Hostinger VPS
 
-Pushes to `main` auto-deploy to Vercel. PRs get preview deployments.
+The site self-hosts on a Hostinger VPS behind **https://portfolio.winningkart.tech** (not Vercel).
+
+```bash
+npm ci
+npm run build
+npm run start        # next start, default port 3000 — put a reverse proxy (Nginx/Caddy) in front for TLS
+```
+
+Recommended setup:
+
+- **Process manager**: PM2 (`pm2 start npm --name portfolio -- start`) or a systemd unit so the app survives reboots and deploys
+- **Reverse proxy**: Nginx or Caddy terminates TLS for `portfolio.winningkart.tech` and proxies to the Next.js port
+- **Environment**: create `.env` on the server with `GITHUB_TOKEN=<classic PAT, no scopes>` — required for the full-year contribution heatmap; without it the GitHub section falls back to the last 90 days of public events
+- **Updates**: `git pull && npm ci && npm run build && pm2 restart portfolio` (or your process manager's reload)
 
 ## License
 

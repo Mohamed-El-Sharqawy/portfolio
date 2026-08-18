@@ -28,15 +28,16 @@ export default function About() {
           </h2>
           <p className="mt-8 max-w-[62ch] text-base leading-relaxed text-zinc-400 sm:text-lg">
             Three-plus years of production frontend across SaaS, ERP, and
-            enterprise platforms — from facility-management systems in Cairo to
-            a police-academy LMS and crime-and-legal case management deployed at
-            national scale in Iraq.
+            enterprise platforms — helping teams ship everything from
+            facility-management systems in Cairo to a police-academy LMS and
+            crime-and-legal case management deployed at national scale in
+            Iraq.
           </p>
           <p className="mt-5 max-w-[62ch] text-base leading-relaxed text-zinc-400 sm:text-lg">
-            That discipline now extends to AI-agentic workflows: I orchestrate
-            multi-agent pipelines that plan, build, review, and ship entire
-            projects — held to the same standards as any system I would deploy
-            myself.
+            That same discipline now extends to AI-agentic workflows: I
+            orchestrate multi-agent pipelines that plan, build, review, and
+            ship entire projects — held to the same standards as any system I
+            would deploy myself.
           </p>
         </Reveal>
         <Reveal className="relative lg:border-l lg:border-zinc-800 lg:pl-10">

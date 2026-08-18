@@ -24,7 +24,7 @@ const description =
 const title = "Mohamed Ahmed — Frontend Engineer & AI Agentic Systems";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://portfolio-mohamed.vercel.app"),
+  metadataBase: new URL("https://portfolio.winningkart.tech"),
   title: {
     default: title,
     template: "%s — Mohamed Ahmed",
@@ -73,7 +73,7 @@ const personSchema = {
   name: profile.name,
   jobTitle: "Frontend Engineer",
   email: `mailto:${profile.email}`,
-  url: "https://portfolio-mohamed.vercel.app",
+  url: "https://portfolio.winningkart.tech",
   sameAs: [profile.linkedin, profile.github],
   address: {
     "@type": "PostalAddress",
