@@ -55,23 +55,31 @@ export default function Hero() {
         <Reveal delay={0.4}>
           <div className="mt-14 border-t border-zinc-800 pt-5">
             <div className="grid grid-cols-2 gap-y-4 lg:grid-cols-4">
-              {heroProof.map((stat, i) => (
-                <div
-                  key={stat.label}
-                  className={cn(
-                    "border-zinc-800",
-                    i % 2 === 0 && "border-r pr-6 lg:pr-8",
-                    i < heroProof.length - 1 && "lg:border-r lg:pr-8",
-                  )}
-                >
-                  <p className="font-mono text-xl text-emerald-400 sm:text-2xl">
-                    <Counter value={stat.value} />
-                  </p>
-                  <p className="mt-1 font-mono text-xs text-zinc-500">
-                    {stat.label}
-                  </p>
-                </div>
-              ))}
+              {heroProof.map((stat, i) => {
+                const divider =
+                  i === 1
+                    ? "border-l border-zinc-800 pl-6 lg:pl-8"
+                    : i === 2
+                      ? "lg:border-l lg:border-zinc-800 lg:pl-8"
+                      : i === 3
+                        ? "border-l border-zinc-800 pl-6 lg:pl-8"
+                        : "";
+                const trailing =
+                  i === 0 || i === 2 ? "pr-6 lg:pr-8" : i === 1 ? "lg:pr-8" : "";
+                return (
+                  <div
+                    key={stat.label}
+                    className={cn(divider, trailing)}
+                  >
+                    <p className="font-mono text-xl text-emerald-400 sm:text-2xl">
+                      <Counter value={stat.value} />
+                    </p>
+                    <p className="mt-1 font-mono text-xs text-zinc-500">
+                      {stat.label}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </Reveal>
