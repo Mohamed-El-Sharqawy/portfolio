@@ -2,10 +2,12 @@
 
 Personal portfolio of **Mohamed Ahmed**, a Frontend Engineer (3+ years) specializing in SaaS platforms, ERP dashboards, and large-scale enterprise systems, with deep expertise in **AI agentic engineering** — orchestrating multi-agent workflows that design, build, review, and ship entire projects.
 
-- **CV (PDF):** [/mohamed-ahmed-cv.pdf](/mohamed-ahmed-cv.pdf)
+- **CV (PDF):** [/Mohamed_Ahmed_CV_Full_Stack_UAE.pdf](/Mohamed_Ahmed_CV_Full_Stack_UAE.pdf)
 - **LinkedIn:** [mohamed-elsharqawi](https://linkedin.com/in/mohamed-elsharqawi)
 - **GitHub:** [Mohamed-El-Sharqawy](https://github.com/Mohamed-El-Sharqawy)
-- **Email:** dev.elbehery@gmail.com
+- **Email:** dev.elsharqawy@gmail.com
+- **Phone:** +971 5088808693 (UAE) · +20 1021141193 (EG)
+- **Location:** Dubai, UAE
 
 ## Sections
 
@@ -76,4 +78,4 @@ The site deploys via [Coolify](https://coolify.io) on a Hostinger VPS behind **h
 
 ## License
 
-All rights reserved — this is personal work. See the [CV](/mohamed-ahmed-cv.pdf) for contact details.
+All rights reserved — this is personal work. See the [CV](/Mohamed_Ahmed_CV_Full_Stack_UAE.pdf) for contact details.

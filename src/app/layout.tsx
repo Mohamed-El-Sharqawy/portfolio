@@ -73,12 +73,16 @@ const personSchema = {
   name: profile.name,
   jobTitle: "Frontend Engineer",
   email: `mailto:${profile.email}`,
+  telephone: [
+    `tel:${profile.phone.replace(/\s/g, "")}`,
+    `tel:${profile.phoneEgypt.replace(/\s/g, "")}`,
+  ],
   url: "https://portfolio.winningkart.tech",
   sameAs: [profile.linkedin, profile.github],
   address: {
     "@type": "PostalAddress",
-    addressLocality: "Cairo",
-    addressCountry: "EG",
+    addressLocality: "Dubai",
+    addressCountry: "AE",
   },
   knowsAbout: [
     "React",

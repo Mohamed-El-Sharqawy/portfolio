@@ -160,7 +160,7 @@ Why not: fine at 5 components, mush at 25. Doesn't read "senior."
 - `page.tsx` and `layout.tsx` are **always Server Components**. They compose section wrappers; anything stateful/animated is a `.client.tsx` leaf.
 - RSC-first: the entire page's markup ships as HTML with ~0 client JS except: navbar state, hero canvas, GSAP choreography wrapper, agentic pipeline visual.
 - Three.js: `next/dynamic` + `ssr: false`, lazy after hydration, cut if LCP > 2.5s.
-- CV: served from `public/mohamed-ahmed-cv.pdf` (static, CDN-cached, opens in-browser via `<a target="_blank" rel="noopener">`).
+- CV: served from `public/Mohamed_Ahmed_CV_Full_Stack_UAE.pdf` (static, CDN-cached, opens in-browser via `<a target="_blank" rel="noopener">`).
 - Metadata: full Open Graph + Twitter cards, JSON-LD `Person` schema (recruiters' preview cards look good when shared on LinkedIn).
 - Static prerender (`export const dynamic` untouched → SSG), deployed on Vercel with preview deployments per PR.
 - Dark-only theme (chosen direction is dark); `themeColor` meta set accordingly.

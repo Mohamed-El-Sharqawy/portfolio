@@ -14,6 +14,18 @@ export default function Footer() {
             {profile.email}
           </a>
           <a
+            href={`tel:${profile.phone.replace(/\s/g, "")}`}
+            className="transition-colors hover:text-zinc-50"
+          >
+            {profile.phone}
+          </a>
+          <a
+            href={`tel:${profile.phoneEgypt.replace(/\s/g, "")}`}
+            className="transition-colors hover:text-zinc-50"
+          >
+            {profile.phoneEgypt}
+          </a>
+          <a
             href={profile.linkedin}
             target="_blank"
             rel="noopener noreferrer"

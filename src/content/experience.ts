@@ -35,7 +35,7 @@ export const experience: ExperienceItem[] = [
   {
     company: "Forever Events",
     location: "Dubai, Remote",
-    role: "Frontend Engineer",
+    role: "Full-Stack Engineer",
     period: "Sep 2025 – Mar 2026",
     stack: [
       "Next.js 15",
@@ -55,7 +55,7 @@ export const experience: ExperienceItem[] = [
   {
     company: "Grwan Group",
     location: "Dubai, Remote",
-    role: "Frontend Engineer",
+    role: "Full-Stack Engineer",
     period: "Mar 2025 – Nov 2025",
     stack: ["React 19", "Next.js 15", "TypeScript", "React Query", "Tailwind CSS"],
     highlights: [

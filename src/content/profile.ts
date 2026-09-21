@@ -4,6 +4,8 @@ export type Profile = {
   tagline: string;
   location: string;
   email: string;
+  phone: string;
+  phoneEgypt: string;
   linkedin: string;
   github: string;
   cvUrl: string;
@@ -18,11 +20,13 @@ export const profile: Profile = {
   name: "Mohamed Ahmed",
   role: "Frontend Engineer & AI Agentic Systems",
   tagline: "Frontend engineer building systems that ship themselves.",
-  location: "Cairo, Egypt · Remote",
-  email: "dev.elbehery@gmail.com",
+  location: "Dubai, UAE · Open to remote",
+  email: "dev.elsharqawy@gmail.com",
+  phone: "+971 5088808693",
+  phoneEgypt: "+20 1021141193",
   linkedin: "https://linkedin.com/in/mohamed-elsharqawi",
   github: "https://github.com/Mohamed-El-Sharqawy",
-  cvUrl: "/mohamed-ahmed-cv.pdf",
+  cvUrl: "/Mohamed_Ahmed_CV_Full_Stack_UAE.pdf",
 };
 
 export const heroProof: HeroProof[] = [

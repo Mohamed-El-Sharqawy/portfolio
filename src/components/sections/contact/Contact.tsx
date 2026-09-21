@@ -20,8 +20,8 @@ export default function Contact() {
           Let&rsquo;s build something that ships.
         </h2>
         <p className="mt-6 max-w-[52ch] mx-auto text-balance text-zinc-400 sm:text-lg">
-          Open to frontend and AI-agentic engineering roles — remote, Cairo, or
-          relocation with visa sponsorship.
+          Based in Dubai, UAE — open to frontend and AI-agentic engineering
+          roles, remote or on-site.
         </p>
       </Reveal>
       <Reveal delay={0.15}>
@@ -29,6 +29,20 @@ export default function Contact() {
           email={profile.email}
           className="mt-12 block break-all font-mono text-2xl text-emerald-400 transition-colors hover:text-emerald-300 md:text-4xl"
         />
+        <a
+          href={`tel:${profile.phone.replace(/\s/g, "")}`}
+          className="mt-4 block font-mono text-sm text-zinc-400 transition-colors hover:text-emerald-300 md:text-base"
+        >
+          {profile.phone}
+          <span className="text-zinc-600"> (UAE)</span>
+        </a>
+        <a
+          href={`tel:${profile.phoneEgypt.replace(/\s/g, "")}`}
+          className="mt-1 block font-mono text-sm text-zinc-400 transition-colors hover:text-emerald-300 md:text-base"
+        >
+          {profile.phoneEgypt}
+          <span className="text-zinc-600"> (EG)</span>
+        </a>
         <p className="mt-10 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 font-mono text-xs text-zinc-400">
           {links.map((link, index) => (
             <span key={link.label} className="flex items-center gap-x-4">
