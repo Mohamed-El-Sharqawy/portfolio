@@ -19,9 +19,9 @@ const geistMono = Geist_Mono({
 });
 
 const description =
-  "Frontend engineer building national-scale systems — and the AI agent teams that help ship them. 3+ years of production frontend across enterprise platforms, e-commerce, and ERP.";
+  "Full-stack engineer with a frontend specialty, building national-scale systems — and the AI agent teams that help ship them. 3+ years of production experience across enterprise platforms, e-commerce, and ERP.";
 
-const title = "Mohamed Ahmed — Frontend Engineer & AI Agentic Systems";
+const title = "Mohamed Ahmed — Full-Stack Engineer & AI Agentic Systems";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://portfolio.winningkart.tech"),
@@ -31,11 +31,12 @@ export const metadata: Metadata = {
   },
   description,
   keywords: [
+    "full-stack engineer",
     "frontend engineer",
     "react",
     "next.js",
     "typescript",
-    "cairo",
+    "dubai",
     "remote",
     "AI agents",
   ],
@@ -71,7 +72,7 @@ const personSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: profile.name,
-  jobTitle: "Frontend Engineer",
+  jobTitle: "Full-Stack Engineer",
   email: `mailto:${profile.email}`,
   telephone: [
     `tel:${profile.phone.replace(/\s/g, "")}`,

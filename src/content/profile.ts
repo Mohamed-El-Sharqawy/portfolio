@@ -18,8 +18,8 @@ export type HeroProof = {
 
 export const profile: Profile = {
   name: "Mohamed Ahmed",
-  role: "Frontend Engineer & AI Agentic Systems",
-  tagline: "Frontend engineer building systems that ship themselves.",
+  role: "Full-Stack Engineer & AI Agentic Systems",
+  tagline: "Full-stack engineer building systems that ship themselves.",
   location: "Dubai, UAE · Open to remote",
   email: "dev.elsharqawy@gmail.com",
   phone: "+971 5088808693",
@@ -30,7 +30,7 @@ export const profile: Profile = {
 };
 
 export const heroProof: HeroProof[] = [
-  { value: "3+", label: "Years production frontend" },
+  { value: "3+", label: "Years production experience" },
   { value: "1M+", label: "Users reached by systems I helped ship" },
   { value: "6 · 4", label: "Companies · countries served" },
   { value: "15+", label: "Systems shipped with my teams" },

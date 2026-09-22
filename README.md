@@ -1,6 +1,6 @@
 # Mohamed Ahmed — Portfolio
 
-Personal portfolio of **Mohamed Ahmed**, a Frontend Engineer (3+ years) specializing in SaaS platforms, ERP dashboards, and large-scale enterprise systems, with deep expertise in **AI agentic engineering** — orchestrating multi-agent workflows that design, build, review, and ship entire projects.
+Personal portfolio of **Mohamed Ahmed**, a Full-Stack Engineer (3+ years, frontend specialist) building SaaS platforms, ERP dashboards, and large-scale enterprise systems, with deep expertise in **AI agentic engineering** — orchestrating multi-agent workflows that design, build, review, and ship entire projects.
 
 - **CV (PDF):** [/Mohamed_Ahmed_CV_Full_Stack_UAE.pdf](/Mohamed_Ahmed_CV_Full_Stack_UAE.pdf)
 - **LinkedIn:** [mohamed-elsharqawi](https://linkedin.com/in/mohamed-elsharqawi)
@@ -13,7 +13,7 @@ Personal portfolio of **Mohamed Ahmed**, a Frontend Engineer (3+ years) speciali
 
 | Section | Purpose |
 | --- | --- |
-| Hero | Positioning statement: frontend engineering + AI agentic systems, 3D agent network |
+| Hero | Positioning statement: full-stack engineering + AI agentic systems, 3D agent network |
 | About | Short bio, quick facts, education |
 | Selected Work | Case studies: LeanGo platform suite, LMS, Crime & Legal Center, Diaflower |
 | AI Agentic Engineering | Multi-agent pipeline terminal, workflow explainer |

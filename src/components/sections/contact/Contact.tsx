@@ -20,7 +20,7 @@ export default function Contact() {
           Let&rsquo;s build something that ships.
         </h2>
         <p className="mt-6 max-w-[52ch] mx-auto text-balance text-zinc-400 sm:text-lg">
-          Based in Dubai, UAE — open to frontend and AI-agentic engineering
+          Based in Dubai, UAE — open to full-stack and AI-agentic engineering
           roles, remote or on-site.
         </p>
       </Reveal>

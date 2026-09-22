@@ -12,7 +12,7 @@
 | Hero | **3D agent-network graph** (orchestrator core + 7 agent nodes + task pulses), built with React Three Fiber, lazy-loaded, reduced-motion fallback. Prototype: `docs/prototypes/hero-preview.html` |
 | Repo | Public — github.com/Mohamed-El-Sharqawy/portfolio |
 
-**Design read:** Developer portfolio for a mid/senior Frontend Engineer with an AI-agentic edge. Primary audience: recruiters and technical hiring managers scanning in <60 seconds. Secondary: engineers admiring the craft.
+**Design read:** Developer portfolio for a mid/senior Full-Stack Engineer (frontend specialist) with an AI-agentic edge. Primary audience: recruiters and technical hiring managers scanning in <60 seconds. Secondary: engineers admiring the craft.
 
 **Dials (per anti-slop frontend skill):** `DESIGN_VARIANCE 6 / MOTION 5 / DENSITY 4` — Portfolio (Developer) preset. Confident and technical, not agency-chaos.
 
@@ -29,7 +29,7 @@ A recruiter spends **6 seconds** on first scan, a hiring manager ~60. The page i
 | 30–60s | AI Agentic Engineering section + Experience timeline | The differentiator: rare FE + agentic-AI combo |
 | Conversion | Sticky contact affordances + one-click CV (PDF opens in-browser) | Zero-friction next step |
 
-Positioning line (hero): **"Frontend engineer building national-scale systems — and the AI agent teams that help ship them."**
+Positioning line (hero): **"Full-stack engineer building national-scale systems — and the AI agent teams that help ship them."**
 
 Three conversion goals, in order: 1) email click, 2) CV open, 3) LinkedIn visit.
 
@@ -41,13 +41,13 @@ Single-page narrative scroll:
 
 ```
 Navbar (sticky, minimal: logo · links · "Get in touch" pill)
-└─ 1. Hero — split layout: kinetic type left ("Frontend Engineer
+└─ 1. Hero — split layout: kinetic type left ("Full-Stack Engineer
 │        × AI Agent Orchestrator"), interactive accent right.
 │        Proof strip under CTAs. Fits 100dvh.
 ├─ 2. Trust strip — Remote for: Global Dynamics · Forever Events ·
 │        Grwan Group · ASDC (wordmarks, logo-only rule)
 ├─ 3. About — asymmetric split: short bio + quick facts
-│        (Cairo/Egypt · remote · BSc Computing OU-UK · 3+ yrs)
+│        (Dubai/UAE · remote · BSc Computing OU-UK · 3+ yrs)
 ├─ 4. Selected Work — case-study cards (LeanGo suite, LMS for
 │        Police Academy, Crime & Legal Center 1M+ users, Diaflower)
 │        Each: problem → my role → stack → impact. NOT a tile wall.

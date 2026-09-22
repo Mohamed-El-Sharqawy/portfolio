@@ -13,7 +13,7 @@ const quickFacts = [
   {
     label: "Focus areas",
     value:
-      "Frontend-first, full-stack capable — shipping production-ready web and mobile apps · Next.js · AI agent orchestration",
+      "Full-stack with a frontend specialty — shipping production-ready web and mobile apps · Next.js · AI agent orchestration",
   },
 ];
 
@@ -27,8 +27,8 @@ export default function About() {
             option.
           </h2>
           <p className="mt-8 max-w-[62ch] text-base leading-relaxed text-zinc-400 sm:text-lg">
-            Three-plus years of production frontend across SaaS, ERP, and
-            enterprise platforms — helping teams ship everything from
+            Three-plus years of full-stack production experience across SaaS,
+            ERP, and enterprise platforms — helping teams ship everything from
             facility-management systems in Cairo to a police-academy LMS and
             crime-and-legal case management deployed at national scale in
             Iraq.

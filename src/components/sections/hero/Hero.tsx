@@ -7,7 +7,7 @@ import { heroProof, profile } from "@/content/profile";
 import { cn } from "@/lib/cn";
 
 const headline: WordRevealLine[] = [
-  [{ text: "Frontend" }, { text: "engineer" }, { text: "building" }],
+  [{ text: "Full-stack" }, { text: "engineer" }, { text: "building" }],
   [
     { text: "systems" },
     { text: "that" },
@@ -30,7 +30,7 @@ export default function Hero() {
       <div className="relative z-10 flex flex-col justify-center">
         <Reveal y={12}>
           <p className="font-mono text-xs tracking-wide text-zinc-500">
-            {profile.name} — Cairo · Remote
+            {profile.name} — Dubai · UAE
           </p>
         </Reveal>
         <WordReveal
