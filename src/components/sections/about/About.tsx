@@ -19,6 +19,11 @@ const quickFacts = [
     value:
       "Full-stack with a frontend specialty — shipping production-ready web and mobile apps · Next.js · AI agent orchestration",
   },
+  {
+    label: "Credentials",
+    value:
+      "BSc attested (Egyptian MOFA, UAE Embassy Cairo, UAE MOFA) with UAE Ministry of Education equivalency approved · Police Clearance Certificate attested by Egyptian MOFA & UAE Embassy — UAE MOFA attestation in progress",
+  },
 ];
 
 export default function About() {
@@ -62,6 +67,15 @@ export default function About() {
                     <>
                       BSc Computer Science — Open University (UK) <br />
                       BSc Computer Science — Arab Open University (Cairo)
+                    </>
+                  ) : fact.label === "Credentials" ? (
+                    <>
+                      BSc attested (Egyptian MOFA, UAE Embassy Cairo, UAE MOFA)
+                      <br />
+                      UAE Ministry of Education equivalency approved
+                      <br />
+                      Police Clearance Certificate attested (Egyptian MOFA &
+                      UAE Embassy) — UAE MOFA attestation in progress
                     </>
                   ) : fact.label === "Phone" ? (
                     <>
