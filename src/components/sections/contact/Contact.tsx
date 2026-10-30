@@ -31,17 +31,23 @@ export default function Contact() {
         />
         <a
           href={`tel:${profile.phone.replace(/\s/g, "")}`}
-          className="mt-4 block font-mono text-sm text-zinc-400 transition-colors hover:text-emerald-300 md:text-base"
+          className="group mt-4 block font-mono text-sm text-zinc-400 transition-colors hover:text-emerald-300 md:text-base"
         >
           {profile.phone}
-          <span className="text-zinc-600"> (UAE)</span>
+          <span className="text-zinc-600 transition-colors group-hover:text-emerald-300">
+            {" "}
+            (UAE)
+          </span>
         </a>
         <a
           href={`tel:${profile.phoneEgypt.replace(/\s/g, "")}`}
-          className="mt-1 block font-mono text-sm text-zinc-400 transition-colors hover:text-emerald-300 md:text-base"
+          className="group mt-1 block font-mono text-sm text-zinc-400 transition-colors hover:text-emerald-300 md:text-base"
         >
           {profile.phoneEgypt}
-          <span className="text-zinc-600"> (EG)</span>
+          <span className="text-zinc-600 transition-colors group-hover:text-emerald-300">
+            {" "}
+            (EG)
+          </span>
         </a>
         <p className="mt-10 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 font-mono text-xs text-zinc-400">
           {links.map((link, index) => (

@@ -15,13 +15,13 @@ export default function Footer() {
           </a>
           <a
             href={`tel:${profile.phone.replace(/\s/g, "")}`}
-            className="transition-colors hover:text-zinc-50"
+            className="transition-colors hover:text-emerald-300"
           >
             {profile.phone}
           </a>
           <a
             href={`tel:${profile.phoneEgypt.replace(/\s/g, "")}`}
-            className="transition-colors hover:text-zinc-50"
+            className="transition-colors hover:text-emerald-300"
           >
             {profile.phoneEgypt}
           </a>
