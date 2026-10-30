@@ -6,7 +6,7 @@ Personal portfolio of **Mohamed Ahmed**, a Full-Stack Engineer (3+ years, fronte
 - **LinkedIn:** [mohamed-elsharqawi](https://linkedin.com/in/mohamed-elsharqawi)
 - **GitHub:** [Mohamed-El-Sharqawy](https://github.com/Mohamed-El-Sharqawy)
 - **Email:** dev.elsharqawy@gmail.com
-- **Phone:** +971 5088808693 (UAE) · +20 1021141193 (EG)
+- **Phone:** +971 542009458 (UAE) · +20 1021141193 (EG)
 - **Location:** Dubai, UAE
 
 ## Sections

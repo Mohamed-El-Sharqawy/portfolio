@@ -4,6 +4,10 @@ import { profile } from "@/content/profile";
 
 const quickFacts = [
   { label: "Location", value: profile.location.split(" · ")[0] },
+  {
+    label: "Phone",
+    value: `${profile.phone} (UAE) · ${profile.phoneEgypt} (EG)`,
+  },
   { label: "Remote since", value: "2023" },
   {
     label: "Education",
@@ -58,6 +62,22 @@ export default function About() {
                     <>
                       BSc Computer Science — Open University (UK) <br />
                       BSc Computer Science — Arab Open University (Cairo)
+                    </>
+                  ) : fact.label === "Phone" ? (
+                    <>
+                      <a
+                        href={`tel:${profile.phone.replace(/\s/g, "")}`}
+                        className="underline-offset-4 transition-colors hover:text-white hover:underline"
+                      >
+                        {profile.phone} (UAE)
+                      </a>
+                      <br />
+                      <a
+                        href={`tel:${profile.phoneEgypt.replace(/\s/g, "")}`}
+                        className="underline-offset-4 transition-colors hover:text-white hover:underline"
+                      >
+                        {profile.phoneEgypt} (EG)
+                      </a>
                     </>
                   ) : (
                     fact.value

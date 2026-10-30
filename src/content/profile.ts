@@ -22,7 +22,7 @@ export const profile: Profile = {
   tagline: "Full-stack engineer building systems that ship themselves.",
   location: "Dubai, UAE · Open to remote",
   email: "dev.elsharqawy@gmail.com",
-  phone: "+971 5088808693",
+  phone: "+971 542009458",
   phoneEgypt: "+20 1021141193",
   linkedin: "https://linkedin.com/in/mohamed-elsharqawi",
   github: "https://github.com/Mohamed-El-Sharqawy",
