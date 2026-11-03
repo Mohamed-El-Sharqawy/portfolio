@@ -14,6 +14,7 @@ import { getImage } from 'astro:assets';
 import type { Tone } from './types';
 import Flow from './scripts/flow.astro';
 import Dots from './scripts/dots.astro';
+import Gl from './scripts/gl.astro';
 
 interface Props {
   id: string;
@@ -83,6 +84,7 @@ const posterUrl = poster
 </span>
 {kind === 'flow' && <Flow />}
 {kind === 'dots' && <Dots />}
+{kind === 'gl' && <Gl />}
 
 <style>
   .lab-shape {

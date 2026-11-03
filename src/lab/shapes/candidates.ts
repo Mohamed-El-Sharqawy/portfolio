@@ -51,6 +51,30 @@ export const candidates: Candidate[] = [
     replaces: 'Hero orb',
     note: 'Fibonacci lattice displaced by animated noise, coloured by displacement, back dots dimmed.',
   },
+  {
+    id: 'gl-blob',
+    name: 'Raymarched iridescent blob',
+    group: 'webgl',
+    technique: 'WebGL fragment shader (SDF raymarch), shared context in a worker',
+    replaces: 'Work blob · agents blob',
+    note: 'Three smooth-unioned spheres with ripple, thin-film colour on the Fresnel rim.',
+  },
+  {
+    id: 'gl-torus',
+    name: 'Raymarched wavy torus',
+    group: 'webgl',
+    technique: 'WebGL fragment shader (SDF raymarch), shared context in a worker',
+    replaces: 'Contact torus',
+    note: 'Tilted, spinning torus with a travelling ripple, same thin-film shading.',
+  },
+  {
+    id: 'gl-ribbon',
+    name: 'Twisting ribbon',
+    group: 'webgl',
+    technique: 'WebGL fragment shader (analytic 2D, no raymarch)',
+    replaces: 'Hero capsule · case-study capsule',
+    note: 'Three twisting bands with faked normals; the cheapest shader here.',
+  },
 ];
 
 export const byId = (id: string) => candidates.find((c) => c.id === id);
