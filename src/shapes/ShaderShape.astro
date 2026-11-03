@@ -1,6 +1,6 @@
 ---
 /**
- * A "shader-look" decorative shape (also used by the /lab/shapes/ gallery).
+ * A "shader-look" decorative shape.
  * Reserves its box (no CLS), is decorative (aria-hidden, pointer-events: none) and
  * always has a static frame without ever being the LCP element:
  * - CSS/SVG shapes are their own frame (animation off under reduced motion);
@@ -15,24 +15,21 @@ import type { Tone } from './types';
 import Flow from './scripts/flow.astro';
 import Dots from './scripts/dots.astro';
 import Gl from './scripts/gl.astro';
-import Video from '../lab/shapes/scripts/video.astro';
 
 interface Props {
   id: string;
   /** Box size in px. Omit when the section CSS sets `--s` (and placement) via `class`. */
   size?: number;
   tone: Tone;
-  probe?: boolean;
   class?: string;
 }
-const { id, size, tone, probe, class: className } = Astro.props;
+const { id, size, tone, class: className } = Astro.props;
 
 const posters = import.meta.glob<{ default: ImageMetadata }>('../assets/shapes/*.png', {
   eager: true,
 });
 // One poster per candidate and background, captured from the live renderer.
-const posterId = id === 'video-flow' ? 'flow' : id;
-const poster = posters[`../assets/shapes/${posterId}-${tone}.png`]?.default;
+const poster = posters[`../assets/shapes/${id}-${tone}.png`]?.default;
 const gl = id.startsWith('gl-') ? id.slice(3) : undefined;
 const kind = gl ? 'gl' : id === 'flow' || id === 'dots' ? id : undefined;
 const big = size === undefined || size > 200;
@@ -46,7 +43,6 @@ const posterUrl = poster
   data-shape={kind}
   data-gl={gl}
   data-tone={tone}
-  data-probe={probe ? '' : undefined}
   data-poster={posterUrl}
   style={size ? `--s:${size}px` : undefined}
   aria-hidden="true"
@@ -56,19 +52,6 @@ const posterUrl = poster
       <img src={posterUrl} alt="" width="240" height="240" loading="lazy" decoding="async" />
     </noscript>
   )}
-  {id === 'video-flow' && (
-    <video
-      data-lazy
-      data-webm={`/lab/video/flow-${tone === 'paper' ? 'paper' : 'dark'}.webm`}
-      data-mp4={`/lab/video/flow-${tone === 'paper' ? 'paper' : 'dark'}.mp4`}
-      muted
-      loop
-      playsinline
-      preload="none"
-      width={size}
-      height={size}
-    />
-  )}
   {id === 'css-orb' && <span class="film" />}
   {id === 'svg-contour' && (
     <svg viewBox="0 0 1000 1000">
@@ -76,17 +59,10 @@ const posterUrl = poster
       <use href="/shapes/contour.svg#c" class="c2" />
     </svg>
   )}
-  {id === 'css-ring' && (
-    <span class="tilt">
-      <span class="band" />
-      <span class="tube" />
-    </span>
-  )}
 </span>
 {kind === 'flow' && <Flow />}
 {kind === 'dots' && <Dots />}
 {kind === 'gl' && <Gl />}
-{id === 'video-flow' && <Video />}
 
 <style>
   .lab-shape {
@@ -103,21 +79,12 @@ const posterUrl = poster
   }
   .lab-shape :global(canvas),
   .lab-shape :global(img),
-  .lab-shape video,
   .lab-shape svg {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
   }
-  .lab-shape video {
-    opacity: 0;
-    transition: opacity 0.4s;
-  }
-  .lab-shape[data-live] video {
-    opacity: 1;
-  }
-
   /* ---------------- css-orb ---------------- */
   .css-orb {
     border-radius: 50%;
@@ -172,43 +139,6 @@ const posterUrl = poster
       rgba(5, 8, 28, 0.55);
   }
 
-  /* ---------------- css-ring ---------------- */
-  .css-ring {
-    perspective: calc(var(--s) * 3);
-  }
-  .css-ring .tilt {
-    position: absolute;
-    inset: 0;
-    transform: rotateX(62deg) rotateY(-12deg);
-    -webkit-mask: radial-gradient(closest-side, transparent 55%, #000 57%, #000 97%, transparent);
-    mask: radial-gradient(closest-side, transparent 55%, #000 57%, #000 97%, transparent);
-    animation: lab-tilt 12s ease-in-out infinite alternate;
-  }
-  .css-ring .band {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background: conic-gradient(var(--accent), #8af0ff, #ff8ad8, #ffd27a, #b28cff, var(--accent));
-    animation: lab-spin 10s linear infinite;
-  }
-  .css-ring .tube {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background:
-      radial-gradient(
-        closest-side,
-        transparent 55%,
-        rgba(5, 8, 28, 0.6) 58%,
-        rgba(5, 8, 28, 0.1) 64%,
-        rgba(255, 255, 255, 0.75) 71%,
-        rgba(255, 255, 255, 0) 79%,
-        rgba(5, 8, 28, 0.15) 90%,
-        rgba(5, 8, 28, 0.6) 98%
-      ),
-      linear-gradient(170deg, rgba(255, 255, 255, 0.35), transparent 40%, rgba(5, 8, 28, 0.35));
-  }
-
   /* ---------------- svg-contour ---------------- */
   .svg-contour {
     color: var(--ink);
@@ -247,12 +177,6 @@ const posterUrl = poster
       transform: scale(0.94) rotate(-320deg);
     }
   }
-  @keyframes lab-tilt {
-    to {
-      transform: rotateX(68deg) rotateY(10deg);
-    }
-  }
-
   /* Base.astro's IntersectionObserver sets data-paused on off-screen .shapes groups. */
   :global(.shapes[data-paused]) .lab-shape,
   :global(.shapes[data-paused]) .lab-shape *,

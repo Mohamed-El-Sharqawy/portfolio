@@ -7,12 +7,6 @@
  * - no OffscreenCanvas / no WebGL: shows the AVIF poster instead (after load);
  * - forwards visibility (IntersectionObserver, tab hidden) so the worker loop can stop.
  */
-declare global {
-  interface Window {
-    __shapeStats?: Record<string, { ms: number; n: number }>;
-  }
-}
-
 const poster = (el: HTMLElement) => {
   const src = el.dataset.poster;
   if (!src || el.querySelector('img')) return;
@@ -39,7 +33,6 @@ export function mount(kind: string, make: () => Worker) {
         const d = e.data;
         if (d.t === 'live') els[d.id]?.setAttribute('data-live', '');
         else if (d.t === 'fail') els.forEach(poster);
-        else (window.__shapeStats ??= {})[kind] = d;
       };
       document.addEventListener('visibilitychange', () => post({ t: 'page', v: !document.hidden }));
       motion.addEventListener('change', () => post({ t: 'page', v: !motion.matches }));

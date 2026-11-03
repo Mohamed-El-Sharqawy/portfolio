@@ -1,6 +1,6 @@
 /**
- * Worker-side frame loop shared by every animated candidate.
- * - One loop per worker drives all instances of that candidate.
+ * Worker-side frame loop shared by every animated shape.
+ * - One loop per worker drives all instances of that shape.
  * - Frame rate capped (default 30 fps); the loop stops entirely while nothing is
  *   visible or the tab is hidden, and restarts on the next visibility message.
  */
@@ -14,8 +14,6 @@ export interface Inst<S = unknown> {
   vis: boolean;
   drawn: boolean;
   s: S;
-  ms: number;
-  n: number;
 }
 
 export interface Renderer<S> {
@@ -48,7 +46,6 @@ export function run<S>(r: Renderer<S>, fps = 30) {
   let page = true;
   let running = false;
   let last = 0;
-  let stat = 0;
 
   const size = (i: Inst<S>) => {
     i.c.width = Math.max(1, Math.round(i.w * i.dpr));
@@ -67,23 +64,13 @@ export function run<S>(r: Renderer<S>, fps = 30) {
     const dt = Math.min(0.1, last ? (now - last) / 1000 : 1 / fps);
     last = now;
     for (const i of live) {
-      const a = performance.now();
-      const k = Number(i.opt.slow) || 1; // lab capture only: slow-motion time scale
-      r.frame(i, (now / 1000) * k, dt * k);
-      i.ms += performance.now() - a;
-      i.n++;
+      r.frame(i, now / 1000, dt);
       if (!i.drawn) {
         i.drawn = true;
         self.postMessage({ t: 'live', id: i.id });
       }
       // Reduced motion: keep the first frame as the static frame and stop.
       if (i.opt.still) i.vis = false;
-    }
-    // Opt-in cost probe for the lab (data-probe on the element).
-    if (now - stat > 2000) {
-      stat = now;
-      for (const i of live)
-        if (i.opt.probe !== undefined) self.postMessage({ t: 'stat', ms: i.ms / i.n, n: i.n });
     }
   };
 
@@ -97,7 +84,7 @@ export function run<S>(r: Renderer<S>, fps = 30) {
   self.onmessage = (e: MessageEvent<Msg>) => {
     const m = e.data;
     if (m.t === 'add') {
-      const i = { ...m, vis: false, drawn: false, ms: 0, n: 0 } as unknown as Inst<S>;
+      const i = { ...m, vis: false, drawn: false } as unknown as Inst<S>;
       size(i);
       i.s = r.init(i);
       all.set(m.id, i);
