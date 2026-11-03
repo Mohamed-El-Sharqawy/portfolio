@@ -70,9 +70,12 @@ import ShaderShape from '../shapes/ShaderShape.astro';
         ))}
       </ul>
 
-      <div class="menu-foot" style={`--i:${navLinks.length}`}>
-        {/* Decorative ribbon in the free space above the actions; starts only when the menu opens. */}
+      {/* Decorative ribbon: lives only in the free space between the links and the actions,
+          sized to that space and dropped when it's too small. Starts when the menu opens. */}
+      <div class="menu-art" aria-hidden="true">
         <ShaderShape id="gl-ribbon" tone="paper" class="menu-ribbon" />
+      </div>
+      <div class="menu-foot" style={`--i:${navLinks.length}`}>
         <p class="menu-label mono">
           <span class="dot" aria-hidden="true"></span>
           {profile.availabilityShort}
@@ -88,7 +91,9 @@ import ShaderShape from '../shapes/ShaderShape.astro';
         </div>
         <ul role="list" class="menu-meta mono">
           <li>
-            <a href={`mailto:${profile.email}`}>{profile.email}</a>
+            <a href={`mailto:${profile.email}`}>
+              Email<span class="sr-only"> {profile.email}</span>
+            </a>
           </li>
           <li>
             <a href={profile.whatsapp} target="_blank" rel="noopener">
@@ -131,7 +136,12 @@ import ShaderShape from '../shapes/ShaderShape.astro';
       header.classList.toggle('is-open', open);
       document.documentElement.classList.toggle('menu-open', open);
       outside.forEach((el) => (el.inert = open));
+      if (open) fit();
     };
+    // Decorative ribbon only where the gap between links and actions can hold it.
+    const art = menu.querySelector<HTMLElement>('.menu-art');
+    const fit = () => art?.toggleAttribute('data-tight', art.clientHeight < 96);
+    addEventListener('resize', () => !menu.hidden && fit(), { passive: true });
     btn.addEventListener('click', () => set(menu.hidden !== false));
     menu.addEventListener('click', (e) => {
       if ((e.target as Element).closest('a')) set(false);
@@ -262,9 +272,10 @@ import ShaderShape from '../shapes/ShaderShape.astro';
   /* ---------- Full-screen menu ---------- */
   .mobile-menu {
     position: fixed;
+    /* top/bottom insets alone define the height: always reaches the bottom edge,
+       whatever the browser's dynamic toolbar does with vh/dvh. */
     inset: var(--header-h) 0 0;
     z-index: 9;
-    height: calc(100dvh - var(--header-h));
     background: var(--paper);
     overflow-y: auto;
     overscroll-behavior: contain;
@@ -335,22 +346,29 @@ import ShaderShape from '../shapes/ShaderShape.astro';
     transform: translateX(4px);
     color: var(--accent);
   }
-  .menu-foot {
+  /* Fills the gap between links and actions; the ribbon is sized to that gap only
+     (square, at most 190px) and hidden by the script when the gap is too short. */
+  .menu-art {
     position: relative;
-    margin-top: auto;
-    padding-top: 32px;
+    flex: 1 1 auto;
+    min-height: 0;
+    margin: 12px 0;
   }
-  .menu-foot :global(.menu-ribbon) {
-    --s: 190px;
-    right: -28px;
-    bottom: calc(100% - 40px);
-    z-index: -1;
+  .menu-art :global(.menu-ribbon) {
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: auto;
+    height: auto;
+    max-height: 190px;
+    aspect-ratio: 1;
+    margin: auto 0;
   }
-  /* No free space on short screens: skip it rather than sit under the links. */
-  @media (max-height: 760px) {
-    .menu-foot :global(.menu-ribbon) {
-      display: none;
-    }
+  .menu-art[data-tight] :global(.menu-ribbon) {
+    display: none;
+  }
+  .menu-foot {
+    padding-top: 8px;
   }
   .dot {
     width: 8px;
@@ -419,6 +437,9 @@ import ShaderShape from '../shapes/ShaderShape.astro';
   @media (max-width: 640px) {
     .name {
       font-size: 1.75rem;
+    }
+    .menu-links a {
+      padding: 14px 0;
     }
   }
   @media (prefers-reduced-motion: reduce) {
