@@ -31,7 +31,10 @@ export default defineConfig({
             // Variable font: one latin file covers weights 400–700.
             weight: '400 700',
             style: 'normal',
-            display: 'swap',
+            // Preloaded + optional: Chrome holds first paint briefly for the preloaded
+            // file and never swaps afterwards, so the 11rem hero heading can't shift
+            // (swap caused CLS 0.143 on PageSpeed, whose Linux runners lack Arial).
+            display: 'optional',
             src: ['./src/assets/fonts/instrument-sans-latin-wght-normal.woff2'],
           },
         ],
