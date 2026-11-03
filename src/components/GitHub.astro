@@ -1,0 +1,175 @@
+---
+import { getGithubSnapshot, toWeeks } from '../lib/github';
+import { profile } from '../data/site';
+
+const snapshot = await getGithubSnapshot();
+const weeks = snapshot ? toWeeks(snapshot.days) : [];
+const fmt = new Intl.NumberFormat('en-US');
+const spanLabel = snapshot?.span === '90d' ? 'last 90 days' : 'last 12 months';
+const summary = snapshot
+  ? `${fmt.format(snapshot.total)} contributions in the ${spanLabel}, longest streak ${snapshot.longestStreak} days.`
+  : '';
+const built = snapshot
+  ? new Date(snapshot.generatedAt).toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      timeZone: 'UTC',
+    })
+  : '';
+---
+
+<section aria-labelledby="gh-h" class="gh">
+  <div class="wrap">
+    <div class="card reveal">
+      <div class="head">
+        <div>
+          <p class="eyebrow">[04] In the open</p>
+          <h2 id="gh-h" class="title">
+            GitHub, {spanLabel}
+          </h2>
+        </div>
+        {snapshot && (
+          <p class="mono totals">
+            {fmt.format(snapshot.total)} contributions · {snapshot.longestStreak}-day streak
+            {snapshot.publicRepos > 0 && ` · ${snapshot.publicRepos} repos`}
+          </p>
+        )}
+      </div>
+      {snapshot ? (
+        <>
+          <div
+            class="scroller"
+            tabindex="0"
+            role="region"
+            aria-label="Contribution heatmap (scrollable)"
+          >
+            <div class="grid" role="img" aria-label={summary}>
+              {weeks.map((w) => (
+                <div class="week">
+                  {w.map((d) => (d ? <span class={`c l${d.level}`} /> : <span class="c empty" />))}
+                </div>
+              ))}
+            </div>
+          </div>
+          <p class="mono foot">
+            Pulled from{' '}
+            <a href={profile.github} rel="noopener">
+              github.com/{snapshot.username}
+            </a>{' '}
+            at build time · {built}
+          </p>
+        </>
+      ) : (
+        <p class="empty-state">
+          GitHub activity wasn’t available when this page was built. See it live on{' '}
+          <a href={profile.github} rel="noopener">
+            github.com/{profile.githubUsername}
+          </a>
+          .
+        </p>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .gh {
+    padding: 0 0 112px;
+  }
+  .card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--white);
+    padding: 36px;
+  }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: end;
+    gap: 16px;
+  }
+  .title {
+    margin-top: 10px;
+    font-size: 2rem;
+    letter-spacing: -0.035em;
+    font-weight: 600;
+  }
+  .totals,
+  .foot {
+    font-size: 0.8125rem;
+    color: var(--muted);
+  }
+  .scroller {
+    margin-top: 28px;
+    overflow-x: auto;
+    /* Start scrolled to the most recent weeks on narrow screens */
+    direction: rtl;
+  }
+  .grid {
+    direction: ltr;
+    display: flex;
+    gap: 4px;
+    width: max-content;
+  }
+  .week {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .c {
+    display: block;
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+    background: var(--accent);
+  }
+  .l0 {
+    background: var(--line-soft);
+  }
+  .l1 {
+    opacity: 0.22;
+  }
+  .l2 {
+    opacity: 0.45;
+  }
+  .l3 {
+    opacity: 0.7;
+  }
+  .empty {
+    background: transparent;
+  }
+  .foot {
+    margin-top: 16px;
+    font-size: 0.75rem;
+  }
+  .foot a,
+  .empty-state a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .empty-state {
+    margin-top: 24px;
+    color: var(--body);
+  }
+  @media (max-width: 640px) {
+    .gh {
+      padding-bottom: 64px;
+    }
+    .card {
+      padding: 22px;
+    }
+    .title {
+      font-size: 1.625rem;
+    }
+    .c {
+      width: 11px;
+      height: 11px;
+    }
+    .grid,
+    .week {
+      gap: 3px;
+    }
+  }
+</style>

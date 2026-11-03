@@ -1,0 +1,287 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import Shape from './Shape.astro';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const featured = projects.find((p) => p.data.featured) ?? projects[0]!;
+const rest = projects.filter((p) => p.id !== featured.id);
+const featuredCompany = await getEntry(featured.data.company);
+const num = (n: number) => String(n).padStart(2, '0');
+---
+
+<section id="work" aria-labelledby="work-h" class="work">
+  <div class="shapes" aria-hidden="true">
+    <Shape kind="blob" class="s-blob" />
+  </div>
+  <div class="wrap">
+    <div class="g12 section-head">
+      <p class="c-label eyebrow">[01] Selected work</p>
+      <h2 id="work-h" class="c-body h2">
+        Systems people rely on<span class="long">, built with great teams</span>.
+      </h2>
+    </div>
+
+    <div class="cards">
+      <article class="featured reveal">
+        <div class="f-body">
+          <p class="kicker mono">
+            {num(featured.data.order)} · {featured.data.category}
+            {featuredCompany && ` · ${featuredCompany.data.company}`}
+          </p>
+          <h3 class="f-title">{featured.data.name}</h3>
+          <p class="f-desc">{featured.data.summary}</p>
+          <p class="f-stack mono">
+            {featured.data.stack.filter((s) => s !== 'TypeScript').join(' · ')}
+          </p>
+          <a
+            href={`/work/${featured.id}/`}
+            class="f-link"
+            data-astro-prefetch
+            aria-label={`Read the ${featured.data.name} case study`}
+          >
+            Read the case study{' '}
+            <span aria-hidden="true" class="arrow">
+              →
+            </span>
+          </a>
+        </div>
+        {featured.data.metric && (
+          <div class="f-metric on-accent">
+            <p class="mono m-label">Reach</p>
+            <div>
+              <p class="m-value">{featured.data.metric.value}</p>
+              <p class="m-text">{featured.data.metric.label}</p>
+            </div>
+          </div>
+        )}
+      </article>
+
+      {rest.map((p) => (
+        <article class="card reveal">
+          <div class="c-top mono">
+            <span>
+              {num(p.data.order)} · {p.data.category}
+            </span>
+            <span aria-hidden="true">↗</span>
+          </div>
+          <h3 class="c-title">
+            <a href={`/work/${p.id}/`} class="stretched" data-astro-prefetch>
+              {p.data.name}
+              <span class="sr-only"> — case study</span>
+            </a>
+          </h3>
+          <p class="c-desc">{p.data.summary}</p>
+          <p class="c-impact">{p.data.impact}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .work {
+    position: relative;
+    overflow: hidden;
+    padding: 128px 0 112px;
+  }
+  .shapes :global(.s-blob) {
+    width: 130px;
+    height: 130px;
+    right: 70px;
+    top: 36px;
+  }
+  .cards {
+    margin-top: 72px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+  .featured {
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr));
+    border: 1.5px solid var(--ink);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--white);
+  }
+  .f-body {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .kicker,
+  .c-top {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .f-title {
+    font-size: 2.75rem;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    font-weight: 600;
+  }
+  .f-desc {
+    color: var(--body);
+    max-width: 44ch;
+  }
+  .f-stack {
+    font-size: 0.8125rem;
+    color: var(--body);
+  }
+  .f-link {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    font-weight: 600;
+    align-self: flex-start;
+  }
+  .arrow {
+    color: var(--accent);
+    transition: transform 0.15s ease;
+  }
+  .f-link:hover .arrow {
+    transform: translateX(4px);
+  }
+  .f-metric {
+    background: var(--accent);
+    color: var(--white);
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 320px;
+  }
+  .m-label {
+    font-size: 0.75rem;
+  }
+  .m-value {
+    font-size: clamp(5.5rem, 11vw, 10rem);
+    line-height: 0.85;
+    letter-spacing: -0.07em;
+    font-weight: 600;
+  }
+  .m-text {
+    margin-top: 14px;
+    font-size: 1.125rem;
+  }
+  .card {
+    position: relative;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--white);
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-height: 240px;
+    transition: border-color 0.15s ease;
+  }
+  .card:hover,
+  .card:focus-within {
+    border-color: var(--ink);
+  }
+  .c-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .c-title {
+    font-size: 1.875rem;
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+    font-weight: 600;
+  }
+  .stretched::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+  }
+  .stretched:focus-visible {
+    outline: none;
+  }
+  .stretched:focus-visible::after {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .c-desc {
+    color: var(--body);
+  }
+  .c-impact {
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid var(--line-soft);
+    font-size: 0.9375rem;
+    font-weight: 500;
+  }
+  @media (max-width: 960px) {
+    .cards {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .featured {
+      grid-column: span 1;
+    }
+  }
+  @media (max-width: 640px) {
+    .work {
+      padding: 56px 0 40px;
+    }
+    .long {
+      display: none;
+    }
+    .h2 {
+      font-size: 2.5rem;
+    }
+    .cards {
+      margin-top: 28px;
+      gap: 14px;
+    }
+    .f-body,
+    .f-metric {
+      padding: 22px;
+    }
+    .f-body {
+      gap: 10px;
+    }
+    .f-title {
+      font-size: 1.875rem;
+    }
+    .f-desc {
+      font-size: 0.9375rem;
+    }
+    .f-metric {
+      min-height: 0;
+      gap: 24px;
+    }
+    .m-value {
+      font-size: 4.5rem;
+    }
+    .m-text {
+      margin-top: 8px;
+      font-size: 0.9375rem;
+    }
+    .card {
+      padding: 22px;
+      min-height: 0;
+      gap: 8px;
+    }
+    .c-title {
+      font-size: 1.5rem;
+    }
+    .c-desc {
+      font-size: 0.9375rem;
+    }
+    .shapes {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .arrow {
+      transition: none;
+    }
+  }
+</style>

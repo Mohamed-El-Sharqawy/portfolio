@@ -1,0 +1,260 @@
+---
+import Shape from './Shape.astro';
+import Pipeline from './Pipeline.astro';
+import { profile, stats } from '../data/site';
+---
+
+<section aria-labelledby="hero-h" class="hero">
+  <div class="shapes" aria-hidden="true">
+    <Shape kind="orb" class="s-orb" />
+    <Shape kind="torus" class="s-torus" />
+    <Shape kind="capsule" class="s-capsule" />
+    <Shape kind="cube" class="s-cube" />
+  </div>
+
+  <div class="wrap">
+    <p class="meta mono">
+      <span class="role">{profile.headline}</span>
+      <span class="avail">
+        <span class="dot" aria-hidden="true"></span>
+        <span class="long">{profile.availability}</span>
+        <span class="short">{profile.availabilityShort}</span>
+      </span>
+    </p>
+    <h1 id="hero-h" class="name">
+      Mohamed
+      <br />
+      Ahmed<span class="accent">.</span>
+    </h1>
+    <div class="g12 lede">
+      <p class="c-l statement">
+        I build national-scale systems — and the <span class="accent">AI agent teams</span> that
+        help ship them.
+      </p>
+      <div class="c-r">
+        <p class="body">
+          3+ years shipping SaaS, ERP dashboards and platforms for 1M+ users with teams across
+          Egypt, Dubai, Turkey and Iraq.
+        </p>
+        <div class="ctas">
+          <a href="#contact" class="btn btn--accent">
+            Start a conversation <span aria-hidden="true">→</span>
+          </a>
+          <a href="#work" class="btn btn--ghost">
+            Selected work
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap below">
+    <Pipeline />
+    <dl class="stats">
+      {stats.map((s) => (
+        <div class="stat">
+          <dt class="mono">{s.label}</dt>
+          <dd>{s.value}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding-top: 72px;
+  }
+  .accent {
+    color: var(--accent);
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 0.8125rem;
+    color: var(--muted);
+  }
+  .avail {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 99px;
+    background: var(--accent);
+  }
+  .short {
+    display: none;
+  }
+  .name {
+    margin-top: 24px;
+    font-size: clamp(4.75rem, 12.4vw, 11rem);
+    line-height: 0.86;
+    letter-spacing: -0.06em;
+    font-weight: 600;
+  }
+  .lede {
+    margin-top: 56px;
+    padding-top: 32px;
+    border-top: 2px solid var(--ink);
+    row-gap: 32px;
+  }
+  .statement {
+    font-size: clamp(1.5rem, 2.8vw, 2.375rem);
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    font-weight: 500;
+  }
+  .body {
+    color: var(--body);
+  }
+  .ctas {
+    margin-top: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .below {
+    margin-top: 72px;
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-left: 1px solid var(--line);
+  }
+  .stat {
+    display: flex;
+    flex-direction: column-reverse;
+    padding: 28px 24px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .stat dt {
+    margin-top: 6px;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .stat dd {
+    font-size: 3rem;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    font-weight: 600;
+  }
+
+  /* Shapes — desktop placement (approved canvas, 1440px) */
+  .shapes :global(.s-orb) {
+    width: 300px;
+    height: 300px;
+    right: 110px;
+    top: 30px;
+  }
+  .shapes :global(.s-torus) {
+    width: 270px;
+    height: 270px;
+    right: -40px;
+    top: 220px;
+  }
+  .shapes :global(.s-capsule) {
+    width: 170px;
+    height: 60px;
+    right: 400px;
+    top: 350px;
+  }
+  .shapes :global(.s-cube) {
+    right: 470px;
+    top: 150px;
+  }
+
+  @media (max-width: 960px) {
+    .stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .shapes {
+      transform: scale(0.5);
+      transform-origin: 100% 0;
+    }
+  }
+
+  /* Mobile placement (approved 390px canvas) */
+  @media (max-width: 640px) {
+    .hero {
+      padding-top: 32px;
+    }
+    .meta .role,
+    .long {
+      display: none;
+    }
+    .short {
+      display: inline;
+    }
+    .meta {
+      font-size: 0.75rem;
+    }
+    .name {
+      margin-top: 16px;
+    }
+    .lede {
+      margin-top: 28px;
+      padding-top: 20px;
+      row-gap: 0;
+    }
+    .body {
+      display: none;
+    }
+    .ctas {
+      margin-top: 24px;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .ctas .btn {
+      width: 100%;
+    }
+    .below {
+      margin-top: 32px;
+    }
+    .stats {
+      border-top: 1px solid var(--line);
+    }
+    .stat {
+      padding: 18px 14px;
+    }
+    .stat dt {
+      margin-top: 4px;
+      font-size: 0.6875rem;
+    }
+    .stat dd {
+      font-size: 2.25rem;
+    }
+    .shapes {
+      transform: none;
+      --orb-blur: 12px;
+    }
+    .shapes :global(.s-orb) {
+      width: 130px;
+      height: 130px;
+      right: -26px;
+      top: 18px;
+    }
+    .shapes :global(.s-torus) {
+      width: 110px;
+      height: 110px;
+      right: 70px;
+      top: 150px;
+    }
+    .shapes :global(.s-capsule) {
+      width: 70px;
+      height: 26px;
+      right: 14px;
+      top: 190px;
+    }
+    .shapes :global(.s-cube) {
+      display: none;
+    }
+  }
+</style>

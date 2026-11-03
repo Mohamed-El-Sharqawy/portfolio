@@ -1,0 +1,278 @@
+---
+import Shape from './Shape.astro';
+import { defaultStage, stages } from '../data/site';
+---
+
+<section id="agents" aria-labelledby="agents-h" class="agents on-dark">
+  <div class="shapes" aria-hidden="true">
+    <Shape kind="orb" class="s-orb" />
+    <Shape kind="blob" class="s-blob" />
+    <Shape kind="capsule" class="s-capsule" />
+  </div>
+  <div class="wrap">
+    <div class="g12 section-head">
+      <p class="c-label eyebrow">[02] Agentic engineering</p>
+      <h2 id="agents-h" class="c-body h2 title">
+        Agents that work like <span class="long">an engineering </span>
+        <span class="short">a </span>team.
+      </h2>
+    </div>
+    <div class="g12 grid">
+      <div class="c-label intro">
+        <p>
+          Planner, builder, reviewer and deployer agents pass work through pull requests. People
+          review decisions and own every merge.
+        </p>
+        <p class="mono tools">Multi-agent orchestration · GitHub CLI · MCP · PR-gated CI</p>
+      </div>
+      <div class="c-body console reveal" data-tabs>
+        <div role="tablist" aria-label="Pipeline stage" class="tablist">
+          {stages.map((s, i) => {
+            const selected = s.id === defaultStage;
+            return (
+              <button
+                type="button"
+                role="tab"
+                id={`tab-${s.id}`}
+                aria-controls={`panel-${s.id}`}
+                aria-selected={selected ? 'true' : 'false'}
+                tabindex={selected ? 0 : -1}
+                class="tab mono"
+              >
+                {String(i + 1).padStart(2, '0')} {s.id}
+              </button>
+            );
+          })}
+        </div>
+        {stages.map((s) => (
+          <div
+            role="tabpanel"
+            id={`panel-${s.id}`}
+            aria-labelledby={`tab-${s.id}`}
+            tabindex="0"
+            class="panel mono"
+            hidden={s.id !== defaultStage}
+          >
+            <ol role="list" class="log">
+              {s.lines.map((l) => (
+                <li>
+                  <span class="t">{l.t}</span>
+                  <span class="a">{l.agent}</span>
+                  <span class="m">{l.msg}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // ARIA tabs: automatic activation, roving tabindex, Arrow/Home/End keys.
+  document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((root) => {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+    const select = (next: HTMLButtonElement, focus = true) => {
+      for (const tab of tabs) {
+        const on = tab === next;
+        tab.setAttribute('aria-selected', String(on));
+        tab.tabIndex = on ? 0 : -1;
+        const panel = document.getElementById(tab.getAttribute('aria-controls') ?? '');
+        if (panel) panel.hidden = !on;
+      }
+      if (focus) next.focus();
+    };
+    root.querySelector('[role="tablist"]')?.addEventListener('keydown', (event) => {
+      const e = event as KeyboardEvent;
+      const i = tabs.indexOf(document.activeElement as HTMLButtonElement);
+      if (i < 0) return;
+      const last = tabs.length - 1;
+      const map: Record<string, number> = {
+        ArrowRight: i === last ? 0 : i + 1,
+        ArrowDown: i === last ? 0 : i + 1,
+        ArrowLeft: i === 0 ? last : i - 1,
+        ArrowUp: i === 0 ? last : i - 1,
+        Home: 0,
+        End: last,
+      };
+      const target = map[e.key];
+      if (target === undefined) return;
+      e.preventDefault();
+      select(tabs[target]!);
+    });
+    tabs.forEach((tab) => tab.addEventListener('click', () => select(tab, false)));
+  });
+</script>
+
+<style>
+  .agents {
+    position: relative;
+    overflow: hidden;
+    padding: 120px 0;
+    background: var(--dark);
+    color: var(--text-dark);
+  }
+  .shapes :global(.s-orb) {
+    width: 360px;
+    height: 360px;
+    right: -110px;
+    top: -120px;
+    opacity: 0.85;
+  }
+  .shapes :global(.s-blob) {
+    width: 190px;
+    height: 190px;
+    left: -70px;
+    bottom: 50px;
+    opacity: 0.8;
+  }
+  .shapes :global(.s-capsule) {
+    width: 120px;
+    height: 44px;
+    right: 220px;
+    bottom: 60px;
+  }
+  .title {
+    color: var(--white);
+  }
+  .short {
+    display: none;
+  }
+  .grid {
+    margin-top: 64px;
+    row-gap: 40px;
+  }
+  .intro {
+    display: grid;
+    gap: 24px;
+    align-content: start;
+    color: var(--muted-dark);
+  }
+  .tools {
+    font-size: 0.8125rem;
+  }
+  .console {
+    border: 1px solid var(--line-dark);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--panel);
+  }
+  .tablist {
+    display: flex;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--line-dark);
+    background: var(--dark);
+  }
+  .tab {
+    font-size: 0.8125rem;
+    min-height: 48px;
+    padding: 0 20px;
+    cursor: pointer;
+    border: 0;
+    border-right: 1px solid var(--line-dark);
+    background: transparent;
+    color: var(--muted-dark);
+  }
+  .tab:hover {
+    color: var(--white);
+  }
+  .tab[aria-selected='true'] {
+    background: var(--accent);
+    color: var(--white);
+  }
+  .tab:focus-visible {
+    outline: 2px solid var(--accent-on-dark);
+    outline-offset: -4px;
+  }
+  .panel {
+    padding: 28px;
+    font-size: 0.875rem;
+    line-height: 2;
+    min-height: 260px;
+  }
+  .panel:focus-visible {
+    outline-offset: -4px;
+  }
+  .log {
+    margin: 0;
+  }
+  .log li {
+    display: grid;
+    grid-template-columns: 9ch 11ch minmax(0, 1fr);
+    gap: 2ch;
+  }
+  .t {
+    color: var(--stamp);
+  }
+  .a {
+    color: var(--accent-on-dark);
+  }
+  .m {
+    color: var(--text-dark);
+  }
+  @media (max-width: 640px) {
+    .agents {
+      padding: 48px 0 60px;
+    }
+    .h2 {
+      font-size: 2.375rem;
+    }
+    .long {
+      display: none;
+    }
+    .short {
+      display: inline;
+    }
+    .grid {
+      margin-top: 24px;
+      row-gap: 24px;
+    }
+    .intro {
+      order: 2;
+      gap: 12px;
+      font-size: 0.9375rem;
+    }
+    .tablist {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tab {
+      flex: none;
+      font-size: 0.75rem;
+      padding: 0 14px;
+    }
+    .panel {
+      padding: 16px;
+      font-size: 0.75rem;
+      min-height: 0;
+    }
+    .log li {
+      grid-template-columns: 9ch minmax(0, 1fr);
+      column-gap: 1.5ch;
+      row-gap: 0;
+      line-height: 1.6;
+      padding: 4px 0;
+    }
+    .m {
+      grid-column: 2;
+    }
+    .shapes :global(.s-orb) {
+      width: 170px;
+      height: 170px;
+      right: -60px;
+      top: -50px;
+      --orb-blur: 12px;
+    }
+    .shapes :global(.s-blob) {
+      width: 90px;
+      height: 90px;
+      left: -30px;
+      bottom: 20px;
+    }
+    .shapes :global(.s-capsule) {
+      display: none;
+    }
+  }
+</style>

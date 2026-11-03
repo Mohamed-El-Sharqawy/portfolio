@@ -1,0 +1,57 @@
+---
+import { companies } from '../data/site';
+---
+
+<section aria-labelledby="companies-h" class="strip">
+  <div class="wrap row">
+    <h2 id="companies-h" class="label mono">
+      Remote for
+    </h2>
+    <ul role="list" class="list">
+      {companies.map((c) => (
+        <li>{c}</li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .strip {
+    margin-top: 72px;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: var(--white);
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px 40px;
+    padding-top: 28px;
+    padding-bottom: 28px;
+  }
+  .label {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .list {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 56px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+  @media (max-width: 640px) {
+    .strip {
+      margin-top: 40px;
+    }
+    .list {
+      gap: 8px 28px;
+      font-size: 1.25rem;
+    }
+  }
+</style>

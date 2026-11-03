@@ -1,0 +1,140 @@
+---
+import Shape from './Shape.astro';
+import { profile, tel } from '../data/site';
+---
+
+<section id="contact" aria-labelledby="contact-h" class="contact on-accent">
+  <div class="shapes" aria-hidden="true">
+    <Shape kind="torus" class="s-torus" />
+    <Shape kind="cube" class="s-cube" />
+  </div>
+  <div class="wrap">
+    <p class="mono label">[06] Contact</p>
+    <h2 id="contact-h" class="title">
+      Let’s build something that ships.
+    </h2>
+    <div class="g12 row">
+      <a href={`mailto:${profile.email}`} class="c-l email">
+        <span class="addr">{profile.email}</span>
+        <span aria-hidden="true">→</span>
+      </a>
+      <ul role="list" class="c-r links mono">
+        <li>
+          <a href={tel(profile.phone)}>
+            {profile.phone}
+            <span class="sr-only"> (UAE)</span>
+          </a>
+        </li>
+        <li>
+          <a href={profile.linkedin} rel="noopener me">
+            LinkedIn <span aria-hidden="true">↗</span>
+          </a>
+        </li>
+        <li>
+          <a href={tel(profile.phoneEgypt)}>
+            {profile.phoneEgypt}
+            <span class="sr-only"> (Egypt)</span>
+          </a>
+        </li>
+        <li>
+          <a href={profile.github} rel="noopener me">
+            GitHub <span aria-hidden="true">↗</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact {
+    position: relative;
+    overflow: hidden;
+    background: var(--accent);
+    color: var(--white);
+    padding: 128px 0 112px;
+  }
+  .contact a {
+    color: var(--white);
+  }
+  .contact a:hover {
+    color: var(--white);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .shapes :global(.s-torus) {
+    width: 560px;
+    height: 560px;
+    right: -160px;
+    top: -120px;
+    opacity: 0.9;
+  }
+  .shapes :global(.s-cube) {
+    right: 360px;
+    top: 120px;
+  }
+  .label {
+    font-size: 0.8125rem;
+  }
+  .title {
+    margin-top: 24px;
+    max-width: 12ch;
+    font-size: clamp(3.5rem, 9vw, 8.5rem);
+    line-height: 0.88;
+    letter-spacing: -0.06em;
+    font-weight: 600;
+  }
+  .row {
+    margin-top: 72px;
+    padding-top: 32px;
+    border-top: 2px solid var(--white);
+    row-gap: 24px;
+    align-items: center;
+  }
+  .email {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 52px;
+    font-size: clamp(1.25rem, 3vw, 2.5rem);
+    letter-spacing: -0.03em;
+    font-weight: 500;
+    min-width: 0;
+  }
+  .addr {
+    overflow-wrap: anywhere;
+  }
+  .links {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px 24px;
+    font-size: 0.875rem;
+  }
+  .links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  @media (max-width: 640px) {
+    .contact {
+      padding: 64px 0 56px;
+    }
+    .row {
+      margin-top: 40px;
+      padding-top: 24px;
+    }
+    .links {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .shapes :global(.s-torus) {
+      width: 260px;
+      height: 260px;
+      right: -90px;
+      top: -60px;
+    }
+    .shapes :global(.s-cube) {
+      display: none;
+    }
+  }
+</style>

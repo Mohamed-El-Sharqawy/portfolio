@@ -1,0 +1,77 @@
+---
+import { getCollection } from 'astro:content';
+const groups = (await getCollection('skills')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<section id="stack" aria-labelledby="stack-h" class="stack">
+  <div class="wrap">
+    <div class="g12 section-head">
+      <p class="c-label eyebrow">[05] Stack</p>
+      <h2 id="stack-h" class="c-body h2">
+        Tools I reach for.
+      </h2>
+    </div>
+    <div class="cols">
+      {groups.map(({ data: g }) => (
+        <div class="col reveal">
+          <h3 class="mono group">{g.group}</h3>
+          <ul role="list" class="rows">
+            {g.rows.map((row) => (
+              <li>{row.join(' · ')}</li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .stack {
+    padding: 112px 0;
+    border-top: 1px solid var(--line);
+    background: var(--white);
+  }
+  .cols {
+    margin-top: 64px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 32px;
+  }
+  .col {
+    border-top: 2px solid var(--ink);
+    padding-top: 18px;
+  }
+  .group {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .rows {
+    margin: 14px 0 0;
+    font-size: 1.1875rem;
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+  }
+  @media (max-width: 960px) {
+    .cols {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 640px) {
+    .stack {
+      padding: 64px 0;
+    }
+    .h2 {
+      font-size: 2.5rem;
+    }
+    .cols {
+      margin-top: 32px;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 28px;
+    }
+    .rows {
+      font-size: 1.0625rem;
+    }
+  }
+</style>

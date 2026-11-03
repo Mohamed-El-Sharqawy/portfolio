@@ -1,0 +1,128 @@
+---
+const nodes = [
+  { x: 230, label: 'planner' },
+  { x: 370, label: 'builder-01' },
+  { x: 510, label: 'builder-02' },
+  { x: 650, label: 'builder-03' },
+  { x: 790, label: 'reviewer' },
+  { x: 930, label: 'a11y-audit' },
+];
+const steps = [
+  { x: 285, label: '01 plan' },
+  { x: 565, label: '02 build' },
+  { x: 845, label: '03 review' },
+  { x: 1125, label: '04 ship' },
+];
+---
+
+<figure class="rail" aria-hidden="true">
+  <figcaption class="head mono">
+    <span>agent-team.svg — how this site was built</span>
+    <span>0 KB JS · CSS animation · still under reduced motion</span>
+  </figcaption>
+  <div class="canvas">
+    <span class="flow"></span>
+    <svg viewBox="0 0 1200 220" width="1200" height="220" focusable="false">
+      <g font-family="JetBrains Mono, ui-monospace, monospace" font-size="13" text-anchor="middle">
+        <rect x="40" y="70" width="140" height="80" rx="4" fill="#2f4bff"></rect>
+        <text x="110" y="106" fill="#ffffff" font-weight="500">
+          orchestrator
+        </text>
+        <text x="110" y="126" fill="#ffffff" opacity="0.85">
+          human-led
+        </text>
+        {nodes.map((n) => (
+          <>
+            <rect
+              x={n.x}
+              y="84"
+              width="110"
+              height="52"
+              rx="4"
+              fill="#ffffff"
+              stroke="#0e1116"
+              stroke-width="1.5"
+            />
+            <text x={n.x + 55} y="115" fill="#0e1116">
+              {n.label}
+            </text>
+          </>
+        ))}
+        <rect x="1070" y="84" width="110" height="52" rx="4" fill="#0e1116"></rect>
+        <text x="1125" y="115" fill="#ffffff">
+          deployer
+        </text>
+        {steps.map((s) => (
+          <text x={s.x} y="62" fill="#5b616e" font-size="11">
+            {s.label}
+          </text>
+        ))}
+      </g>
+    </svg>
+  </div>
+</figure>
+
+<style>
+  .rail {
+    border: 1.5px solid var(--ink);
+    border-radius: var(--radius);
+    background: var(--white);
+    overflow: hidden;
+  }
+  .head {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 20px;
+    border-bottom: 1.5px solid var(--ink);
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .canvas {
+    position: relative;
+    aspect-ratio: 1200 / 220;
+  }
+  .canvas svg {
+    position: relative;
+    width: 100%;
+    height: auto;
+  }
+  /* The animated dashed line is an HTML layer behind the SVG boxes,
+     moved with transform (compositor) instead of stroke-dashoffset. */
+  .flow {
+    position: absolute;
+    left: 12.5%;
+    width: 80.83%;
+    top: calc(50% - 1px);
+    height: 2px;
+    overflow: hidden;
+  }
+  .flow::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 -32px;
+    width: calc(100% + 64px);
+    background: repeating-linear-gradient(90deg, var(--accent) 0 6px, transparent 6px 16px);
+    animation: flow 0.5s linear infinite;
+    will-change: transform;
+  }
+  @keyframes flow {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(16px, 0, 0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flow::before {
+      animation: none;
+    }
+  }
+  @media (max-width: 640px) {
+    .rail {
+      display: none;
+    }
+  }
+</style>
