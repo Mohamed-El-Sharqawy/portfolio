@@ -10,7 +10,7 @@ export const profile = {
   email: 'dev.elsharqawy@gmail.com',
   phone: '+971 54 200 9458',
   phoneEgypt: '+20 102 114 1193',
-  linkedin: 'https://linkedin.com/in/mohamed-elsharqawi',
+  linkedin: 'https://www.linkedin.com/in/mohamed-ahmed-elsharqawy',
   github: 'https://github.com/Mohamed-El-Sharqawy',
   githubUsername: 'Mohamed-El-Sharqawy',
   cvUrl: '/Mohamed_Ahmed_CV_Full_Stack_UAE.pdf',
