@@ -12,7 +12,7 @@ export const experience: ExperienceItem[] = [
     company: "Global Dynamics",
     location: "Turkey, Remote",
     role: "Full-Stack Engineer",
-    period: "Jun 2025 – May 2026",
+    period: "May 2025 – Oct 2026",
     stack: [
       "React 19",
       "Next.js 16",
@@ -36,7 +36,7 @@ export const experience: ExperienceItem[] = [
     company: "Forever Events",
     location: "Dubai, Remote",
     role: "Full-Stack Engineer",
-    period: "Sep 2025 – Mar 2026",
+    period: "Sep 2025 – Sep 2026",
     stack: [
       "Next.js 15",
       "React 19",

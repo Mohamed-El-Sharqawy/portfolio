@@ -12,6 +12,16 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    id: "ain-rider",
+    name: "Ain Rider",
+    tagline: "Ride-hailing platform for Egypt",
+    description:
+      "Expo + React Native rider app, Arabic-first RTL admin dashboard, and an event-driven microservices backend (NATS, Redis, OSRM routing) in a Turborepo monorepo.",
+    stack: ["React Native (Expo)", "TypeScript", "NestJS", "NATS", "Redis", "OSRM", "Turborepo"],
+    impact: "Full ride-hailing stack — rider app, admin dashboard, and microservices",
+    category: "Platform",
+  },
+  {
     id: "leango-inspection",
     name: "LeanGo Inspection",
     tagline: "Facility management inspections at enterprise scale",
