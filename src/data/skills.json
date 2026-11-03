@@ -37,5 +37,27 @@
       ["Turborepo", "CI/CD", "Coolify"],
       ["Agent workflows", "MCP"]
     ]
+  },
+  {
+    "id": "aws",
+    "order": 5,
+    "group": "AWS",
+    "rows": [
+      ["S3 + CloudFront", "Amplify Hosting", "ECS Fargate", "Lambda + API Gateway"],
+      ["Cognito", "IAM roles", "Secrets Manager", "S3 presigned URLs"],
+      ["CloudWatch + RUM"],
+      ["RDS / Aurora", "DynamoDB", "ElastiCache", "SQS / SNS / EventBridge"]
+    ]
+  },
+  {
+    "id": "azure",
+    "order": 6,
+    "group": "Azure",
+    "rows": [
+      ["Static Web Apps", "Front Door", "Container Apps", "Functions"],
+      ["API Management", "Entra ID", "RBAC", "Key Vault"],
+      ["Blob SAS URLs", "Azure Monitor", "Application Insights"],
+      ["Azure PostgreSQL", "Cosmos DB", "Managed Redis", "Service Bus / Event Grid"]
+    ]
   }
 ]
