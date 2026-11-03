@@ -1,0 +1,26 @@
+[
+  {
+    "id": "ou-computing",
+    "order": 1,
+    "credential": "BSc Computing",
+    "institution": "Open University UK",
+    "shortInstitution": "Open University UK",
+    "period": "2021–2025"
+  },
+  {
+    "id": "aou-cs",
+    "order": 2,
+    "credential": "BSc Computer Science",
+    "institution": "Arab Open University Cairo",
+    "shortInstitution": "Arab Open University",
+    "period": "2021–2025"
+  },
+  {
+    "id": "amit-mern",
+    "order": 3,
+    "credential": "MERN Diploma",
+    "institution": "AMIT Learning",
+    "shortInstitution": "AMIT",
+    "period": "2023"
+  }
+]

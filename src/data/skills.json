@@ -1,0 +1,41 @@
+[
+  {
+    "id": "frontend",
+    "order": 1,
+    "group": "Frontend",
+    "rows": [
+      ["React", "Next.js", "Astro"],
+      ["TypeScript", "Tailwind", "SASS"],
+      ["GSAP", "Three.js"],
+      ["Cypress", "Testing Library"]
+    ]
+  },
+  {
+    "id": "mobile",
+    "order": 2,
+    "group": "Mobile",
+    "rows": [["React Native", "Expo"], ["EAS Build", "Reanimated"], ["Expo Router"]]
+  },
+  {
+    "id": "backend",
+    "order": 3,
+    "group": "Backend & data",
+    "rows": [
+      ["Node.js", "NestJS", "Hono"],
+      ["Fastify", "Elysia", "Bun"],
+      ["GraphQL", "PostgreSQL"],
+      ["MongoDB", "Redis", "NATS"]
+    ]
+  },
+  {
+    "id": "infra",
+    "order": 4,
+    "group": "Infra & AI",
+    "rows": [
+      ["Docker", "ECS", "S3", "MinIO"],
+      ["Cloudflare R2 + Workers"],
+      ["Turborepo", "CI/CD", "Coolify"],
+      ["Agent workflows", "MCP"]
+    ]
+  }
+]
