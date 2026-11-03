@@ -179,10 +179,11 @@ export type HeatCell = { date: string; count: number; level: 0 | 1 | 2 | 3 | 4 }
 /** Arrange days into Sunday-first week columns, GitHub style. */
 export function toWeeks(days: HeatmapDay[]): HeatCell[][] {
   const max = days.reduce((m, d) => Math.max(m, d.count), 0);
+  // sqrt scale: one huge day shouldn't flatten everything else into level 1
   const level = (count: number): 0 | 1 | 2 | 3 | 4 =>
     count === 0 || max === 0
       ? 0
-      : (Math.min(4, Math.max(1, Math.ceil((count / max) * 4))) as 1 | 2 | 3 | 4);
+      : (Math.min(4, Math.max(1, Math.ceil(Math.sqrt(count / max) * 4))) as 1 | 2 | 3 | 4);
   const cells: HeatCell[] = [];
   const first = days[0];
   if (first) {

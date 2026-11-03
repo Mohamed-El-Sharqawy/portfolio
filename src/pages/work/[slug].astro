@@ -156,17 +156,18 @@ const schema = {
     overflow: hidden;
     padding: 56px 0 64px;
   }
+  /* Beside the (short) tagline, clear of the title */
   .shapes :global(.s-orb) {
-    width: 240px;
-    height: 240px;
-    right: 80px;
-    top: 40px;
+    width: 200px;
+    height: 200px;
+    right: 60px;
+    bottom: 28px;
   }
   .shapes :global(.s-capsule) {
-    width: 140px;
-    height: 50px;
-    right: 300px;
-    top: 230px;
+    width: 130px;
+    height: 46px;
+    right: 290px;
+    bottom: 90px;
   }
   .crumbs a {
     display: inline-flex;
@@ -382,16 +383,6 @@ const schema = {
       margin: 72px 0 80px;
     }
     .shapes {
-      transform: none;
-    }
-    .shapes :global(.s-orb) {
-      width: 120px;
-      height: 120px;
-      right: -30px;
-      top: 16px;
-      --orb-blur: 12px;
-    }
-    .shapes :global(.s-capsule) {
       display: none;
     }
   }

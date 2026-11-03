@@ -104,8 +104,6 @@ const built = snapshot
   .scroller {
     margin-top: 28px;
     overflow-x: auto;
-    /* Start scrolled to the most recent weeks on narrow screens */
-    direction: rtl;
   }
   .grid {
     direction: ltr;
@@ -140,6 +138,9 @@ const built = snapshot
   .empty {
     background: transparent;
   }
+  .recent {
+    display: none;
+  }
   .foot {
     margin-top: 16px;
     font-size: 0.75rem;
@@ -159,6 +160,13 @@ const built = snapshot
     }
     .card {
       padding: 22px;
+    }
+    /* Narrow screens: show only the most recent 22 weeks so nothing scrolls */
+    .week:nth-last-child(n + 23) {
+      display: none;
+    }
+    .recent {
+      display: inline;
     }
     .title {
       font-size: 1.625rem;
