@@ -1,0 +1,92 @@
+---
+import { Font } from 'astro:assets';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_URL, siteDescription, siteTitle, profile } from '../data/site';
+import { jsonLd, personSchema } from '../lib/seo';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Path of the OG image under the site root, e.g. `/og/index.png`. */
+  ogImage?: string;
+  ogImageAlt?: string;
+  ogType?: 'website' | 'article';
+  schema?: Record<string, unknown>;
+  noindex?: boolean;
+}
+
+const {
+  title = siteTitle,
+  description = siteDescription,
+  ogImage = '/og/index.png',
+  ogImageAlt = `${profile.name} — ${profile.role}`,
+  ogType = 'website',
+  schema,
+  noindex = false,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE_URL).href;
+const ogUrl = new URL(ogImage, Astro.site ?? SITE_URL).href;
+const schemas = schema ? [personSchema, schema] : [personSchema];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="author" content={profile.name} />
+    <meta name="theme-color" content="#f7f8fa" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={profile.name} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogUrl} />
+
+    <Font cssVariable="--font-sans" preload />
+    <Font cssVariable="--font-mono" />
+
+    {schemas.map((s) => (
+      <script is:inline type="application/ld+json" set:html={jsonLd(s)} />
+    ))}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">
+      Skip to content
+    </a>
+    <Header />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      // Pause decorative shape animations while their section is off-screen.
+      const groups = document.querySelectorAll<HTMLElement>('.shapes');
+      if (groups.length && 'IntersectionObserver' in window) {
+        const io = new IntersectionObserver((entries) => {
+          for (const e of entries) e.target.toggleAttribute('data-paused', !e.isIntersecting);
+        });
+        groups.forEach((g) => io.observe(g));
+      }
+    </script>
+  </body>
+</html>

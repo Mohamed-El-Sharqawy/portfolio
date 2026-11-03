@@ -1,0 +1,30 @@
+---
+import { profile } from '../data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="footer on-dark">
+  <div class="wrap row">
+    <p>
+      © {year} {profile.name} · Dubai
+    </p>
+    <p>Static HTML, built with Astro</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--dark);
+    color: var(--muted-dark);
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 28px;
+    padding-bottom: 28px;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+  }
+</style>

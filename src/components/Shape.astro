@@ -1,0 +1,20 @@
+---
+interface Props {
+  kind: 'orb' | 'torus' | 'capsule' | 'blob' | 'cube';
+  class?: string;
+}
+const { kind, class: className } = Astro.props;
+---
+
+{kind === 'cube' ? (
+  <span class:list={['shape', 'cube', className]}>
+    <span class="f f1" />
+    <span class="f f2" />
+    <span class="f f3" />
+    <span class="f f4" />
+    <span class="f f5" />
+    <span class="f f6" />
+  </span>
+) : (
+  <span class:list={['shape', kind, className]} />
+)}
