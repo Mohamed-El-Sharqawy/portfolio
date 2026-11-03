@@ -44,7 +44,11 @@ const schemas = schema ? [personSchema, schema] : [personSchema];
     {noindex && <meta name="robots" content="noindex" />}
     <meta name="author" content={profile.name} />
     <meta name="theme-color" content="#f7f8fa" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="apple-mobile-web-app-title" content={profile.name} />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
     <meta property="og:type" content={ogType} />
@@ -81,6 +85,11 @@ const schemas = schema ? [personSchema, schema] : [personSchema];
     <WhatsApp />
 
     <script>
+      // PWA: register the service worker after load so it never competes with the page.
+      if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+        addEventListener('load', () => navigator.serviceWorker.register('/sw.js'), { once: true });
+      }
+
       // Pause decorative shape animations while their section is off-screen.
       const groups = document.querySelectorAll<HTMLElement>('.shapes');
       if (groups.length && 'IntersectionObserver' in window) {

@@ -1,0 +1,64 @@
+---
+import Base from '../layouts/Base.astro';
+import { profile } from '../data/site';
+---
+
+<Base
+  title="You’re offline — Mohamed Ahmed"
+  description="This page isn’t available offline."
+  noindex
+>
+  <section class="off" aria-labelledby="off-h">
+    <div class="wrap">
+      <p class="eyebrow">[Offline]</p>
+      <h1 id="off-h" class="title">
+        No connection<span class="dot">.</span>
+      </h1>
+      <p class="body">
+        This page hasn’t been saved for offline reading yet. Pages you’ve already visited are still
+        available; reconnect to load the rest.
+      </p>
+      <div class="ctas">
+        <a href="/" class="btn btn--accent">
+          Back to the homepage
+        </a>
+        <a href={`mailto:${profile.email}`} class="btn btn--ghost">
+          Email {profile.email}
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .off {
+    padding: 120px 0 160px;
+  }
+  .title {
+    margin-top: 20px;
+    font-size: clamp(3.5rem, 9vw, 8rem);
+    line-height: 0.9;
+    letter-spacing: -0.06em;
+    font-weight: 600;
+    max-width: 14ch;
+  }
+  .dot {
+    color: var(--accent);
+  }
+  .body {
+    margin-top: 28px;
+    max-width: 52ch;
+    color: var(--body);
+  }
+  .ctas {
+    margin-top: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  @media (max-width: 640px) {
+    .off {
+      padding: 64px 0 96px;
+    }
+  }
+</style>

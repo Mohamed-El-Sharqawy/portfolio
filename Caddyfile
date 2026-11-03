@@ -27,6 +27,13 @@
 	@html not path /_astro/* /og/* /icons/* /favicon.* /*.pdf
 	header @html Cache-Control "public, max-age=0, must-revalidate"
 
+	# PWA: correct manifest type; the service worker must always revalidate
+	# (covered by the HTML rule above) and may control the whole origin.
+	@manifest path /manifest.webmanifest
+	header @manifest Content-Type application/manifest+json
+	@sw path /sw.js
+	header @sw Service-Worker-Allowed /
+
 	file_server
 
 	handle_errors {

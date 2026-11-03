@@ -61,6 +61,12 @@ The heatmap is baked in at build time, so rebuild once a day. Either:
 
 ## Notes
 
+- **PWA**: `/manifest.webmanifest` (standalone, shortcuts), brand icons rendered at build
+  (`src/lib/icon.ts`: favicon.svg/.ico, 192/512 + maskable, Apple touch icon) and a
+  versioned service worker (`/sw.js`, registered after `load`): pages network-first with
+  an `/offline/` fallback, `/_astro/*` cache-first, other assets stale-while-revalidate.
+- **LLMs**: `/llms.txt` and `/llms-full.txt` are generated from the content collections.
+
 - Fonts are self-hosted through the Astro Fonts API (`fontProviders.local()`, files
   from Fontsource in `src/assets/fonts/`): Instrument Sans variable (latin,
   400–700, preloaded) and JetBrains Mono 400/500, `font-display: swap`, with
