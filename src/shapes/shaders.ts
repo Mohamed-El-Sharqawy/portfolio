@@ -57,7 +57,7 @@ float d=uv.y-y0,ed=hw-abs(d);
 if(ed<-px)continue;
 float s=d/hw;
 vec3 n=normalize(vec3(-.35*cos(x*1.5+T*.4+f*2.1),-sin(ph)*sign(cp)+s*.25,abs(cp)+.05));
-float a=clamp(ed/px+.5,0.,1.)*smoothstep(1.08,.55,abs(x));
+float a=clamp(ed/px+.5,0.,1.)*smoothstep(.92,.4,abs(x));
 vec3 c=shade(n,vec3(0,0,-1))+film(s*.18+x*.12+f*.2+T*.03)*.18;
 o=vec4(c*a,a)+o*(1.-a);}
 gl_FragColor=o;}`;

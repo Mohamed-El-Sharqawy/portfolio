@@ -8,7 +8,6 @@ import { profile, stats } from '../data/site';
   <div class="shapes" aria-hidden="true">
     <ShaderShape id="css-orb" tone="paper" class="s-orb" />
     <ShaderShape id="dots" tone="paper" class="s-dots" />
-    <ShaderShape id="gl-ribbon" tone="paper" class="s-ribbon" />
   </div>
 
   <div class="wrap">
@@ -157,12 +156,6 @@ import { profile, stats } from '../data/site';
     right: -40px;
     top: 300px;
   }
-  .shapes :global(.s-ribbon) {
-    --s: 150px;
-    right: 380px;
-    top: 330px;
-  }
-
   @media (max-width: 960px) {
     .stats {
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -235,9 +228,6 @@ import { profile, stats } from '../data/site';
       --s: 92px;
       right: -8px;
       top: 146px;
-    }
-    .shapes :global(.s-ribbon) {
-      display: none;
     }
   }
 </style>

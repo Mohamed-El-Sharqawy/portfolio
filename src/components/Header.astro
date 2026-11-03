@@ -1,5 +1,6 @@
 ---
 import { navLinks, profile } from '../data/site';
+import ShaderShape from '../shapes/ShaderShape.astro';
 ---
 
 <header class="site-header">
@@ -70,6 +71,8 @@ import { navLinks, profile } from '../data/site';
       </ul>
 
       <div class="menu-foot" style={`--i:${navLinks.length}`}>
+        {/* Decorative ribbon in the free space above the actions; starts only when the menu opens. */}
+        <ShaderShape id="gl-ribbon" tone="paper" class="menu-ribbon" />
         <p class="menu-label mono">
           <span class="dot" aria-hidden="true"></span>
           {profile.availabilityShort}
@@ -326,8 +329,21 @@ import { navLinks, profile } from '../data/site';
     color: var(--accent);
   }
   .menu-foot {
+    position: relative;
     margin-top: auto;
     padding-top: 32px;
+  }
+  .menu-foot :global(.menu-ribbon) {
+    --s: 190px;
+    right: -28px;
+    bottom: calc(100% - 40px);
+    z-index: -1;
+  }
+  /* No free space on short screens: skip it rather than sit under the links. */
+  @media (max-height: 760px) {
+    .menu-foot :global(.menu-ribbon) {
+      display: none;
+    }
   }
   .dot {
     width: 8px;
