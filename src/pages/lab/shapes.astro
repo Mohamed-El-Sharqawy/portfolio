@@ -44,6 +44,14 @@ const groupLabel = { css: 'CSS / SVG', canvas: 'Canvas 2D', webgl: 'WebGL', vide
         Lighthouse runs on the home page with only that shape added to the hero (median of 3), plus
         a 10 s mobile trace at 4× CPU throttle.
       </p>
+      <p class="lede">
+        Caveats: the probe runs placed the shape at 280px on mobile too (bigger than the real site),
+        and the shapes then shipped an AVIF poster in the HTML, which became the mobile LCP element
+        (LCP 1.65–1.8 s vs 1.0 s). Since fixed: canvas/WebGL shapes only use the poster without JS
+        or without OffscreenCanvas/WebGL, and the contour uses an SVG &lt;use&gt;. The real home and
+        case-study pages now score 100/100/100/100 with the hero h1 as LCP. WebGL frame costs are
+        from SwiftShader (software GL), so treat them as an upper bound.
+      </p>
 
       <div class="table-wrap" role="region" aria-label="Comparison table" tabindex="0">
         <table>
