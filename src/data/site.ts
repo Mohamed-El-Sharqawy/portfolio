@@ -14,6 +14,8 @@ export const profile = {
   github: 'https://github.com/Mohamed-El-Sharqawy',
   githubUsername: 'Mohamed-El-Sharqawy',
   cvUrl: '/Mohamed_Ahmed_CV_Full_Stack_UAE.pdf',
+  /** Same UAE number on WhatsApp and Botim. */
+  whatsapp: 'https://wa.me/971542009458',
 } as const;
 
 export const tel = (phone: string): string => `tel:${phone.replace(/\s/g, '')}`;

@@ -38,8 +38,9 @@ const education = (await getCollection('education')).sort((a, b) => a.data.order
     </ol>
     <div class="edu">
       <p>{education.map(({ data: e }) => `${e.credential}, ${e.shortInstitution}`).join(' · ')}</p>
-      <a href={profile.cvUrl} class="btn btn--ghost cv">
+      <a href={profile.cvUrl} class="btn btn--ghost cv" target="_blank" rel="noopener">
         Full CV (PDF) <span aria-hidden="true">↗</span>
+        <span class="sr-only"> (opens in a new tab)</span>
       </a>
     </div>
   </div>

@@ -14,8 +14,8 @@ import ShaderShape from '../shapes/ShaderShape.astro';
       ))}
     </nav>
     <div class="actions">
-      <a href={profile.cvUrl} class="cv">
-        CV<span class="sr-only"> (PDF)</span>
+      <a href={profile.cvUrl} class="cv" target="_blank" rel="noopener">
+        CV<span class="sr-only"> (PDF, opens in a new tab)</span>
       </a>
       <a href="/#contact" class="contact">
         Contact
@@ -81,13 +81,20 @@ import ShaderShape from '../shapes/ShaderShape.astro';
           <a href="/#contact" class="btn btn--accent">
             Start a conversation <span aria-hidden="true">→</span>
           </a>
-          <a href={profile.cvUrl} class="btn">
-            Download CV<span class="sr-only"> (PDF)</span>
+          <a href={profile.cvUrl} class="btn" target="_blank" rel="noopener">
+            View CV <span aria-hidden="true">↗</span>
+            <span class="sr-only"> (PDF, opens in a new tab)</span>
           </a>
         </div>
         <ul role="list" class="menu-meta mono">
           <li>
             <a href={`mailto:${profile.email}`}>{profile.email}</a>
+          </li>
+          <li>
+            <a href={profile.whatsapp} target="_blank" rel="noopener">
+              WhatsApp <span aria-hidden="true">↗</span>
+              <span class="sr-only"> (opens in a new tab)</span>
+            </a>
           </li>
           <li>
             <a href={profile.linkedin} rel="noopener me">

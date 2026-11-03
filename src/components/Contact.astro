@@ -24,6 +24,7 @@ import { profile, tel } from '../data/site';
           <a href={tel(profile.phone)}>
             {profile.phone}
             <span class="sr-only"> (UAE)</span>
+            <span class="apps">WhatsApp · Botim</span>
           </a>
         </li>
         <li>
@@ -40,6 +41,12 @@ import { profile, tel } from '../data/site';
         <li>
           <a href={profile.github} rel="noopener me">
             GitHub <span aria-hidden="true">↗</span>
+          </a>
+        </li>
+        <li>
+          <a href={profile.whatsapp} target="_blank" rel="noopener">
+            WhatsApp <span aria-hidden="true">↗</span>
+            <span class="sr-only"> (opens in a new tab)</span>
           </a>
         </li>
       </ul>
@@ -114,7 +121,13 @@ import { profile, tel } from '../data/site';
   .links a {
     display: inline-flex;
     align-items: center;
+    flex-wrap: wrap;
+    column-gap: 10px;
     min-height: 44px;
+  }
+  .apps {
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
   }
   @media (max-width: 640px) {
     .contact {

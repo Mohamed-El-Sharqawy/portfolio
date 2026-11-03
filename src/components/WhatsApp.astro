@@ -1,0 +1,69 @@
+---
+import { profile } from '../data/site';
+---
+
+<!-- Floating WhatsApp chat button (bottom-right on every page). Inline SVG: no request, no CLS. -->
+<a
+  href={profile.whatsapp}
+  class="wa"
+  target="_blank"
+  rel="noopener"
+  aria-label="Chat on WhatsApp (opens in a new tab)"
+>
+  <svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true">
+    <path
+      fill="currentColor"
+      d="M16.04 3C8.86 3 3.03 8.82 3.03 16c0 2.3.6 4.54 1.75 6.52L3 29l6.65-1.74A12.96 12.96 0 0 0 16.04 29C23.2 29 29 23.18 29 16S23.2 3 16.04 3Zm0 23.62c-1.98 0-3.92-.53-5.61-1.54l-.4-.24-3.95 1.03 1.05-3.85-.26-.4A10.6 10.6 0 0 1 5.4 16c0-5.86 4.77-10.63 10.64-10.63 5.86 0 10.6 4.77 10.6 10.63s-4.74 10.62-10.6 10.62Zm5.83-7.95c-.32-.16-1.89-.93-2.18-1.04-.3-.1-.5-.16-.72.16-.21.32-.82 1.04-1 1.25-.19.21-.37.24-.69.08-.32-.16-1.35-.5-2.57-1.59-.95-.85-1.59-1.9-1.78-2.21-.18-.32-.02-.5.14-.65.15-.15.32-.37.48-.56.16-.18.21-.32.32-.53.1-.21.05-.4-.03-.56-.08-.16-.72-1.73-.98-2.37-.26-.62-.52-.54-.72-.55h-.61c-.21 0-.56.08-.85.4-.29.32-1.11 1.09-1.11 2.65 0 1.57 1.14 3.08 1.3 3.3.16.2 2.24 3.42 5.43 4.8.76.33 1.35.52 1.81.67.76.24 1.46.2 2.01.12.61-.09 1.89-.77 2.15-1.52.27-.74.27-1.38.19-1.52-.08-.13-.29-.21-.61-.37Z"
+    ></path>
+  </svg>
+</a>
+
+<style>
+  .wa {
+    position: fixed;
+    right: max(20px, env(safe-area-inset-right));
+    bottom: max(20px, env(safe-area-inset-bottom));
+    z-index: 8;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #25d366;
+    color: #fff;
+    box-shadow:
+      0 10px 24px -8px rgba(14, 17, 22, 0.45),
+      0 0 0 1px rgba(14, 17, 22, 0.06);
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+  .wa:hover {
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow:
+      0 14px 28px -8px rgba(14, 17, 22, 0.5),
+      0 0 0 1px rgba(14, 17, 22, 0.06);
+  }
+  .wa:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+  }
+  @media (max-width: 640px) {
+    .wa {
+      width: 52px;
+      height: 52px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wa {
+      transition: none;
+    }
+  }
+  @media print {
+    .wa {
+      display: none;
+    }
+  }
+</style>
