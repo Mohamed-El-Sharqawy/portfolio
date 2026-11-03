@@ -35,6 +35,22 @@ export const candidates: Candidate[] = [
     replaces: 'Work blob',
     note: 'Thin-line contour rings of a noise-displaced sphere. Two copies counter-rotate for a moiré shimmer.',
   },
+  {
+    id: 'flow',
+    name: 'Flow-field sphere',
+    group: 'canvas',
+    technique: 'Canvas 2D in a worker (OffscreenCanvas)',
+    replaces: 'Agents orb · contact block',
+    note: 'Streamlines advected over drifting vortex sinks + 3D noise, fading trails, particle heads, rim glow.',
+  },
+  {
+    id: 'dots',
+    name: 'Dot-matrix noise sphere',
+    group: 'canvas',
+    technique: 'Canvas 2D in a worker (OffscreenCanvas)',
+    replaces: 'Hero orb',
+    note: 'Fibonacci lattice displaced by animated noise, coloured by displacement, back dots dimmed.',
+  },
 ];
 
 export const byId = (id: string) => candidates.find((c) => c.id === id);
