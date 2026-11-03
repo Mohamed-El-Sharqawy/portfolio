@@ -1,0 +1,403 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection, getEntry, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Shape from '../../components/Shape.astro';
+import Contact from '../../components/Contact.astro';
+import { SITE_URL, profile } from '../../data/site';
+import { personId } from '../../lib/seo';
+
+export const getStaticPaths = (async () => {
+  const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+  return projects.map((project, i) => ({
+    params: { slug: project.id },
+    props: { project, next: projects[(i + 1) % projects.length]! },
+  }));
+}) satisfies GetStaticPaths;
+
+const { project, next } = Astro.props;
+const p = project.data;
+const company = await getEntry(p.company);
+const { Content } = await render(project);
+const num = String(p.order).padStart(2, '0');
+const url = new URL(`/work/${project.id}/`, SITE_URL).href;
+const ogImage = `/og/${project.id}.png`;
+
+const title = `${p.name} — Case study · ${profile.name}`;
+const description = p.description;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  '@id': `${url}#work`,
+  name: p.name,
+  headline: `${p.name} — ${p.tagline}`,
+  description,
+  url,
+  image: new URL(ogImage, SITE_URL).href,
+  genre: p.category,
+  keywords: p.stack.join(', '),
+  inLanguage: 'en',
+  author: { '@id': personId },
+  creator: { '@id': personId },
+  ...(company && {
+    contributor: { '@type': 'Organization', name: company.data.company },
+    temporalCoverage: company.data.period,
+  }),
+  isPartOf: { '@type': 'WebSite', name: profile.name, url: SITE_URL },
+};
+---
+
+<Base
+  title={title}
+  description={description}
+  ogImage={ogImage}
+  ogImageAlt={`${p.name} — ${p.tagline}`}
+  ogType="article"
+  schema={schema}
+>
+  <article aria-labelledby="cs-h">
+    <header class="cs-head">
+      <div class="shapes" aria-hidden="true">
+        <Shape kind="orb" class="s-orb" />
+        <Shape kind="capsule" class="s-capsule" />
+      </div>
+      <div class="wrap">
+        <nav aria-label="Breadcrumb" class="crumbs mono">
+          <a href="/#work">
+            <span aria-hidden="true">←</span> All work
+          </a>
+        </nav>
+        <p class="eyebrow">
+          [Case study] {num} · {p.category}
+          {company && ` · ${company.data.company}`}
+        </p>
+        <h1 id="cs-h" class="title">
+          {p.name}
+          <span class="dot">.</span>
+        </h1>
+        <p class="tagline">{p.tagline}</p>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <div class="facts">
+        <dl class="meta">
+          {company && (
+            <>
+              <div>
+                <dt class="mono">Company</dt>
+                <dd>{company.data.company}</dd>
+              </div>
+              <div>
+                <dt class="mono">Role</dt>
+                <dd>{company.data.role}</dd>
+              </div>
+              <div>
+                <dt class="mono">Period</dt>
+                <dd>{company.data.period}</dd>
+              </div>
+              <div>
+                <dt class="mono">Location</dt>
+                <dd>{company.data.location}</dd>
+              </div>
+            </>
+          )}
+        </dl>
+        <div class="impact on-accent">
+          <p class="mono i-label">{p.metric ? 'Reach' : 'Impact'}</p>
+          {p.metric ? (
+            <p>
+              <span class="i-value">{p.metric.value}</span>
+              <span class="i-text">{p.metric.label}</span>
+            </p>
+          ) : (
+            <p class="i-statement">{p.impact}</p>
+          )}
+        </div>
+      </div>
+
+      <div class="g12 body">
+        <aside class="c-label side" aria-labelledby="stack-label">
+          <h2 id="stack-label" class="mono side-h">
+            Stack
+          </h2>
+          <ul role="list" class="chips">
+            {p.stack.map((s) => (
+              <li>{s}</li>
+            ))}
+          </ul>
+        </aside>
+        <div class="c-body prose">
+          <p class="lead">{p.description}</p>
+          <Content />
+        </div>
+      </div>
+
+      <nav class="next" aria-label="Next case study">
+        <a href={`/work/${next.id}/`} data-astro-prefetch>
+          <span class="mono next-label">Next case study</span>
+          <span class="next-name">
+            {next.data.name}{' '}
+            <span aria-hidden="true" class="arrow">
+              →
+            </span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </article>
+  <Contact />
+</Base>
+
+<style>
+  .cs-head {
+    position: relative;
+    overflow: hidden;
+    padding: 56px 0 64px;
+  }
+  .shapes :global(.s-orb) {
+    width: 240px;
+    height: 240px;
+    right: 80px;
+    top: 40px;
+  }
+  .shapes :global(.s-capsule) {
+    width: 140px;
+    height: 50px;
+    right: 300px;
+    top: 230px;
+  }
+  .crumbs a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    font-size: 0.8125rem;
+    color: var(--body);
+  }
+  .crumbs a:hover {
+    color: var(--accent);
+  }
+  .eyebrow {
+    margin-top: 24px;
+  }
+  .title {
+    margin-top: 16px;
+    max-width: 14ch;
+    font-size: clamp(3.25rem, 8.4vw, 8rem);
+    line-height: 0.9;
+    letter-spacing: -0.055em;
+    font-weight: 600;
+  }
+  .dot {
+    color: var(--accent);
+  }
+  .tagline {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 2px solid var(--ink);
+    max-width: 30ch;
+    font-size: clamp(1.5rem, 2.8vw, 2.375rem);
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    font-weight: 500;
+  }
+  .facts {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    border: 1.5px solid var(--ink);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--white);
+  }
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .meta div {
+    padding: 28px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .meta dt {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .meta dd {
+    margin-top: 6px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .impact {
+    background: var(--accent);
+    color: var(--white);
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 32px;
+  }
+  .i-label {
+    font-size: 0.75rem;
+  }
+  .i-value {
+    display: block;
+    font-size: clamp(4.5rem, 8vw, 7.5rem);
+    line-height: 0.85;
+    letter-spacing: -0.07em;
+    font-weight: 600;
+  }
+  .i-text {
+    display: block;
+    margin-top: 12px;
+    font-size: 1.125rem;
+  }
+  .i-statement {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+    font-weight: 600;
+  }
+  .body {
+    margin-top: 96px;
+    row-gap: 40px;
+  }
+  .side-h {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .chips {
+    margin: 14px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+  }
+  .chips li {
+    padding: 6px 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--white);
+  }
+  .prose {
+    max-width: 68ch;
+    color: var(--body);
+  }
+  .lead {
+    font-size: 1.375rem;
+    line-height: 1.4;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+  }
+  .prose :global(h2) {
+    margin-top: 56px;
+    padding-top: 16px;
+    border-top: 2px solid var(--ink);
+    font-size: 1.75rem;
+    letter-spacing: -0.03em;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .prose :global(p),
+  .prose :global(ul) {
+    margin-top: 16px;
+  }
+  .prose :global(ul) {
+    padding-left: 1.2em;
+  }
+  .prose :global(li + li) {
+    margin-top: 8px;
+  }
+  .prose :global(strong) {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .next {
+    margin: 112px 0 120px;
+    border-top: 2px solid var(--ink);
+  }
+  .next a {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding-top: 28px;
+  }
+  .next-label {
+    font-size: 0.8125rem;
+    color: var(--muted);
+  }
+  .next-name {
+    font-size: clamp(2.25rem, 5vw, 4.5rem);
+    line-height: 1;
+    letter-spacing: -0.05em;
+    font-weight: 600;
+  }
+  .arrow {
+    color: var(--accent);
+    display: inline-block;
+    transition: transform 0.15s ease;
+  }
+  .next a:hover .arrow {
+    transform: translateX(6px);
+  }
+  @media (max-width: 960px) {
+    .facts {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .shapes {
+      transform: scale(0.6);
+      transform-origin: 100% 0;
+    }
+  }
+  @media (max-width: 640px) {
+    .cs-head {
+      padding: 24px 0 40px;
+    }
+    .tagline {
+      margin-top: 24px;
+      padding-top: 20px;
+    }
+    .meta div {
+      padding: 18px 14px;
+    }
+    .meta dd {
+      font-size: 1.0625rem;
+    }
+    .impact {
+      padding: 22px;
+    }
+    .body {
+      margin-top: 56px;
+    }
+    .lead {
+      font-size: 1.1875rem;
+    }
+    .next {
+      margin: 72px 0 80px;
+    }
+    .shapes {
+      transform: none;
+    }
+    .shapes :global(.s-orb) {
+      width: 120px;
+      height: 120px;
+      right: -30px;
+      top: 16px;
+      --orb-blur: 12px;
+    }
+    .shapes :global(.s-capsule) {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .arrow {
+      transition: none;
+    }
+  }
+</style>
