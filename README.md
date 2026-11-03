@@ -16,8 +16,8 @@ animation pause) plus Astro's prefetch, ~1.8 KB gzipped in total.
 | `npm run format`  | Prettier (`prettier-plugin-astro`)               |
 | `npm run verify`  | check + lint + format check + build              |
 
-`GITHUB_TOKEN=$(gh auth token) npm run build` builds with the full-year contribution
-calendar. `GITHUB_DISABLE=1` skips GitHub entirely (renders the empty state).
+The full-year heatmap and the latest-commits feed work without a token;
+`GITHUB_TOKEN=$(gh auth token) npm run build` just uses the GraphQL API and higher rate limits. `GITHUB_DISABLE=1` skips GitHub entirely (renders the empty state).
 
 ## Structure
 
@@ -25,8 +25,11 @@ calendar. `GITHUB_DISABLE=1` skips GitHub entirely (renders the empty state).
   - `projects`: Markdown case studies in `src/content/projects/*.md` → `/work/[slug]/`
   - `experience`, `skills`, `education`: JSON in `src/data/`
 - `src/data/site.ts`: profile, hero stats, companies, Agents pipeline logs
-- `src/lib/github.ts`: build-time GitHub snapshot (GraphQL calendar with
-  `GITHUB_TOKEN`, public events API fallback, never throws)
+- `src/lib/github.ts`: build-time GitHub snapshot, never throws, never runs in the browser
+  - Full-year heatmap: GraphQL calendar with `GITHUB_TOKEN`, otherwise the public
+    contributions page (no token needed), last resort the events API (90 days)
+  - Latest commits: commit search API (public repos only, message + repo + link,
+    merge commits filtered), falling back to push events looked up via the commits API
 - `src/lib/og.ts` + `src/pages/og/[slug].png.ts`: Satori → PNG OG images at build time
 - `src/styles/global.css`: design tokens + the decorative shapes (transform/opacity only)
 

@@ -2,8 +2,12 @@
  * Build-time GitHub snapshot (ported from the old Next.js `src/content/github.ts`
  * and `src/app/api/github/route.ts`).
  *
- * - Uses the GraphQL contributions calendar when `GITHUB_TOKEN` is set (full year).
- * - Falls back to the public events API (last 90 days, push events only).
+ * Heatmap (full year), in order of preference:
+ *   1. GraphQL contributions calendar (needs `GITHUB_TOKEN`)
+ *   2. the public contributions calendar page (no token needed)
+ *   3. the public events API (last 90 days only)
+ * Latest commits: commit search API (public repos, message + repo + link),
+ * falling back to push events enriched through the commits API.
  * - Never throws: on missing token / network / rate limit it returns `null`
  *   and the page renders the empty state. Never called from the client.
  */
@@ -19,7 +23,17 @@ export type GithubSnapshot = {
   activeStreak: number;
   longestStreak: number;
   publicRepos: number;
+  commits: CommitItem[];
   generatedAt: string;
+};
+
+export type CommitItem = {
+  repo: string;
+  repoUrl: string;
+  message: string;
+  url: string;
+  sha: string;
+  date: string;
 };
 
 const USERNAME = profile.githubUsername;
@@ -27,6 +41,7 @@ const API_ROOT = 'https://api.github.com';
 const TIMEOUT_MS = 8000;
 const DAY_MS = 86_400_000;
 const EVENTS_SPAN_DAYS = 90;
+const COMMIT_LIMIT = 8;
 const HEADERS = { Accept: 'application/vnd.github+json', 'User-Agent': 'portfolio-v2-build' };
 
 const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null;
@@ -95,6 +110,112 @@ async function fetchCalendarDays(): Promise<HeatmapDay[] | null> {
   return days.length >= 300 ? days : null;
 }
 
+/** Public calendar page — same data as the profile graph, no token required. */
+async function fetchCalendarFromPage(): Promise<HeatmapDay[] | null> {
+  let html: string;
+  try {
+    const res = await fetch(`https://github.com/users/${USERNAME}/contributions`, {
+      headers: { 'User-Agent': HEADERS['User-Agent'], Accept: 'text/html' },
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    });
+    if (!res.ok) return null;
+    html = await res.text();
+  } catch {
+    return null;
+  }
+  const dateById = new Map<string, string>();
+  for (const m of html.matchAll(/<td\b[^>]*>/g)) {
+    const tag = m[0];
+    const date = /data-date="(\d{4}-\d{2}-\d{2})"/.exec(tag)?.[1];
+    const id = /\bid="([^"]+)"/.exec(tag)?.[1];
+    if (date && id) dateById.set(id, date);
+  }
+  const counts = new Map<string, number>();
+  for (const m of html.matchAll(/<tool-tip\b[^>]*\bfor="([^"]+)"[^>]*>([^<]*)<\/tool-tip>/g)) {
+    const date = dateById.get(m[1] ?? '');
+    if (!date) continue;
+    const n = /^(\d[\d,]*) contribution/.exec((m[2] ?? '').trim())?.[1];
+    counts.set(date, n ? Number(n.replace(/,/g, '')) : 0);
+  }
+  const days = [...dateById.values()]
+    .sort()
+    .map((date) => ({ date, count: counts.get(date) ?? 0 }));
+  return days.length >= 300 ? days : null;
+}
+
+const firstLine = (v: unknown): string => asString(v).split('\n')[0]?.trim() ?? '';
+// Merge / revert-of-merge commits are noise in a "latest work" feed.
+const isNoise = (msg: string): boolean =>
+  !msg || /^Merge (pull request|branch|remote-tracking)/.test(msg) || /^Revert "Merge /.test(msg);
+
+function authHeaders(): Record<string, string> {
+  const auth = token();
+  return auth ? { Authorization: `Bearer ${auth}` } : {};
+}
+
+/** Latest commits across public repos, newest first. */
+async function fetchCommitsFromSearch(): Promise<CommitItem[] | null> {
+  const data = await getJson(
+    `${API_ROOT}/search/commits?q=author:${USERNAME}&sort=author-date&order=desc&per_page=40`,
+    { headers: authHeaders() },
+  );
+  if (!isRecord(data) || !Array.isArray(data.items)) return null;
+  const items: CommitItem[] = [];
+  const seen = new Set<string>();
+  for (const raw of data.items) {
+    if (!isRecord(raw) || !isRecord(raw.commit) || !isRecord(raw.repository)) continue;
+    if (raw.repository.private === true) continue;
+    const message = firstLine(raw.commit.message);
+    const repo = asString(raw.repository.name);
+    const key = `${repo}:${message}`;
+    if (isNoise(message) || seen.has(key)) continue;
+    seen.add(key);
+    const author = isRecord(raw.commit.author) ? raw.commit.author : {};
+    items.push({
+      repo,
+      repoUrl: asString(raw.repository.html_url),
+      message,
+      url: asString(raw.html_url),
+      sha: asString(raw.sha).slice(0, 7),
+      date: asString(author.date),
+    });
+    if (items.length === COMMIT_LIMIT) break;
+  }
+  return items.length ? items : null;
+}
+
+/** Fallback: push events no longer carry messages, so look each head commit up. */
+async function fetchCommitsFromEvents(events: unknown[]): Promise<CommitItem[]> {
+  const heads: { fullRepo: string; sha: string }[] = [];
+  for (const raw of events) {
+    if (!isRecord(raw) || raw.type !== 'PushEvent' || !isRecord(raw.payload)) continue;
+    const fullRepo = isRecord(raw.repo) ? asString(raw.repo.name) : '';
+    const sha = asString(raw.payload.head);
+    if (fullRepo && sha) heads.push({ fullRepo, sha });
+    if (heads.length === COMMIT_LIMIT * 2) break;
+  }
+  const looked = await Promise.all(
+    heads.map(async ({ fullRepo, sha }) => {
+      const data = await getJson(`${API_ROOT}/repos/${fullRepo}/commits/${sha}`, {
+        headers: authHeaders(),
+      });
+      if (!isRecord(data) || !isRecord(data.commit)) return null;
+      const message = firstLine(data.commit.message);
+      if (isNoise(message)) return null;
+      const author = isRecord(data.commit.author) ? data.commit.author : {};
+      return {
+        repo: fullRepo.slice(fullRepo.lastIndexOf('/') + 1),
+        repoUrl: `https://github.com/${fullRepo}`,
+        message,
+        url: asString(data.html_url),
+        sha: sha.slice(0, 7),
+        date: asString(author.date),
+      } satisfies CommitItem;
+    }),
+  );
+  return looked.filter((c): c is CommitItem => c !== null).slice(0, COMMIT_LIMIT);
+}
+
 function daysFromEvents(events: unknown[]): HeatmapDay[] {
   const counts = new Map<string, number>();
   for (const raw of events) {
@@ -137,19 +258,28 @@ export function computeStreaks(days: HeatmapDay[]): { active: number; longest: n
 }
 
 async function load(): Promise<GithubSnapshot | null> {
-  const [calendar, user] = await Promise.all([
-    fetchCalendarDays(),
-    getJson(`${API_ROOT}/users/${USERNAME}`),
+  const [calendar, user, searched] = await Promise.all([
+    fetchCalendarDays().then((d) => d ?? fetchCalendarFromPage()),
+    getJson(`${API_ROOT}/users/${USERNAME}`, { headers: authHeaders() }),
+    fetchCommitsFromSearch(),
   ]);
 
   let days = calendar;
   let span: GithubSnapshot['span'] = 'year';
-  if (!days) {
-    const events = await getJson(`${API_ROOT}/users/${USERNAME}/events/public?per_page=100`);
-    if (!Array.isArray(events)) return null;
-    days = daysFromEvents(events);
-    span = '90d';
+  let commits = searched ?? [];
+  if (!days || !searched) {
+    const events = await getJson(`${API_ROOT}/users/${USERNAME}/events/public?per_page=100`, {
+      headers: authHeaders(),
+    });
+    if (Array.isArray(events)) {
+      if (!days) {
+        days = daysFromEvents(events);
+        span = '90d';
+      }
+      if (!searched) commits = await fetchCommitsFromEvents(events);
+    }
   }
+  if (!days) return null;
 
   const streaks = computeStreaks(days);
   const userRecord = isRecord(user) ? user : {};
@@ -161,6 +291,7 @@ async function load(): Promise<GithubSnapshot | null> {
     activeStreak: streaks.active,
     longestStreak: streaks.longest,
     publicRepos: asNumber(userRecord.public_repos),
+    commits,
     generatedAt: new Date().toISOString(),
   };
 }

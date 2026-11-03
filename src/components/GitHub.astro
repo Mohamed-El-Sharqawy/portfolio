@@ -9,14 +9,31 @@ const spanLabel = snapshot?.span === '90d' ? 'last 90 days' : 'last 12 months';
 const summary = snapshot
   ? `${fmt.format(snapshot.total)} contributions in the ${spanLabel}, longest streak ${snapshot.longestStreak} days.`
   : '';
-const built = snapshot
-  ? new Date(snapshot.generatedAt).toLocaleDateString('en-GB', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      timeZone: 'UTC',
-    })
-  : '';
+const dateFmt = (iso: string, withYear = false) =>
+  new Date(iso).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    ...(withYear && { year: 'numeric' }),
+    timeZone: 'UTC',
+  });
+const built = snapshot ? dateFmt(snapshot.generatedAt, true) : '';
+
+// Month label above the first week column of each month (skip a partial first month).
+const monthLabels = weeks.map((week, i) => {
+  const first = week.find((d) => d !== null);
+  if (!first) return '';
+  const month = first.date.slice(0, 7);
+  const prevFirst = weeks[i - 1]?.find((d) => d !== null);
+  if (prevFirst && prevFirst.date.slice(0, 7) === month) return '';
+  if (i === 0 && Number(first.date.slice(8, 10)) > 14) return '';
+  // A label in the last two columns would overflow the grid.
+  if (i >= weeks.length - 2) return '';
+  return new Date(`${first.date}T00:00:00Z`).toLocaleDateString('en-US', {
+    month: 'short',
+    timeZone: 'UTC',
+  });
+});
+const commits = snapshot?.commits ?? [];
 ---
 
 <section aria-labelledby="gh-h" class="gh">
@@ -45,13 +62,47 @@ const built = snapshot
             aria-label="Contribution heatmap (scrollable)"
           >
             <div class="grid" role="img" aria-label={summary}>
-              {weeks.map((w) => (
+              {weeks.map((w, i) => (
                 <div class="week">
+                  <span class="month mono">{monthLabels[i]}</span>
                   {w.map((d) => (d ? <span class={`c l${d.level}`} /> : <span class="c empty" />))}
                 </div>
               ))}
             </div>
           </div>
+          <div class="legend mono" aria-hidden="true">
+            Less <span class="c l0" />
+            <span class="c l1" />
+            <span class="c l2" />
+            <span class="c l3" />
+            <span class="c l4" /> More
+          </div>
+
+          {commits.length > 0 && (
+            <div class="commits">
+              <h3 class="mono sub">Latest commits</h3>
+              <ol role="list" class="feed">
+                {commits.map((c) => (
+                  <li class="row">
+                    <time class="mono when" datetime={c.date}>
+                      {dateFmt(c.date)}
+                    </time>
+                    <a class="mono repo" href={c.repoUrl} rel="noopener">
+                      {c.repo}
+                    </a>
+                    <a class="msg" href={c.url} rel="noopener" title={c.message}>
+                      {c.message}
+                      <span class="sr-only"> — commit in {c.repo}</span>
+                    </a>
+                    <span class="mono sha" aria-hidden="true">
+                      {c.sha}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
+
           <p class="mono foot">
             Pulled from{' '}
             <a href={profile.github} rel="noopener">
@@ -138,8 +189,78 @@ const built = snapshot
   .empty {
     background: transparent;
   }
-  .recent {
-    display: none;
+  .month {
+    height: 16px;
+    font-size: 0.6875rem;
+    line-height: 16px;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: visible;
+  }
+  .legend {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    font-size: 0.6875rem;
+    color: var(--muted);
+  }
+  .legend .c {
+    width: 11px;
+    height: 11px;
+  }
+  .commits {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+  .sub {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .feed {
+    margin: 12px 0 0;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 7ch minmax(0, 18ch) minmax(0, 1fr) 8ch;
+    align-items: center;
+    gap: 20px;
+    min-height: 44px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .row:last-child {
+    border-bottom: 0;
+  }
+  .when,
+  .sha {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .sha {
+    text-align: right;
+  }
+  .repo {
+    font-size: 0.8125rem;
+    color: var(--accent);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 10px 0;
+  }
+  .repo:hover {
+    color: var(--ink);
+  }
+  .msg {
+    /* contain the absolutely positioned sr-only text inside the clipped link */
+    position: relative;
+    font-size: 0.9375rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 10px 0;
   }
   .foot {
     margin-top: 16px;
@@ -161,12 +282,25 @@ const built = snapshot
     .card {
       padding: 22px;
     }
-    /* Narrow screens: show only the most recent 22 weeks so nothing scrolls */
-    .week:nth-last-child(n + 23) {
-      display: none;
+    /* Narrow screens: whole year scrolls, starting at the most recent weeks */
+    .scroller {
+      direction: rtl;
     }
-    .recent {
-      display: inline;
+    .row {
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 0 12px;
+      padding: 8px 0;
+    }
+    .msg {
+      grid-column: 1 / -1;
+      white-space: normal;
+      padding: 2px 0 6px;
+    }
+    .repo {
+      padding: 6px 0;
+    }
+    .sha {
+      display: none;
     }
     .title {
       font-size: 1.625rem;
