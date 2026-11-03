@@ -2,7 +2,7 @@
 import type { GetStaticPaths } from 'astro';
 import { getCollection, getEntry, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import Shape from '../../components/Shape.astro';
+import ShaderShape from '../../shapes/ShaderShape.astro';
 import Contact from '../../components/Contact.astro';
 import { SITE_URL, profile } from '../../data/site';
 import { personId } from '../../lib/seo';
@@ -59,8 +59,8 @@ const schema = {
   <article aria-labelledby="cs-h">
     <header class="cs-head">
       <div class="shapes" aria-hidden="true">
-        <Shape kind="orb" class="s-orb" />
-        <Shape kind="capsule" class="s-capsule" />
+        <ShaderShape id="css-orb" tone="paper" class="s-orb" />
+        <ShaderShape id="gl-ribbon" tone="paper" class="s-ribbon" />
       </div>
       <div class="wrap">
         <nav aria-label="Breadcrumb" class="crumbs mono">
@@ -158,16 +158,14 @@ const schema = {
   }
   /* Beside the (short) tagline, clear of the title */
   .shapes :global(.s-orb) {
-    width: 200px;
-    height: 200px;
+    --s: 200px;
     right: 60px;
     bottom: 28px;
   }
-  .shapes :global(.s-capsule) {
-    width: 130px;
-    height: 46px;
-    right: 290px;
-    bottom: 90px;
+  .shapes :global(.s-ribbon) {
+    --s: 150px;
+    right: 280px;
+    bottom: 50px;
   }
   .crumbs a {
     display: inline-flex;

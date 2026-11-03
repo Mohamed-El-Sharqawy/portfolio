@@ -1,14 +1,15 @@
 ---
 import Shape from './Shape.astro';
+import ShaderShape from '../shapes/ShaderShape.astro';
 import Pipeline from './Pipeline.astro';
 import { profile, stats } from '../data/site';
 ---
 
 <section aria-labelledby="hero-h" class="hero">
   <div class="shapes" aria-hidden="true">
-    <Shape kind="orb" class="s-orb" />
-    <Shape kind="torus" class="s-torus" />
-    <Shape kind="capsule" class="s-capsule" />
+    <ShaderShape id="css-orb" tone="paper" class="s-orb" />
+    <ShaderShape id="dots" tone="paper" class="s-dots" />
+    <ShaderShape id="gl-ribbon" tone="paper" class="s-ribbon" />
     <Shape kind="cube" class="s-cube" />
   </div>
 
@@ -149,22 +150,19 @@ import { profile, stats } from '../data/site';
 
   /* Shapes — desktop placement (approved canvas, 1440px) */
   .shapes :global(.s-orb) {
-    width: 300px;
-    height: 300px;
+    --s: 300px;
     right: 110px;
     top: 110px;
   }
-  .shapes :global(.s-torus) {
-    width: 270px;
-    height: 270px;
-    right: -40px;
-    top: 300px;
+  .shapes :global(.s-dots) {
+    --s: 220px;
+    right: -20px;
+    top: 250px;
   }
-  .shapes :global(.s-capsule) {
-    width: 170px;
-    height: 60px;
-    right: 400px;
-    top: 430px;
+  .shapes :global(.s-ribbon) {
+    --s: 190px;
+    right: 390px;
+    top: 345px;
   }
   .shapes :global(.s-cube) {
     right: 470px;
@@ -233,25 +231,19 @@ import { profile, stats } from '../data/site';
     }
     .shapes {
       transform: none;
-      --orb-blur: 12px;
     }
     .shapes :global(.s-orb) {
-      width: 130px;
-      height: 130px;
+      --s: 130px;
       right: -26px;
       top: 18px;
     }
-    .shapes :global(.s-torus) {
-      width: 110px;
-      height: 110px;
-      right: 70px;
-      top: 150px;
+    .shapes :global(.s-dots) {
+      --s: 92px;
+      right: -8px;
+      top: 146px;
     }
-    .shapes :global(.s-capsule) {
-      width: 70px;
-      height: 26px;
-      right: 14px;
-      top: 190px;
+    .shapes :global(.s-ribbon) {
+      display: none;
     }
     .shapes :global(.s-cube) {
       display: none;

@@ -1,6 +1,6 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
-import Shape from './Shape.astro';
+import ShaderShape from '../shapes/ShaderShape.astro';
 
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
 const featured = projects.find((p) => p.data.featured) ?? projects[0]!;
@@ -11,7 +11,7 @@ const num = (n: number) => String(n).padStart(2, '0');
 
 <section id="work" aria-labelledby="work-h" class="work">
   <div class="shapes" aria-hidden="true">
-    <Shape kind="blob" class="s-blob" />
+    <ShaderShape id="svg-contour" tone="paper" class="s-contour" />
   </div>
   <div class="wrap">
     <div class="g12 section-head">
@@ -79,11 +79,11 @@ const num = (n: number) => String(n).padStart(2, '0');
     overflow: hidden;
     padding: 128px 0 112px;
   }
-  .shapes :global(.s-blob) {
-    width: 130px;
-    height: 130px;
-    right: 70px;
-    top: 36px;
+  .shapes :global(.s-contour) {
+    --s: 190px;
+    right: 24px;
+    top: 4px;
+    color: var(--muted);
   }
   .cards {
     margin-top: 72px;

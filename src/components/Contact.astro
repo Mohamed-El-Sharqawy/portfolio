@@ -1,11 +1,12 @@
 ---
 import Shape from './Shape.astro';
+import ShaderShape from '../shapes/ShaderShape.astro';
 import { profile, tel } from '../data/site';
 ---
 
 <section id="contact" aria-labelledby="contact-h" class="contact on-accent">
   <div class="shapes" aria-hidden="true">
-    <Shape kind="torus" class="s-torus" />
+    <ShaderShape id="gl-torus" tone="accent" class="s-torus" />
     <Shape kind="cube" class="s-cube" />
   </div>
   <div class="wrap">
@@ -63,8 +64,7 @@ import { profile, tel } from '../data/site';
     text-underline-offset: 4px;
   }
   .shapes :global(.s-torus) {
-    width: 560px;
-    height: 560px;
+    --s: 560px;
     right: -160px;
     top: -120px;
     opacity: 0.9;
@@ -128,8 +128,7 @@ import { profile, tel } from '../data/site';
       grid-template-columns: minmax(0, 1fr);
     }
     .shapes :global(.s-torus) {
-      width: 260px;
-      height: 260px;
+      --s: 260px;
       right: -90px;
       top: -60px;
     }
