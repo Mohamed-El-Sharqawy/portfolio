@@ -4,8 +4,8 @@ import { navLinks, profile } from '../data/site';
 
 <header class="site-header">
   <div class="wrap bar">
-    <a href="/" class="logo" aria-label={`${profile.name} — home`}>
-      MA<span class="slash">/</span>portfolio
+    <a href="/" class="logo">
+      MA<span class="slash">/</span>portfolio<span class="sr-only"> — {profile.name}, home</span>
     </a>
     <nav aria-label="Primary" class="navlinks">
       {navLinks.map((l) => (

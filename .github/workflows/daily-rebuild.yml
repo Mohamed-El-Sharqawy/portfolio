@@ -1,0 +1,19 @@
+# Rebuilds the site daily so the GitHub heatmap stays fresh.
+# Requires repo secrets: COOLIFY_WEBHOOK (Coolify → app → Webhooks → Deploy webhook URL)
+# and COOLIFY_TOKEN (Coolify → Keys & Tokens → API token with "deploy" permission).
+name: Daily rebuild
+on:
+  schedule:
+    - cron: '15 3 * * *' # 03:15 UTC daily
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Coolify deploy
+        run: |
+          curl --fail --silent --show-error -X GET "$COOLIFY_WEBHOOK" \
+            -H "Authorization: Bearer $COOLIFY_TOKEN"
+        env:
+          COOLIFY_WEBHOOK: ${{ secrets.COOLIFY_WEBHOOK }}
+          COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
