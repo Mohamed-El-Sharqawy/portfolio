@@ -17,6 +17,12 @@ const dateFmt = (iso: string, withYear = false) =>
     timeZone: 'UTC',
   });
 const built = snapshot ? dateFmt(snapshot.generatedAt, true) : '';
+// Commit times in the owner's timezone (Dubai, GST = UTC+4), independent of the build server.
+const TZ = 'Asia/Dubai';
+const commitDay = (iso: string) =>
+  new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: TZ });
+const commitTime = (iso: string) =>
+  new Date(iso).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: TZ });
 
 // Month label above the first week column of each month (skip a partial first month).
 const monthLabels = weeks.map((week, i) => {
@@ -65,11 +71,18 @@ const commits = snapshot?.commits ?? [];
               {weeks.map((w, i) => (
                 <div class="week">
                   <span class="month mono">{monthLabels[i]}</span>
-                  {w.map((d) => (d ? <span class={`c l${d.level}`} /> : <span class="c empty" />))}
+                  {w.map((d) =>
+                    d ? (
+                      <span class={`c l${d.level}`} data-d={d.date} data-n={d.count} />
+                    ) : (
+                      <span class="c empty" />
+                    ),
+                  )}
                 </div>
               ))}
             </div>
           </div>
+          <div class="tip mono" aria-hidden="true" hidden></div>
           <div class="legend mono" aria-hidden="true">
             Less <span class="c l0" />
             <span class="c l1" />
@@ -80,12 +93,14 @@ const commits = snapshot?.commits ?? [];
 
           {commits.length > 0 && (
             <div class="commits">
-              <h3 class="mono sub">Latest commits</h3>
+              <h3 class="mono sub">
+                Latest commits <span class="tz">· Dubai time (GST)</span>
+              </h3>
               <ol role="list" class="feed">
                 {commits.map((c) => (
                   <li class="row">
                     <time class="mono when" datetime={c.date}>
-                      {dateFmt(c.date)}
+                      {commitDay(c.date)} <span class="at">· {commitTime(c.date)}</span>
                     </time>
                     <a class="mono repo" href={c.repoUrl} rel="noopener">
                       {c.repo}
@@ -123,6 +138,44 @@ const commits = snapshot?.commits ?? [];
     </div>
   </div>
 </section>
+
+<script>
+  // Hover / tap a heatmap day: "3 contributions · Mon, 3 Nov 2026".
+  const grid = document.querySelector<HTMLElement>('.gh .grid');
+  const tip = document.querySelector<HTMLElement>('.gh .tip');
+  if (grid && tip) {
+    const day = new Intl.DateTimeFormat('en-GB', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      timeZone: 'UTC',
+    });
+    const hide = () => (tip.hidden = true);
+    grid.addEventListener('pointerover', (e) => {
+      const cell = (e.target as Element).closest<HTMLElement>('[data-d]');
+      if (!cell) return hide();
+      const n = Number(cell.dataset.n);
+      const date = day.format(new Date(`${cell.dataset.d}T00:00:00Z`));
+      tip.innerHTML = `<strong>${n === 0 ? 'No' : n} contribution${n === 1 ? '' : 's'}</strong> · ${date}`;
+      const r = cell.getBoundingClientRect();
+      tip.hidden = false;
+      // keep it inside the viewport horizontally
+      const half = tip.offsetWidth / 2 + 8;
+      const x = Math.min(Math.max(r.left + r.width / 2, half), innerWidth - half);
+      tip.style.left = `${x}px`;
+      tip.style.top = `${r.top}px`;
+    });
+    // Touch fires pointerleave right after the tap, so only a mouse hides on leave;
+    // on touch the tip stays until the next tap elsewhere or a scroll.
+    grid.addEventListener('pointerleave', (e) => e.pointerType === 'mouse' && hide());
+    document.addEventListener('pointerdown', (e) => {
+      if (!grid.contains(e.target as Node)) hide();
+    });
+    addEventListener('scroll', hide, { passive: true });
+    grid.closest('.scroller')?.addEventListener('scroll', hide, { passive: true });
+  }
+</script>
 
 <style>
   .gh {
@@ -225,7 +278,7 @@ const commits = snapshot?.commits ?? [];
   }
   .row {
     display: grid;
-    grid-template-columns: 7ch minmax(0, 18ch) minmax(0, 1fr) 8ch;
+    grid-template-columns: 14ch minmax(0, 18ch) minmax(0, 1fr) 8ch;
     align-items: center;
     gap: 20px;
     min-height: 44px;
@@ -241,6 +294,42 @@ const commits = snapshot?.commits ?? [];
   }
   .sha {
     text-align: right;
+  }
+  .when {
+    white-space: nowrap;
+  }
+  .at {
+    color: var(--ink);
+  }
+  .tz {
+    font-weight: 400;
+  }
+  /* Heatmap day tooltip: one shared element, fixed so the scroller can't clip it. */
+  .c[data-d] {
+    cursor: default;
+  }
+  .c[data-d]:hover {
+    outline: 1.5px solid var(--ink);
+    outline-offset: 1px;
+  }
+  .tip {
+    position: fixed;
+    z-index: 5;
+    left: 0;
+    top: 0;
+    padding: 6px 9px;
+    border-radius: var(--radius-sm);
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 0.75rem;
+    line-height: 1.3;
+    white-space: nowrap;
+    pointer-events: none;
+    transform: translate(-50%, calc(-100% - 8px));
+  }
+  .tip strong {
+    font-weight: 500;
+    color: #fff;
   }
   .repo {
     font-size: 0.8125rem;
