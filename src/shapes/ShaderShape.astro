@@ -1,0 +1,263 @@
+---
+/**
+ * A "shader-look" decorative shape (also used by the /lab/shapes/ gallery).
+ * Reserves its box (no CLS), is decorative (aria-hidden, pointer-events: none) and
+ * always has a static frame without ever being the LCP element:
+ * - CSS/SVG shapes are their own frame (animation off under reduced motion);
+ * - canvas/WebGL shapes paint into a canvas (not an LCP candidate). Under reduced
+ *   motion the worker paints one still frame. The AVIF poster is used only without
+ *   JS (<noscript>) or without OffscreenCanvas/WebGL (inserted by the host after load).
+ * Only the script for the rendered technique is emitted on the page.
+ */
+import type { ImageMetadata } from 'astro';
+import { getImage } from 'astro:assets';
+import type { Tone } from './types';
+
+interface Props {
+  id: string;
+  /** Box size in px. Omit when the section CSS sets `--s` (and placement) via `class`. */
+  size?: number;
+  tone: Tone;
+  probe?: boolean;
+  class?: string;
+}
+const { id, size, tone, probe, class: className } = Astro.props;
+
+const posters = import.meta.glob<{ default: ImageMetadata }>('../assets/shapes/*.png', {
+  eager: true,
+});
+// One poster per candidate and background, captured from the live renderer.
+const posterId = id === 'video-flow' ? 'flow' : id;
+const poster = posters[`../assets/shapes/${posterId}-${tone}.png`]?.default;
+const gl = id.startsWith('gl-') ? id.slice(3) : undefined;
+const kind = gl ? 'gl' : id === 'flow' || id === 'dots' ? id : undefined;
+const big = size === undefined || size > 200;
+const posterUrl = poster
+  ? (await getImage({ src: poster, width: big ? 480 : 240, format: 'avif', quality: 60 })).src
+  : undefined;
+---
+
+<span
+  class:list={['lab-shape', id, className && 'placed', className]}
+  data-shape={kind}
+  data-gl={gl}
+  data-tone={tone}
+  data-probe={probe ? '' : undefined}
+  data-poster={posterUrl}
+  style={size ? `--s:${size}px` : undefined}
+  aria-hidden="true"
+>
+  {posterUrl && (
+    <noscript>
+      <img src={posterUrl} alt="" width="240" height="240" loading="lazy" decoding="async" />
+    </noscript>
+  )}
+  {id === 'video-flow' && (
+    <video
+      data-lazy
+      data-webm={`/lab/video/flow-${tone === 'paper' ? 'paper' : 'dark'}.webm`}
+      data-mp4={`/lab/video/flow-${tone === 'paper' ? 'paper' : 'dark'}.mp4`}
+      muted
+      loop
+      playsinline
+      preload="none"
+      width={size}
+      height={size}
+    />
+  )}
+  {id === 'css-orb' && <span class="film" />}
+  {id === 'svg-contour' && (
+    <svg viewBox="0 0 1000 1000">
+      <use href="/shapes/contour.svg#c" class="c1" />
+      <use href="/shapes/contour.svg#c" class="c2" />
+    </svg>
+  )}
+  {id === 'css-ring' && (
+    <span class="tilt">
+      <span class="band" />
+      <span class="tube" />
+    </span>
+  )}
+</span>
+
+<style>
+  .lab-shape {
+    position: relative;
+    display: block;
+    width: var(--s);
+    height: var(--s);
+    pointer-events: none;
+    flex: none;
+  }
+  /* Inside a section's .shapes layer: positioned by the section's own class. */
+  .lab-shape.placed {
+    position: absolute;
+  }
+  .lab-shape :global(canvas),
+  .lab-shape :global(img),
+  .lab-shape video,
+  .lab-shape svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .lab-shape video {
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .lab-shape[data-live] video {
+    opacity: 1;
+  }
+
+  /* ---------------- css-orb ---------------- */
+  .css-orb {
+    border-radius: 50%;
+    isolation: isolate;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 34% 28%, #fff 0, #dfe4ff 7%, transparent 24%),
+      radial-gradient(
+        circle at 40% 36%,
+        #8f9cff 0,
+        var(--accent) 34%,
+        #1b2484 66%,
+        var(--deep) 100%
+      );
+    box-shadow: 0 calc(var(--s) * 0.16) calc(var(--s) * 0.3) calc(var(--s) * -0.14)
+      color-mix(in oklab, var(--accent) 65%, transparent);
+    animation: lab-bob 9s ease-in-out infinite;
+  }
+  .css-orb .film {
+    position: absolute;
+    inset: -12%;
+    background: conic-gradient(from 30deg, #ff8ad8, #8af0ff, #ffd27a, #b28cff, #8af0ff, #ff8ad8);
+    -webkit-mask: radial-gradient(closest-side, transparent 58%, #000 86%);
+    mask: radial-gradient(closest-side, transparent 58%, #000 86%);
+    mix-blend-mode: overlay;
+    opacity: 0.95;
+    animation: lab-spin 14s linear infinite;
+  }
+  .css-orb::before {
+    /* lower-right bounce light */
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 72% 82%, rgba(138, 240, 255, 0.55), transparent 32%);
+    mix-blend-mode: screen;
+  }
+  .css-orb::after {
+    /* baked grain: feTurbulence rasterised once, never re-filtered per frame */
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 -.35'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: soft-light;
+    opacity: 0.7;
+  }
+  [data-tone='accent'].css-orb {
+    background:
+      radial-gradient(circle at 34% 28%, #fff 0, #eef0ff 8%, transparent 26%),
+      radial-gradient(circle at 40% 36%, #c9d1ff 0, #7d8cff 36%, #1b2484 72%, var(--deep) 100%);
+    box-shadow: 0 calc(var(--s) * 0.16) calc(var(--s) * 0.3) calc(var(--s) * -0.14)
+      rgba(5, 8, 28, 0.55);
+  }
+
+  /* ---------------- css-ring ---------------- */
+  .css-ring {
+    perspective: calc(var(--s) * 3);
+  }
+  .css-ring .tilt {
+    position: absolute;
+    inset: 0;
+    transform: rotateX(62deg) rotateY(-12deg);
+    -webkit-mask: radial-gradient(closest-side, transparent 55%, #000 57%, #000 97%, transparent);
+    mask: radial-gradient(closest-side, transparent 55%, #000 57%, #000 97%, transparent);
+    animation: lab-tilt 12s ease-in-out infinite alternate;
+  }
+  .css-ring .band {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(var(--accent), #8af0ff, #ff8ad8, #ffd27a, #b28cff, var(--accent));
+    animation: lab-spin 10s linear infinite;
+  }
+  .css-ring .tube {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background:
+      radial-gradient(
+        closest-side,
+        transparent 55%,
+        rgba(5, 8, 28, 0.6) 58%,
+        rgba(5, 8, 28, 0.1) 64%,
+        rgba(255, 255, 255, 0.75) 71%,
+        rgba(255, 255, 255, 0) 79%,
+        rgba(5, 8, 28, 0.15) 90%,
+        rgba(5, 8, 28, 0.6) 98%
+      ),
+      linear-gradient(170deg, rgba(255, 255, 255, 0.35), transparent 40%, rgba(5, 8, 28, 0.35));
+  }
+
+  /* ---------------- svg-contour ---------------- */
+  .svg-contour {
+    color: var(--ink);
+  }
+  [data-tone='dark'].svg-contour {
+    color: #c9d1ff;
+  }
+  [data-tone='accent'].svg-contour {
+    color: #fff;
+  }
+  .svg-contour use {
+    transform-origin: 500px 500px;
+    animation: lab-spin 60s linear infinite;
+  }
+  .svg-contour .c2 {
+    opacity: 0.45;
+    transform: scale(0.94) rotate(40deg);
+    animation: lab-spin-r 45s linear infinite;
+  }
+
+  @keyframes lab-bob {
+    50% {
+      transform: translate3d(0, calc(var(--s) * -0.04), 0);
+    }
+  }
+  @keyframes lab-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes lab-spin-r {
+    from {
+      transform: scale(0.94) rotate(40deg);
+    }
+    to {
+      transform: scale(0.94) rotate(-320deg);
+    }
+  }
+  @keyframes lab-tilt {
+    to {
+      transform: rotateX(68deg) rotateY(10deg);
+    }
+  }
+
+  /* Base.astro's IntersectionObserver sets data-paused on off-screen .shapes groups. */
+  :global(.shapes[data-paused]) .lab-shape,
+  :global(.shapes[data-paused]) .lab-shape *,
+  :global(.shapes[data-paused]) .lab-shape::before,
+  :global(.shapes[data-paused]) .lab-shape::after {
+    animation-play-state: paused;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lab-shape,
+    .lab-shape *,
+    .lab-shape::before,
+    .lab-shape::after {
+      animation: none !important;
+    }
+  }
+</style>
