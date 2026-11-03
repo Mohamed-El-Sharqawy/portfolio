@@ -1,5 +1,4 @@
 ---
-import Shape from './Shape.astro';
 import ShaderShape from '../shapes/ShaderShape.astro';
 import Pipeline from './Pipeline.astro';
 import { profile, stats } from '../data/site';
@@ -10,7 +9,6 @@ import { profile, stats } from '../data/site';
     <ShaderShape id="css-orb" tone="paper" class="s-orb" />
     <ShaderShape id="dots" tone="paper" class="s-dots" />
     <ShaderShape id="gl-ribbon" tone="paper" class="s-ribbon" />
-    <Shape kind="cube" class="s-cube" />
   </div>
 
   <div class="wrap">
@@ -150,23 +148,19 @@ import { profile, stats } from '../data/site';
 
   /* Shapes — desktop placement (approved canvas, 1440px) */
   .shapes :global(.s-orb) {
-    --s: 300px;
-    right: 110px;
+    --s: 260px;
+    right: 150px;
     top: 110px;
   }
   .shapes :global(.s-dots) {
-    --s: 220px;
-    right: -20px;
-    top: 250px;
+    --s: 160px;
+    right: -40px;
+    top: 300px;
   }
   .shapes :global(.s-ribbon) {
-    --s: 190px;
-    right: 390px;
-    top: 345px;
-  }
-  .shapes :global(.s-cube) {
-    right: 470px;
-    top: 230px;
+    --s: 150px;
+    right: 380px;
+    top: 330px;
   }
 
   @media (max-width: 960px) {
@@ -243,9 +237,6 @@ import { profile, stats } from '../data/site';
       top: 146px;
     }
     .shapes :global(.s-ribbon) {
-      display: none;
-    }
-    .shapes :global(.s-cube) {
       display: none;
     }
   }
