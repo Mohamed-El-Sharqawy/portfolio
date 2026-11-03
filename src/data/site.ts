@@ -32,10 +32,10 @@ export const stats = [
 export const companies = ['Global Dynamics', 'Forever Events', 'Grwan Group', 'ASDC'] as const;
 
 export const navLinks = [
-  { href: '/#work', label: 'Work' },
-  { href: '/#agents', label: 'Agents' },
-  { href: '/#experience', label: 'Experience' },
-  { href: '/#stack', label: 'Stack' },
+  { href: '/#work', label: 'Work', note: 'Selected systems and case studies' },
+  { href: '/#agents', label: 'Agents', note: 'How I run AI agent engineering teams' },
+  { href: '/#experience', label: 'Experience', note: 'Roles, companies and impact' },
+  { href: '/#stack', label: 'Stack', note: 'Languages, frameworks and tooling' },
 ] as const;
 
 export type LogLine = { t: string; agent: string; msg: string };

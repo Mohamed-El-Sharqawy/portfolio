@@ -26,6 +26,9 @@ import { navLinks, profile } from '../data/site';
         aria-controls="mobile-menu"
         aria-label="Open menu"
       >
+        <span class="menu-word mono" aria-hidden="true">
+          Menu
+        </span>
         <svg
           width="18"
           height="18"
@@ -42,31 +45,82 @@ import { navLinks, profile } from '../data/site';
       </button>
     </div>
   </div>
+
+  <!-- Full-screen mobile menu: fixed under the header bar, page behind is inert. -->
   <nav id="mobile-menu" class="mobile-menu" aria-label="Mobile" hidden>
-    <ul role="list">
-      {navLinks.map((l) => (
-        <li>
-          <a href={l.href}>{l.label}</a>
-        </li>
-      ))}
-      <li>
-        <a href={profile.cvUrl}>CV (PDF)</a>
-      </li>
-      <li>
-        <a href="/#contact">Contact</a>
-      </li>
-    </ul>
+    <div class="menu-inner">
+      <p class="menu-label mono">Navigation</p>
+      <ul role="list" class="menu-links">
+        {navLinks.map((l, i) => (
+          <li style={`--i:${i}`}>
+            <a href={l.href}>
+              <span class="idx mono" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <span class="txt">
+                <span class="name">{l.label}</span>
+                <span class="note">{l.note}</span>
+              </span>
+              <span class="arrow" aria-hidden="true">
+                →
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <div class="menu-foot" style={`--i:${navLinks.length}`}>
+        <p class="menu-label mono">
+          <span class="dot" aria-hidden="true"></span>
+          {profile.availabilityShort}
+        </p>
+        <div class="menu-ctas">
+          <a href="/#contact" class="btn btn--accent">
+            Start a conversation <span aria-hidden="true">→</span>
+          </a>
+          <a href={profile.cvUrl} class="btn">
+            Download CV<span class="sr-only"> (PDF)</span>
+          </a>
+        </div>
+        <ul role="list" class="menu-meta mono">
+          <li>
+            <a href={`mailto:${profile.email}`}>{profile.email}</a>
+          </li>
+          <li>
+            <a href={profile.linkedin} rel="noopener me">
+              LinkedIn <span aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li>
+            <a href={profile.github} rel="noopener me">
+              GitHub <span aria-hidden="true">↗</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
   </nav>
 </header>
 
 <script>
+  const header = document.querySelector<HTMLElement>('.site-header');
   const btn = document.querySelector<HTMLButtonElement>('.menu-btn');
   const menu = document.getElementById('mobile-menu');
-  if (btn && menu) {
+  if (header && btn && menu) {
+    // Everything outside the header is made inert while the menu is open, so focus,
+    // clicks and screen readers stay inside the header + menu (no custom focus trap).
+    const outside = [...document.body.children].filter(
+      (el): el is HTMLElement => el instanceof HTMLElement && el !== header && !el.contains(header),
+    );
     const set = (open: boolean) => {
       btn.setAttribute('aria-expanded', String(open));
       btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      const word = btn.querySelector('.menu-word');
+      if (word) word.textContent = open ? 'Close' : 'Menu';
       menu.hidden = !open;
+      header.classList.toggle('is-open', open);
+      document.documentElement.classList.toggle('menu-open', open);
+      outside.forEach((el) => (el.inert = open));
     };
     btn.addEventListener('click', () => set(menu.hidden !== false));
     menu.addEventListener('click', (e) => {
@@ -91,6 +145,15 @@ import { navLinks, profile } from '../data/site';
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--line);
+  }
+  /* backdrop-filter would make the header the containing block of the fixed menu. */
+  .site-header.is-open {
+    background: var(--paper);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  :global(html.menu-open) {
+    overflow: hidden;
   }
   .bar {
     display: flex;
@@ -151,16 +214,29 @@ import { navLinks, profile } from '../data/site';
     background: var(--accent);
     color: var(--white);
   }
+
+  /* ---------- Menu button ---------- */
   .menu-btn {
     display: none;
-    width: 44px;
+    gap: 10px;
     height: 44px;
+    padding: 0 12px 0 14px;
     border-radius: var(--radius-sm);
     border: 1.5px solid var(--ink);
     background: transparent;
+    color: var(--ink);
     align-items: center;
     justify-content: center;
     cursor: pointer;
+  }
+  .menu-word {
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .menu-btn[aria-expanded='true'] {
+    background: var(--ink);
+    color: var(--paper);
   }
   .menu-btn path {
     transition: transform 0.2s ease;
@@ -172,23 +248,141 @@ import { navLinks, profile } from '../data/site';
   .menu-btn[aria-expanded='true'] .l2 {
     transform: translateY(-4px) rotate(-45deg);
   }
+
+  /* ---------- Full-screen menu ---------- */
   .mobile-menu {
-    border-top: 1px solid var(--line);
+    position: fixed;
+    inset: var(--header-h) 0 0;
+    z-index: 9;
+    height: calc(100dvh - var(--header-h));
     background: var(--paper);
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
-  .mobile-menu ul {
-    margin: 0;
-    padding: 8px var(--gutter) 16px;
+  .mobile-menu[hidden] {
+    display: none;
   }
-  .mobile-menu a {
+  .menu-inner {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    padding: 28px var(--gutter) max(28px, env(safe-area-inset-bottom));
+  }
+  .menu-label {
     display: flex;
     align-items: center;
-    min-height: 52px;
-    font-size: 1.375rem;
-    font-weight: 600;
-    letter-spacing: -0.03em;
-    border-bottom: 1px solid var(--line);
+    gap: 8px;
+    margin: 0;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
   }
+  .menu-links {
+    margin: 14px 0 0;
+    padding: 0;
+    border-top: 1px solid var(--ink);
+  }
+  .menu-links a {
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+  }
+  .idx {
+    font-size: 0.75rem;
+    color: var(--accent);
+  }
+  .txt {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+  .name {
+    font-size: 2rem;
+    line-height: 1;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+  }
+  .note {
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+  .arrow {
+    font-size: 1.25rem;
+    color: var(--muted);
+    transition: transform 0.15s ease;
+  }
+  .menu-links a:hover .name,
+  .menu-links a:focus-visible .name {
+    color: var(--accent);
+  }
+  .menu-links a:hover .arrow {
+    transform: translateX(4px);
+    color: var(--accent);
+  }
+  .menu-foot {
+    margin-top: auto;
+    padding-top: 32px;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .menu-ctas {
+    display: grid;
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .menu-ctas .btn {
+    width: 100%;
+  }
+  .menu-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 20px;
+    margin: 20px 0 0;
+    padding: 0;
+    font-size: 0.8125rem;
+  }
+  .menu-meta a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--body);
+  }
+  .menu-meta a:hover {
+    color: var(--accent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .mobile-menu:not([hidden]) {
+      animation: menu-fade 0.2s ease both;
+    }
+    .mobile-menu:not([hidden]) .menu-links li,
+    .mobile-menu:not([hidden]) .menu-foot {
+      animation: menu-in 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+      animation-delay: calc(var(--i, 0) * 45ms + 60ms);
+    }
+  }
+  @keyframes menu-fade {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 14px, 0);
+    }
+  }
+
   @media (max-width: 960px) {
     .navlinks,
     .cv,
@@ -199,8 +393,14 @@ import { navLinks, profile } from '../data/site';
       display: inline-flex;
     }
   }
+  @media (max-width: 640px) {
+    .name {
+      font-size: 1.75rem;
+    }
+  }
   @media (prefers-reduced-motion: reduce) {
-    .menu-btn path {
+    .menu-btn path,
+    .arrow {
       transition: none;
     }
   }
