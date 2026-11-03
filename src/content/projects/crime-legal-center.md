@@ -1,8 +1,7 @@
 ---
-order: 1
+order: 2
 name: Crime & Legal Center
 category: Enterprise
-featured: true
 company: global-dynamics
 tagline: High-security case management platform
 summary: High-security case management for crime and legal records — strict access control, auditability and heavy concurrent use.

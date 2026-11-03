@@ -1,5 +1,5 @@
 ---
-order: 5
+order: 6
 name: LeanGo E&T
 category: Platform
 company: grwan-group

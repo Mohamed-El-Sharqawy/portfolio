@@ -31,7 +31,7 @@
     "order": 2,
     "company": "Forever Events",
     "role": "Full-Stack Engineer",
-    "period": "Sep 2025 – Mar 2026",
+    "period": "Sep 2025 – Sep 2026",
     "location": "Dubai · Remote",
     "summary": "E-commerce and corporate sites with CMS + CRM, Diaflower, a shared accessible component library and SEO.",
     "stack": ["Next.js 15", "React 19", "TypeScript", "Tailwind CSS", "Headless CMS", "SEO"],

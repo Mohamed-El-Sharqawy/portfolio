@@ -1,5 +1,5 @@
 ---
-order: 2
+order: 3
 name: Police Academy LMS
 category: Enterprise
 company: global-dynamics

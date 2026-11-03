@@ -24,8 +24,8 @@ const projects = defineCollection({
     name: z.string(),
     category: z.enum(['Enterprise', 'E-commerce', 'Platform']),
     featured: z.boolean().default(false),
-    /** Company the work was delivered with (id in the experience collection). */
-    company: reference('experience'),
+    /** Company the work was delivered with (id in the experience collection). Personal projects omit it. */
+    company: reference('experience').optional(),
     tagline: z.string(),
     /** Short card copy for the home page grid. */
     summary: z.string(),

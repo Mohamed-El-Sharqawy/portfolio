@@ -1,5 +1,5 @@
 ---
-order: 3
+order: 4
 name: LeanGo WMS
 category: Platform
 company: grwan-group

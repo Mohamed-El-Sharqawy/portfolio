@@ -5,7 +5,9 @@ import ShaderShape from '../shapes/ShaderShape.astro';
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
 const featured = projects.find((p) => p.data.featured) ?? projects[0]!;
 const rest = projects.filter((p) => p.id !== featured.id);
-const featuredCompany = await getEntry(featured.data.company);
+const featuredCompany = featured.data.company
+  ? await getEntry(featured.data.company)
+  : undefined;
 const num = (n: number) => String(n).padStart(2, '0');
 ---
 

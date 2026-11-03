@@ -17,7 +17,7 @@ export const getStaticPaths = (async () => {
 
 const { project, next } = Astro.props;
 const p = project.data;
-const company = await getEntry(p.company);
+const company = p.company ? await getEntry(p.company) : undefined;
 const { Content } = await render(project);
 const num = String(p.order).padStart(2, '0');
 const url = new URL(`/work/${project.id}/`, SITE_URL).href;
