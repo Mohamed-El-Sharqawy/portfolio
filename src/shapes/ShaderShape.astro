@@ -15,6 +15,7 @@ import type { Tone } from './types';
 import Flow from './scripts/flow.astro';
 import Dots from './scripts/dots.astro';
 import Gl from './scripts/gl.astro';
+import Video from '../lab/shapes/scripts/video.astro';
 
 interface Props {
   id: string;
@@ -85,6 +86,7 @@ const posterUrl = poster
 {kind === 'flow' && <Flow />}
 {kind === 'dots' && <Dots />}
 {kind === 'gl' && <Gl />}
+{id === 'video-flow' && <Video />}
 
 <style>
   .lab-shape {

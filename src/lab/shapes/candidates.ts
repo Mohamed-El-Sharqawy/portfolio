@@ -75,6 +75,14 @@ export const candidates: Candidate[] = [
     replaces: 'Hero capsule · case-study capsule',
     note: 'Three twisting bands with faked normals; the cheapest shader here.',
   },
+  {
+    id: 'video-flow',
+    name: 'Flow sphere (pre-rendered video)',
+    group: 'video',
+    technique: 'VP9 WebM with alpha + H.264 MP4 fallback, loaded on view',
+    replaces: 'Baseline for comparison only',
+    note: 'Same look as the flow-field sphere, pre-rendered. Shown for byte and decode cost against live rendering.',
+  },
 ];
 
 export const byId = (id: string) => candidates.find((c) => c.id === id);
