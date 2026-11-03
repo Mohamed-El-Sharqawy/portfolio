@@ -1,5 +1,5 @@
 ---
-order: 7
+order: 5
 name: Diaflower
 category: E-commerce
 company: forever-events
@@ -16,7 +16,9 @@ A gifting and flower e-commerce store where the business controls everything —
 
 ## My part
 
-I built the platform at Forever Events: the storefront, the **CMS-driven** catalog and content, the **CRM integration**, and the **SEO** work. It drew on the reusable, accessible component library I authored and shared across Forever Events projects.
+I built the platform at Forever Events and **owned delivery end to end**: frontend, CMS/CRM integrations, SEO, and production deployment via CI/CD — the storefront, the **CMS-driven** catalog and content, the **CRM integration**, and the **SEO** work. It drew on the reusable, accessible component library I authored and shared across Forever Events projects.
+
+Live site: [diaflower.com](https://diaflower.com)
 
 ## How it was built
 

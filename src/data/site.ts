@@ -4,12 +4,11 @@ export const profile = {
   name: 'Mohamed Ahmed',
   role: 'Full-Stack Engineer & AI Agentic Systems',
   headline: 'Full-stack engineer · AI agent orchestration',
-  availability: 'Available — Dubai, UAE · remote',
-  availabilityShort: 'Available — Dubai · remote',
-  location: 'Dubai, UAE · Open to remote',
+  availability: 'Available now · Dubai · on-site, hybrid or remote',
+  availabilityShort: 'Available now · Dubai',
+  location: 'Dubai, UAE · on-site, hybrid or remote',
   email: 'dev.elsharqawy@gmail.com',
   phone: '+971 54 200 9458',
-  phoneEgypt: '+20 102 114 1193',
   linkedin: 'https://www.linkedin.com/in/mohamed-ahmed-elsharqawy',
   github: 'https://github.com/Mohamed-El-Sharqawy',
   githubUsername: 'Mohamed-El-Sharqawy',
@@ -26,8 +25,8 @@ export const siteDescription =
 
 export const stats = [
   { value: '3+', label: 'Years in production' },
-  { value: '1M+', label: 'Users reached' },
-  { value: '6 · 4', label: 'Companies · countries' },
+  { value: '1M+', label: 'Built for · potential users' },
+  { value: '4 · 4', label: 'Companies · countries' },
   { value: '15+', label: 'Systems shipped' },
 ] as const;
 

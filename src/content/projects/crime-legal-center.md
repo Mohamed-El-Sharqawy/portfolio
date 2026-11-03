@@ -17,7 +17,7 @@ A case-management platform for crime and legal records, part of the national-sca
 
 ## My part
 
-I cooperated with the team on the frontend: the case-management interfaces, the access-aware views that only show what a role may see, and the patterns that keep record history traceable.
+I worked full-stack on the platform: the **case-management interfaces** and the access-aware views that only show what a role may see, together with **database design, data handling and system architecture** decisions shared with the team — the patterns that keep record history traceable and every action attributable.
 
 ## How it was built
 

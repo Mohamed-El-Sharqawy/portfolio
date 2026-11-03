@@ -9,7 +9,7 @@ export const personSchema = {
   name: profile.name,
   jobTitle: 'Full-Stack Engineer',
   email: `mailto:${profile.email}`,
-  telephone: [tel(profile.phone), tel(profile.phoneEgypt)],
+  telephone: [tel(profile.phone)],
   url: SITE_URL,
   sameAs: [profile.linkedin, profile.github],
   address: {

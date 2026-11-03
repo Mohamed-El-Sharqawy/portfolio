@@ -18,6 +18,8 @@ A full learning-management system for a national police academy: students, instr
 
 With the team I built the **student–instructor chat**, the **academic statistics dashboards**, and the **secure multi-level access** model that decides what each role can see and do.
 
+The hard problem: a **zero-downtime migration to a new database schema** — ~700K users, 42K+ courses, 100+ training centers and 1.5M+ relationships moved with data kept consistent and performance stable throughout. Working full-stack here, I owned parts of the database design, data handling and system architecture alongside the frontend.
+
 ## How it was built
 
 - **Next.js 16 + React 19** with **TypeScript**.
@@ -26,4 +28,4 @@ With the team I built the **student–instructor chat**, the **academic statisti
 
 ## Outcome
 
-Academy operations — teaching, communication and reporting — running at national scale on one platform.
+Academy operations — teaching, communication and reporting — running at national scale on one platform, through a live schema migration users never noticed.

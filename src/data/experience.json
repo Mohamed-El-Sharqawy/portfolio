@@ -19,10 +19,11 @@
       "Docker"
     ],
     "highlights": [
-      "Leading frontend alongside the team on national-scale systems in Iraq",
+      "Full-stack across frontend and backend: database design, data handling, system architecture",
+      "Zero-downtime migration of ~700K users, 42K+ courses, 100+ training centers, 1.5M+ relationships to a new schema",
       "Police Academy LMS — built chat, statistics dashboards, and secure multi-level access with the team",
       "Training Center Management System — helped deliver the nationwide platform and its dashboards",
-      "Crime & Legal Center — cooperated on high-security case management, 1M+ potential users",
+      "Crime & Legal Center — full-stack on high-security case management, 1M+ potential users",
       "Improved performance via code-splitting, caching, memoization"
     ]
   },
@@ -36,6 +37,7 @@
     "summary": "E-commerce and corporate sites with CMS + CRM, Diaflower, a shared accessible component library and SEO.",
     "stack": ["Next.js 15", "React 19", "TypeScript", "Tailwind CSS", "Headless CMS", "SEO"],
     "highlights": [
+      "Owned delivery end to end: frontend, CMS/CRM integrations, SEO, production deployment via CI/CD",
       "Built and optimized e-commerce and corporate sites with CMS + CRM integrations",
       "Diaflower — built the gifting and flower e-commerce platform with full CMS control",
       "Advanced SEO → helped clients reach top rankings for business keywords",
@@ -53,6 +55,7 @@
     "stack": ["React 19", "Next.js 15", "TypeScript", "React Query", "Tailwind CSS"],
     "highlights": [
       "Helped build the LeanGo platform suite for enterprise operations",
+      "Delivered all 3 products from one shared React/Next.js codebase with reusable, typed component patterns",
       "Inspection — built facility-management workflows",
       "WMS — built warehouse management views with role-based access and reporting",
       "E&T — contributed to the enterprise social network for skills tracking"
