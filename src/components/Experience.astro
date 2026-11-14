@@ -38,10 +38,16 @@ const education = (await getCollection('education')).sort((a, b) => a.data.order
     </ol>
     <div class="edu">
       <p>{education.map(({ data: e }) => `${e.credential}, ${e.shortInstitution}`).join(' · ')}</p>
-      <a href={profile.cvUrl} class="btn btn--ghost cv" target="_blank" rel="noopener">
-        Full CV (PDF) <span aria-hidden="true">↗</span>
-        <span class="sr-only"> (opens in a new tab)</span>
-      </a>
+      <div class="docs">
+        <a href={profile.cvUrl} class="btn btn--ghost cv" target="_blank" rel="noopener">
+          Full CV (PDF) <span aria-hidden="true">↗</span>
+          <span class="sr-only"> (opens in a new tab)</span>
+        </a>
+        <a href={profile.supportingUrl} class="btn btn--ghost cv" target="_blank" rel="noopener">
+          Supporting materials (PDF) <span aria-hidden="true">↗</span>
+          <span class="sr-only"> (opens in a new tab)</span>
+        </a>
+      </div>
     </div>
   </div>
 </section>
@@ -91,6 +97,11 @@ const education = (await getCollection('education')).sort((a, b) => a.data.order
     gap: 16px;
     align-items: center;
     color: var(--muted);
+  }
+  .docs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
   }
   .cv {
     min-height: 48px;

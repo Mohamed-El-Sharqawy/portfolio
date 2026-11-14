@@ -52,6 +52,7 @@ const contact = () =>
     `- [LinkedIn](${profile.linkedin})`,
     `- [GitHub](${profile.github})`,
     `- [CV (PDF)](${url(profile.cvUrl)})`,
+    `- [Supporting materials (PDF)](${url(profile.supportingUrl)})`,
     '',
   ].join('\n');
 
