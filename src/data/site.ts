@@ -30,7 +30,7 @@ export const stats = [
   { value: '15+', label: 'Systems shipped' },
 ] as const;
 
-export const companies = ['Global Dynamics', 'Forever Events', 'Grwan Group', 'ASDC'] as const;
+export const companies = ['Global Dynamics', 'Dia Flower', 'Grwan Group', 'ASDC'] as const;
 
 export const navLinks = [
   { href: '/#work', label: 'Work', note: 'Selected systems and case studies' },

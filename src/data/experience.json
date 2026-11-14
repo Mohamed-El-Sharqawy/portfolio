@@ -28,18 +28,19 @@
     ]
   },
   {
-    "id": "forever-events",
+    "id": "dia-flower",
     "order": 2,
-    "company": "Forever Events",
+    "company": "Dia Flower",
     "role": "Full-Stack Engineer",
     "period": "Nov 2024 – May 2025",
     "location": "Dubai · Remote",
-    "summary": "E-commerce and corporate sites with CMS + CRM, Diaflower, a shared accessible component library and SEO.",
+    "summary": "4 live sites for the Forever Events group — diaflower.com, luviflowers.com, redevents.ae and foreverevents.ae — with CMS + CRM, a shared accessible component library and SEO.",
     "stack": ["Next.js 15", "React 19", "TypeScript", "Tailwind CSS", "Headless CMS", "SEO"],
     "highlights": [
       "Owned delivery end to end: frontend, CMS/CRM integrations, SEO, production deployment via CI/CD",
       "Built and optimized e-commerce and corporate sites with CMS + CRM integrations",
       "Diaflower — built the gifting and flower e-commerce platform with full CMS control",
+      "Built features for 4 live Forever Events group sites: diaflower.com, luviflowers.com, redevents.ae, foreverevents.ae",
       "Advanced SEO → helped clients reach top rankings for business keywords",
       "Reusable accessible component library — authored and shared across projects"
     ]

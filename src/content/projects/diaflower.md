@@ -2,7 +2,7 @@
 order: 5
 name: Diaflower
 category: E-commerce
-company: forever-events
+company: dia-flower
 tagline: Gifting and flower e-commerce, fully CMS-driven
 summary: Gifting and flower e-commerce, fully CMS-driven.
 description: E-commerce experience for gifting and flowers with full CMS control over catalog and content, CRM integration, and advanced SEO.
@@ -16,9 +16,14 @@ A gifting and flower e-commerce store where the business controls everything —
 
 ## My part
 
-I built the platform at Forever Events and **owned delivery end to end**: frontend, CMS/CRM integrations, SEO, and production deployment via CI/CD — the storefront, the **CMS-driven** catalog and content, the **CRM integration**, and the **SEO** work. It drew on the reusable, accessible component library I authored and shared across Forever Events projects.
+I built the platform at Dia Flower, part of the Forever Events group, and **owned delivery end to end**: frontend, CMS/CRM integrations, SEO, and production deployment via CI/CD — the storefront, the **CMS-driven** catalog and content, the **CRM integration**, and the **SEO** work. It drew on the reusable, accessible component library I authored and shared across the group's sites.
 
-Live site: [diaflower.com](https://diaflower.com)
+Across the Forever Events group I built features for 4 live sites:
+
+- [diaflower.com](https://diaflower.com) — gifting and flower e-commerce (this project)
+- [luviflowers.com](https://luviflowers.com)
+- [redevents.ae](https://redevents.ae)
+- [foreverevents.ae](https://foreverevents.ae)
 
 ## How it was built
 
