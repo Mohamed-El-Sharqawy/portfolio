@@ -48,16 +48,5 @@
       ["CloudWatch + RUM"],
       ["RDS / Aurora", "DynamoDB", "ElastiCache", "SQS / SNS / EventBridge"]
     ]
-  },
-  {
-    "id": "azure",
-    "order": 6,
-    "group": "Azure",
-    "rows": [
-      ["Static Web Apps", "Front Door", "Container Apps", "Functions"],
-      ["API Management", "Entra ID", "RBAC", "Key Vault"],
-      ["Blob SAS URLs", "Azure Monitor", "Application Insights"],
-      ["Azure PostgreSQL", "Cosmos DB", "Managed Redis", "Service Bus / Event Grid"]
-    ]
   }
 ]

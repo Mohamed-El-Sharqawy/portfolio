@@ -7,7 +7,7 @@ tagline: Three enterprise systems, one shared codebase
 summary: Facility inspection, warehouse management and an employee skills network — delivered as one LeanGo suite on a shared React/Next.js codebase.
 description: An enterprise suite of three systems for Global Lean Industry (gLi) — facility inspection, warehouse management (WMS), and an employee skills network — with granular permissions and reporting, built from one shared codebase.
 impact: All 3 products delivered from one shared React/Next.js codebase
-stack: [React 19, Next.js 15, TypeScript, React Query, Tailwind CSS]
+stack: [React 18, Next.js 14, TypeScript, React Query, Tailwind CSS]
 ---
 
 ## The brief
@@ -26,7 +26,7 @@ I helped build the full suite, translating Figma wireframes and mockups into int
 
 ## How it was built
 
-- **React 19 + Next.js 15** with **TypeScript** end to end.
+- **React 18 + Next.js 14** with **TypeScript** end to end.
 - **React Query** for server state; **Tailwind CSS** for the shared design language.
 - Shared, typed component patterns so each system reused the same permissions and reporting primitives.
 

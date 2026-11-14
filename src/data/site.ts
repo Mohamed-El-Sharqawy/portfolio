@@ -21,10 +21,10 @@ export const tel = (phone: string): string => `tel:${phone.replace(/\s/g, '')}`;
 
 export const siteTitle = 'Mohamed Ahmed — Full-Stack Engineer & AI Agentic Systems';
 export const siteDescription =
-  'Full-stack engineer with a frontend specialty, building national-scale systems — and the AI agent teams that help ship them. 3+ years of production experience across enterprise platforms, e-commerce, and ERP.';
+  'Full-stack engineer with a frontend specialty, building national-scale systems — and the AI agent teams that help ship them. 4+ years of production experience across enterprise platforms, e-commerce, and ERP.';
 
 export const stats = [
-  { value: '3+', label: 'Years in production' },
+  { value: '4+', label: 'Years in production' },
   { value: '1M+', label: 'Built for · potential users' },
   { value: '4 · 4', label: 'Companies · countries' },
   { value: '15+', label: 'Systems shipped' },
