@@ -349,6 +349,14 @@ a:hover { color: var(--ink); }
 }
 .is-3d .panel-open-btn:not([hidden]) { border-radius: var(--sketch-radius-2); background: #fff; }
 .is-3d .back-btn:hover, .is-3d .panel-open-btn:hover { background: var(--ochre); }
+/* panels never open by themselves: the button asks for attention instead */
+.is-3d .panel-open-btn:not([hidden]) { background: var(--ochre); box-shadow: 3px 3px 0 var(--ink); animation: nudge 1.8s ease-in-out infinite; }
+.is-3d .panel-open-btn:not([hidden])::after { content: ' →'; }
+@keyframes nudge {
+  0%, 100% { transform: translateY(0) rotate(0); box-shadow: 3px 3px 0 var(--ink), 0 0 0 0 rgba(200, 85, 61, 0.55); }
+  50% { transform: translateY(-3px) rotate(-1.2deg); box-shadow: 3px 6px 0 var(--ink), 0 0 0 10px rgba(200, 85, 61, 0); }
+}
+@media (prefers-reduced-motion: reduce) { .is-3d .panel-open-btn:not([hidden]) { animation: none; } }
 
 .enter-card { display: none; }
 .is-3d .enter-card:not([hidden]) {
@@ -414,11 +422,16 @@ html.lenis, html.lenis body { height: auto; }
   .is-3d .doors-nav a { font-size: 1.15rem; padding: 0 0.2rem; white-space: nowrap; }
   /* five rooms: one line that scrolls sideways instead of wrapping into the buttons below */
   .is-3d .hud { gap: 0.5rem; }
-  .is-3d .doors-nav { min-width: 0; overflow-x: auto; scrollbar-width: none; -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent); mask-image: linear-gradient(90deg, #000 88%, transparent); }
+  .is-3d .doors-nav { min-width: 0; overflow-x: auto; scrollbar-width: none; -webkit-mask-image: linear-gradient(90deg, #000 95%, transparent); mask-image: linear-gradient(90deg, #000 95%, transparent); }
   .is-3d .doors-nav::-webkit-scrollbar { display: none; }
-  .is-3d .doors-nav ul { flex-wrap: nowrap; gap: 0 0.35rem; padding-right: 1rem; }
-  .is-3d .hud { padding: 0.4rem 0.6rem; }
+  .is-3d .doors-nav ul { flex-wrap: nowrap; gap: 0 0.2rem; padding-right: 0.4rem; }
+  .is-3d .doors-nav a { font-size: 1.12rem; padding: 0 0.18rem; }
+  .is-3d .hud { padding: 0.4rem 0.5rem; }
   .view-toggle:not([hidden]) { font-size: 1rem; padding: 0.3rem 0.6rem; }
+  /* phones: the 3D⇄plain switch leaves the top bar (so all five rooms fit on one line, and a tap on
+     the last one can't land on it) and sits bottom-right, above the hint and the enter card */
+  .is-3d .view-toggle:not([hidden]) { position: fixed; right: 0.6rem; bottom: 4.6rem; z-index: 16; font-size: 0.95rem; }
+  .is-3d .hint { font-size: 1.15rem; right: 0.75rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

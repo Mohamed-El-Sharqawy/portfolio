@@ -168,7 +168,8 @@ export async function build({ assets }: RoomBuildContext): Promise<RoomContent> 
     ctx.fillStyle = '#fffdf8';
     ctx.fillRect(0, 0, w, h);
     roughRect(ctx, 12, 12, w - 24, h - 24, 5);
-    handText(ctx, '← scroll or drag to browse · click a poster to flip it →', w / 2, h / 2, 64, INK, 'center', w - 60);
+    const touch = matchMedia('(pointer: coarse)').matches;
+    handText(ctx, touch ? '← swipe to browse · tap a poster to flip it →' : '← scroll or drag to browse · click a poster to flip it →', w / 2, h / 2, 64, INK, 'center', w - 60);
   });
   const sign = new Mesh(new PlaneGeometry(2.6, 0.65), sketchMaterial({ map: signTex, edge: [0, 0] }));
   sign.position.set(0, 0.62, railZ + 0.16);

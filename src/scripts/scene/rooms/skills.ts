@@ -166,7 +166,7 @@ export async function build({ assets }: RoomBuildContext): Promise<RoomContent> 
     ctx.bezierCurveTo(w * 0.42, h * 0.5, w * 0.6, h * 0.58, w * 0.7, h * 0.52);
     ctx.stroke();
     handText(ctx, 'the stack I ship with', w / 2, h * 0.7, 70, '#5a5652');
-    handText(ctx, 'scroll to fly ↓', w / 2, h * 0.88, 54, TERRA);
+    handText(ctx, matchMedia('(pointer: coarse)').matches ? 'swipe up to fly ↑' : 'scroll to fly ↓', w / 2, h * 0.88, 54, TERRA);
   });
   const titleMat = cutout(titleTex);
   titleMat.transparent = true; // drawn after the clouds, so the first bank never veils it

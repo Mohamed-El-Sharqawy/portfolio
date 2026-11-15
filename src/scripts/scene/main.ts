@@ -37,6 +37,12 @@ export async function start({ reducedMotion }: { reducedMotion: boolean }) {
   const progressBar = document.getElementById('intro-progress');
   const progressLabel = document.getElementById('intro-label');
   const hint = document.getElementById('hint');
+  // touch screens: say "swipe / tap", not "scroll / click"
+  if (matchMedia('(pointer: coarse)').matches) {
+    if (hint) hint.textContent = 'swipe up to walk · tap the easel or a door';
+    const verb = document.querySelector('.enter-card__verb');
+    if (verb) verb.textContent = 'Tap';
+  }
   const navLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-door]'));
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
@@ -591,7 +597,8 @@ export async function start({ reducedMotion }: { reducedMotion: boolean }) {
     dragY = e.clientY;
     dragDist += Math.hypot(dx, dy);
     if (dragDist > 8) dragged = true;
-    fn(vertical() ? -dy * 2.4 : -dx * 2.2);
+    // sideways rooms (the gallery) also follow an up/down swipe: on a phone that's the natural gesture
+    fn(vertical() ? -dy * 2.4 : (Math.abs(dx) >= Math.abs(dy) ? -dx : -dy) * 2.2);
   });
   const endRoomDrag = () => {
     dragX = null;

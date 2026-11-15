@@ -174,7 +174,7 @@ export function createCorridor() {
       if (y + al.length * size * 1.35 < h - 140) break;
     }
     al.forEach((l, i) => bodyText(ctx, l, 90, y + size * 0.5 + i * size * 1.35, size, '#2b2b2b', 'left'));
-    handText(ctx, 'click for next →', w - 90, h - 100, 46, '#5a5652', 'right');
+    handText(ctx, `${matchMedia('(pointer: coarse)').matches ? 'tap' : 'click'} for next →`, w - 90, h - 100, 46, '#5a5652', 'right');
   };
   const boardTex = canvasTexture(1024, 640, drawFaq);
   const nextFaq = () => {

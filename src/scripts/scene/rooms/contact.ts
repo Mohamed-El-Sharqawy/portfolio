@@ -155,7 +155,7 @@ export async function build({ assets }: RoomBuildContext): Promise<RoomContent> 
   link(mapG, MAPS_URL, [mapMat]);
 
   /* ---- a hint on the floor in front of the desk ---- */
-  const hintTex = canvasTexture(1024, 160, (ctx, w, h) => handText(ctx, 'click anything to get in touch', w / 2, h / 2, 74, GREY));
+  const hintTex = canvasTexture(1024, 160, (ctx, w, h) => handText(ctx, `${matchMedia('(pointer: coarse)').matches ? 'tap' : 'click'} anything to get in touch`, w / 2, h / 2, 74, GREY));
   const hint = new Mesh(new PlaneGeometry(2.4, 0.375), sketchMaterial({ map: hintTex, edge: [0, 0] }));
   hint.rotation.x = -Math.PI / 2;
   hint.position.set(0, 0.004, DESK_Z + 1.25);

@@ -66,7 +66,7 @@ export async function build(_ctx: RoomBuildContext): Promise<RoomContent> {
       }
       const lh = size * 1.34;
       lines.forEach((l, k) => bodyText(ctx, l, 36, 112 + lh / 2 + k * lh, size, '#2b2b2b', 'left'));
-      handText(ctx, 'click to pin it back', w / 2, h - 30, 34, '#8a8783');
+      handText(ctx, `${matchMedia('(pointer: coarse)').matches ? 'tap' : 'click'} to pin it back`, w / 2, h - 30, 34, '#8a8783');
     });
     const backMat = sketchMaterial({ map: backTex, edge: edgeFor(cardW, cardH, 0.025), paintColor: i % 2 ? COLORS.ochre : COLORS.terracotta });
     const front = new Mesh(new PlaneGeometry(cardW, cardH), mat);
