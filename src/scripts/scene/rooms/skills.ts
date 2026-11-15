@@ -117,6 +117,9 @@ export async function build({ assets }: RoomBuildContext): Promise<RoomContent> 
   const lite = narrow || (navigator.hardwareConcurrency ?? 8) <= 4;
   const k = lite ? 0.6 : 1; // fewer puffs on phones / low-end machines
   const field = createCloudField(1400, puffTexture(9));
+  // drawn after the strings and wires (renderOrder 0) so a bank veils them like it veils the balloons,
+  // but before the title (5), the mist (998) and the "used in" tags (999)
+  field.mesh.renderOrder = 3;
   world.add(field.mesh);
   const drifting: Array<{ c: ReturnType<typeof field.addCloud>; vx: number; span: number; phase: number }> = [];
   // a sea of clouds under you, and clouds off to the sides, all the way along
@@ -240,7 +243,8 @@ export async function build({ assets }: RoomBuildContext): Promise<RoomContent> 
         const t = k / 12;
         pts.push(Math.sin(t * Math.PI * 1.6 + i) * 0.06 * t, -size * 0.49 - t * len, 0);
       }
-      const string = new Line(new BufferGeometry().setAttribute('position', new Float32BufferAttribute(pts, 3)), stringMat);
+      // own material: each string fades into the haze with its balloon
+      const string = new Line(new BufferGeometry().setAttribute('position', new Float32BufferAttribute(pts, 3)), stringMat.clone());
       string.raycast = () => {};
       g.add(string);
       g.position.set(x, y, z);
@@ -273,7 +277,7 @@ export async function build({ assets }: RoomBuildContext): Promise<RoomContent> 
   for (const [na, nb] of WIRES) {
     const a = byName.get(na), b = byName.get(nb);
     if (!a || !b) continue;
-    const line = new Line(new BufferGeometry().setFromPoints([a.base, b.base]), wireMat);
+    const line = new Line(new BufferGeometry().setFromPoints([a.base, b.base]), wireMat.clone());
     line.computeLineDistances();
     line.raycast = () => {};
     const dots = [0, 1].map(() => {
@@ -433,8 +437,10 @@ export async function build({ assets }: RoomBuildContext): Promise<RoomContent> 
         b.g.position.x = b.base.x + side * part * part * (1.6 + Math.abs(b.base.x) * 0.8) + Math.sin(time * 0.37 + b.phase * 2) * 0.05 * still;
         b.g.position.y = b.base.y + (b.base.y - 2.2) * part * 0.6 + Math.sin(time * 0.9 + b.phase) * 0.07 * still;
         b.body.rotation.z = Math.sin(time * 0.7 + b.phase) * 0.05 * still;
-        // strings only once the balloon is out of the haze (lines don't fade with distance)
-        b.string.visible = ahead < 15;
+        // lines don't fog like the balloons do: fade each string in as its balloon comes out of the haze
+        const haze = 1 - smooth(8, 15, ahead);
+        (b.string.material as LineBasicMaterial).opacity = 0.75 * haze;
+        b.string.visible = haze > 0.01;
         // paint in on approach
         const near = 1 - smooth(6.5, 13, ahead);
         b.mat.uniforms.uPaint.value = Math.max(b.hover.v, near * 1.6);
@@ -446,8 +452,11 @@ export async function build({ assets }: RoomBuildContext): Promise<RoomContent> 
         pos.setXYZ(1, w.b.g.position.x, w.b.g.position.y, w.b.g.position.z);
         pos.needsUpdate = true;
         w.line.computeLineDistances();
-        w.line.visible = w.a.g.visible && w.b.g.visible;
-        for (const d of w.dots) d.visible = w.line.visible;
+        // wires and their messages fade in with the balloons they join
+        const haze = 1 - smooth(8, 15, EYE.z - (Math.min(w.a.base.z, w.b.base.z) + world.position.z));
+        (w.line.material as LineDashedMaterial).opacity = 0.7 * haze;
+        w.line.visible = w.a.g.visible && w.b.g.visible && haze > 0.01;
+        for (const d of w.dots) d.visible = w.line.visible && haze > 0.6;
         w.dots.forEach((d, k) => d.position.lerpVectors(w.a.g.position, w.b.g.position, (time * 0.35 * still + i * 0.17 + k * 0.5) % 1));
       }
       if (still) {
