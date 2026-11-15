@@ -34,7 +34,7 @@ function certificateTexture(title: string, inst: string, period: string, degree:
   });
 }
 
-/** Education room: framed certificates on the walls + a languages note. */
+/** Education room: framed certificates on the walls + a languages note (click any to read it up close). */
 export async function build({ assets }: RoomBuildContext): Promise<RoomContent> {
   const group = new Group();
   group.add(buildShell());
@@ -62,7 +62,7 @@ export async function build({ assets }: RoomBuildContext): Promise<RoomContent> 
       frame.rotation.y = s.ry;
       frame.scale.setScalar(s.s);
       const paint = Object.values(parts).map((m) => m.material as SketchMaterial);
-      tagInteractive(frame, { kind: 'card', id: `education-${i}`, paint });
+      tagInteractive(frame, { kind: 'card', id: `education-${i}`, paint, inspect: true });
       interactives.push(...(Object.values(parts) as Mesh[]));
       group.add(frame);
     }),
@@ -73,9 +73,12 @@ export async function build({ assets }: RoomBuildContext): Promise<RoomContent> 
     handText(ctx, 'Languages', w / 2, 70, 72, TERRA);
     profile.languages.forEach((l, i) => handText(ctx, `${l.name} (${l.level})`, w / 2, 160 + i * 72, 62));
   });
-  const lang = new Mesh(new PlaneGeometry(1.4, 0.55), sketchMaterial({ map: langTex, tint: COLORS.ochre, tintAmount: 0.2, edge: edgeFor(1.4, 0.55, 0.02) }));
+  const langMat = sketchMaterial({ map: langTex, tint: COLORS.ochre, tintAmount: 0.2, edge: edgeFor(1.4, 0.55, 0.02) });
+  const lang = new Mesh(new PlaneGeometry(1.4, 0.55), langMat);
   lang.position.set(2.45, 0.95, -D + 0.04);
   group.add(lang);
+  tagInteractive(lang, { kind: 'card', id: 'languages', paint: [langMat], inspect: true });
+  interactives.push(lang);
 
   return { group, interactives };
 }

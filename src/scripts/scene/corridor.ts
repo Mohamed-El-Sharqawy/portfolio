@@ -10,9 +10,14 @@ export interface Interactive {
   kind: 'door' | 'project' | 'skill' | 'poster' | 'easel' | 'board' | 'letter' | 'card' | 'avatar' | 'prop' | 'entrance' | 'window' | 'link';
   id: string;
   paint: SketchMaterial[];
+  /** Click takes it off the wall to the middle of the view (inspect.ts). */
+  inspect?: boolean;
+  /** The whole object to move when inspected (set by tagInteractive). */
+  root?: Object3D;
 }
 
 export function tagInteractive(obj: Object3D, info: Interactive) {
+  if (info.inspect) info.root ??= obj;
   obj.traverse((o) => (o.userData.interactive = info));
 }
 
@@ -138,7 +143,7 @@ export function createCorridor() {
   const bioFrame = new Mesh(new BoxGeometry(0.04, 1.72, 2.16), sketchMaterial({ tint: COLORS.ochre, tintAmount: 0.5, edge: [0.04, 0.04] }));
   bioFrame.position.set(half, 1.86, 2.8); // spans x ∈ [half − 0.02, half + 0.02]: behind the board's face
   group.add(bioFrame, bio);
-  tagInteractive(bio, { kind: 'card', id: 'bio', paint: [bioMat] });
+  tagInteractive(bio, { kind: 'card', id: 'bio', paint: [bioMat], inspect: true });
   interactives.push(bio);
 
   // FAQ board on the end wall: one question + answer at a time, click for the next.

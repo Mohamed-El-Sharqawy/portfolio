@@ -143,7 +143,7 @@ export async function createProps(assets: Assets): Promise<CorridorProps> {
       const tex = canvasTexture(512, 400, DOODLES[doodle++ % DOODLES.length]);
       const parts = sketchify(frame, { picture: tex });
       const paint = Object.values(parts).map((m) => m.material as SketchMaterial);
-      tagInteractive(frame, { kind: 'prop', id: 'doodle', paint });
+      tagInteractive(frame, { kind: 'prop', id: 'doodle', paint, inspect: true });
       frame.traverse((o) => (o as Mesh).isMesh && pickables.push(o));
       frame.scale.setScalar(0.75 + rand() * 0.35);
       frame.position.set(side * (WALL_X - 0.04), 1.75 + rand() * 0.35, z);

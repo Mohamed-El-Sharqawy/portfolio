@@ -395,6 +395,13 @@ html:not(.is-3d) .panel__close { display: none; }
   transition: opacity 0.4s;
 }
 .is-3d .hint.is-hidden { opacity: 0; }
+/* shown while a frame / board is taken off the wall (inspect.ts) */
+.inspect-hint {
+  position: fixed; left: 50%; bottom: 1.2rem; z-index: 15; margin: 0; transform: translateX(-50%);
+  font: 700 1.3rem var(--font-display); color: var(--ink-soft); white-space: nowrap; pointer-events: none;
+  opacity: 0; transition: opacity 0.35s;
+}
+.inspect-hint.is-on { opacity: 1; }
 
 .detail { max-width: min(560px, 92vw); max-height: 86vh; color: var(--ink); padding: 1.5rem; }
 .detail::backdrop { background: rgba(43, 43, 43, 0.35); }

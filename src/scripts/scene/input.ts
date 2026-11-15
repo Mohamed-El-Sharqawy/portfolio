@@ -25,6 +25,8 @@ export function createInput(opts: { reducedMotion: boolean; canvas: HTMLCanvasEl
     gyro: false,
     /** Whether a touch drag should turn the view (main.ts turns it off where drags scroll something). */
     dragLook: () => true,
+    /** Whether a vertical touch drag tilts the view (rooms; in the corridor it walks). */
+    dragPitch: () => false,
   };
 
   lenis.on('scroll', (l: Lenis) => {
@@ -39,23 +41,26 @@ export function createInput(opts: { reducedMotion: boolean; canvas: HTMLCanvasEl
   };
   window.addEventListener('pointermove', onPointer, { passive: true });
   window.addEventListener('pointerdown', onPointer, { passive: true });
-  document.documentElement.addEventListener('pointerleave', () => {
-    state.look.set(0, 0);
+  document.documentElement.addEventListener('pointerleave', (e) => {
+    // a finger lifting off also "leaves": the view must stay where it was turned
+    if (e.pointerType === 'mouse') state.look.set(0, 0);
     state.pointer.set(-10, -10);
     state.pointerDirty = true;
   });
 
   // ---- Touch: horizontal drag on the scene looks left/right ----
   // (vertical drags still scroll natively thanks to touch-action: pan-y)
-  let drag: { id: number; x: number; look: number } | null = null;
+  let drag: { id: number; x: number; y: number; look: number; lookY: number } | null = null;
   opts.canvas.addEventListener('pointerdown', (e) => {
     if (e.pointerType === 'mouse') return;
-    drag = { id: e.pointerId, x: e.clientX, look: state.look.x };
+    drag = { id: e.pointerId, x: e.clientX, y: e.clientY, look: state.look.x, lookY: state.look.y };
   });
   opts.canvas.addEventListener('pointermove', (e) => {
     if (!drag || e.pointerId !== drag.id || state.gyro || !state.dragLook()) return;
     // dragging across ~60% of the screen width turns the full range
-    state.look.x = Math.max(-1, Math.min(1, drag.look - (e.clientX - drag.x) / (window.innerWidth * 0.6)));
+    // a full-width drag turns the whole range; the view stays where you leave it
+    state.look.x = Math.max(-1, Math.min(1, drag.look - (e.clientX - drag.x) / (window.innerWidth * 0.9)));
+    if (state.dragPitch()) state.look.y = Math.max(-1, Math.min(1, drag.lookY + (e.clientY - drag.y) / (window.innerHeight * 0.5)));
   });
   const endDrag = (e: PointerEvent) => {
     if (drag && e.pointerId === drag.id) drag = null;
@@ -102,7 +107,7 @@ export function createInput(opts: { reducedMotion: boolean; canvas: HTMLCanvasEl
   /** Recentre the view and the gyro baseline (e.g. after leaving a room). */
   const recenter = () => {
     base = null;
-    if (state.pointerType !== 'mouse') state.look.set(0, 0);
+    if (state.pointerType !== 'mouse') state.look.set(0, 0); // new place, face it straight on
   };
 
   return { lenis, state, setupGyro, recenter };
