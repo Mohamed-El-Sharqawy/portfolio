@@ -21,8 +21,12 @@ export interface RoomContent {
   hover?(object: Object3D, on: boolean): void;
   /** Click on one of the room's interactives. Return true if the room handled it. */
   click?(object: Object3D): boolean;
+  /** An inspectable object (Interactive.inspect) was taken off the wall (on) or is going back (off). */
+  inspect?(root: Object3D, on: boolean, instant?: boolean): void;
   /** Sideways input while you're in the room (wheel, drag, ← →), in px-like units. */
   scroll?(delta: number): void;
+  /** Which way the room scrolls: 'x' (default, sideways) or 'y' (up/down, e.g. the sky flight). */
+  scrollAxis?: 'x' | 'y';
 }
 
 type Builder = (ctx: RoomBuildContext) => Promise<RoomContent>;

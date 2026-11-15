@@ -13,6 +13,7 @@ import { createCameraPath } from './camera-path';
 import { createCorridor, createEasel, type Interactive } from './corridor';
 import { createDoors, decorateSkillsDoor, type Door } from './doors';
 import { createAvatar, type Avatar } from './avatar';
+import { createInspector } from './inspect';
 import { createProps } from './props';
 import { createEntrance, outsidePose } from './entrance';
 import { createRoom, type Room } from './rooms/index';
@@ -218,7 +219,7 @@ export async function start({ reducedMotion }: { reducedMotion: boolean }) {
   };
 
   // ?debug exposes the camera for automated motion checks
-  if (/[?&]debug\b/.test(location.search)) Object.assign(window, { __camera: camera, __input: input, __rooms: rooms });
+  if (/[?&]debug\b/.test(location.search)) Object.assign(window, { __camera: camera, __input: input, __rooms: rooms, __scene: scene });
 
   path.pose(0, pathPos, pathTarget);
   // start outside, looking at the front of the building
@@ -236,6 +237,22 @@ export async function start({ reducedMotion }: { reducedMotion: boolean }) {
   // Warm up shaders + upload textures before the reveal so the first frames don't hitch.
   await renderer.compileAsync(scene, camera);
   renderer.render(scene, camera);
+
+  /* ---------- taking things off the wall to read them ---------- */
+  const inspector = createInspector(scene, camera, reducedMotion);
+  let inspectT = 0;
+  let inspectInfo: Interactive | null = null;
+  const putBack = (snap = false) => {
+    const info = inspectInfo;
+    if (!info) return;
+    inspectInfo = null;
+    const done = () => paint(info.paint, null, false, reducedMotion);
+    if (info.root && currentRoom) rooms.get(currentRoom)!.content?.inspect?.(info.root, false, snap);
+    if (snap) {
+      inspector.snapHome();
+      done();
+    } else inspector.close(done);
+  };
 
   /* ---------- picking ---------- */
   const raycaster = new Raycaster();
@@ -270,7 +287,7 @@ export async function start({ reducedMotion }: { reducedMotion: boolean }) {
     hovered = next;
     // pointer only for things that do something when clicked
     canvas.style.cursor = next && next.info.kind !== 'card' && next.info.kind !== 'prop' ? 'pointer' : '';
-    if (next && (next.info.kind === 'skill' || next.info.kind === 'poster' || next.info.id.startsWith('experience-'))) canvas.style.cursor = 'pointer';
+    if (next && (next.info.inspect || next.info.kind === 'skill' || next.info.kind === 'poster' || next.info.id.startsWith('experience-'))) canvas.style.cursor = 'pointer';
     if (next) {
       roomContent?.hover?.(next.object, true);
       paint(next.info.paint, next.uv ?? new Vector2(0.5, 0.5), true, reducedMotion);
@@ -294,9 +311,19 @@ export async function start({ reducedMotion }: { reducedMotion: boolean }) {
   canvas.addEventListener('click', (e) => {
     input.state.pointer.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
     if (dragged) return; // that was a drag along the clothesline, not a click
+    // something is up close: any click puts it back
+    if (inspectInfo) return putBack();
     const hit = pick(true);
     if (!hit) return;
     const { kind, id } = hit.info;
+    if (hit.info.inspect && hit.info.root && (mode === 'corridor' || mode === 'room')) {
+      setHover(null);
+      inspectInfo = hit.info;
+      inspectT = input.state.progress;
+      inspector.open(hit.info.root); // shown unpainted: the hover wash would cover thin drawings
+      if (mode === 'room' && currentRoom) rooms.get(currentRoom)!.content?.inspect?.(hit.info.root, true);
+      return;
+    }
     if (mode === 'room' && currentRoom && rooms.get(currentRoom)!.content?.click?.(hit.object)) return;
     if (kind === 'poster') return overlays.openProject(id);
     if (kind === 'entrance') void enterBuilding();
@@ -706,7 +733,11 @@ export async function start({ reducedMotion }: { reducedMotion: boolean }) {
     // the outside scene animates while you're out there (and while walking in)
     if ((mode === 'outside' || mode === 'intro' || mode === 'transition') && camera.position.z > 4 && entrance.update(dt, camera)) avatarsChanged = true;
 
-    if (input.state.pointerDirty && (mode === 'corridor' || mode === 'room' || mode === 'outside')) {
+    // something up close: walking on, or leaving, puts it back
+    if (inspectInfo && mode !== 'corridor' && mode !== 'room') putBack(true);
+    else if (inspectInfo && mode === 'corridor' && Math.abs(input.state.progress - inspectT) > 0.004) putBack();
+
+    if (input.state.pointerDirty && !inspector.object && (mode === 'corridor' || mode === 'room' || mode === 'outside')) {
       input.state.pointerDirty = false;
       setHover(pick());
     }
@@ -716,9 +747,10 @@ export async function start({ reducedMotion }: { reducedMotion: boolean }) {
 
     // Render on demand: skip frames when nothing on screen can change.
     camera.updateMatrixWorld();
+    const inspecting = inspector.update(dt);
     const moved = !camera.matrixWorld.equals(lastCameraMatrix) || camera.projectionMatrix.elements[8] !== lastProjX;
     const tweening = gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive());
-    const animating = drawing || moved || avatarsChanged || busy || hovered !== null || keyboardDoor !== null || tweening;
+    const animating = drawing || moved || avatarsChanged || busy || hovered !== null || keyboardDoor !== null || tweening || inspecting;
     if (animating || framesSinceRender > 120) {
       // door pivots + glow are the only things that move: refresh their matrices
       for (const d of doors) d.facade.updateMatrixWorld(true);
@@ -746,6 +778,11 @@ export async function start({ reducedMotion }: { reducedMotion: boolean }) {
   const markInteracted = () => (interacted = true);
   for (const ev of ['wheel', 'pointerdown', 'keydown', 'touchstart'] as const)
     window.addEventListener(ev, markInteracted, { once: true, passive: true });
+
+  // Esc puts back whatever you took off the wall
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && inspectInfo) putBack();
+  });
 
   /* ---------- keyboard walking: W/S or ↑/↓ ---------- */
   window.addEventListener('keydown', (e) => {

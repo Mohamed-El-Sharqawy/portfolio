@@ -9,8 +9,9 @@ import type { RoomBuildContext, RoomContent } from './index';
 
 /**
  * Experience room: four sketched cards pinned along a timeline on the back wall.
- * Click a card: it comes off the wall, flips over and shows what the job was
- * about (the summary); click again to pin it back.
+ * Click a card: it comes off the wall to the middle of the view (inspect.ts)
+ * and flips over on the way, showing what the job was about (the summary).
+ * Click anywhere to send it back; it flips back as it returns.
  */
 export async function build(_ctx: RoomBuildContext): Promise<RoomContent> {
   const group = new Group();
@@ -29,7 +30,8 @@ export async function build(_ctx: RoomBuildContext): Promise<RoomContent> {
   const ordered = [...jobs].reverse();
   const xs = [-2.4, -0.8, 0.8, 2.4];
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  interface Card { pivot: Group; front: Mesh; back: Mesh; flipped: boolean; z0: number }
+  /** pivot: what moves (and is fitted to the view); flipper: what turns over inside it. */
+  interface Card { pivot: Group; flipper: Group }
   const cards: Card[] = [];
 
   ordered.forEach((el, i) => {
@@ -62,22 +64,23 @@ export async function build(_ctx: RoomBuildContext): Promise<RoomContent> {
       for (; size > 20; size -= 2) {
         ctx.font = `500 ${size}px Inter, system-ui, sans-serif`;
         lines = wrap(ctx, summary, w - 70);
-        if (lines.length * size * 1.34 <= h - 170) break;
+        if (lines.length * size * 1.34 <= h - 140) break;
       }
       const lh = size * 1.34;
       lines.forEach((l, k) => bodyText(ctx, l, 36, 112 + lh / 2 + k * lh, size, '#2b2b2b', 'left'));
-      handText(ctx, `${matchMedia('(pointer: coarse)').matches ? 'tap' : 'click'} to pin it back`, w / 2, h - 30, 34, '#8a8783');
     });
     const backMat = sketchMaterial({ map: backTex, edge: edgeFor(cardW, cardH, 0.025), paintColor: i % 2 ? COLORS.ochre : COLORS.terracotta });
     const front = new Mesh(new PlaneGeometry(cardW, cardH), mat);
     const back = new Mesh(new PlaneGeometry(cardW, cardH), backMat);
     back.rotation.y = Math.PI;
     back.position.z = -0.002;
+    const flipper = new Group();
+    flipper.add(front, back);
     const card = new Group();
-    card.add(front, back);
+    card.add(flipper);
     card.position.set(xs[i], up ? 2.35 : 0.78, wallZ + 0.01);
     card.rotation.z = (i % 2 ? 1 : -1) * 0.025;
-    cards.push({ pivot: card, front, back, flipped: false, z0: card.position.z });
+    cards.push({ pivot: card, flipper });
     const pin = new Mesh(new SphereGeometry(0.045, 8, 6), sketchMaterial({ tint: COLORS.terracotta, tintAmount: 0.85, edge: [0, 0] }));
     pin.position.set(xs[i], card.position.y + (cardH / 2 - 0.08), wallZ + 0.04);
     const dot = new Mesh(new SphereGeometry(0.07, 10, 8), sketchMaterial({ tint: COLORS.ochre, tintAmount: 0.85, edge: [0, 0] }));
@@ -85,8 +88,7 @@ export async function build(_ctx: RoomBuildContext): Promise<RoomContent> {
     const stem = new Mesh(new BoxGeometry(0.02, up ? 0.35 : 0.3, 0.01), sketchMaterial({ tint: COLORS.ink, tintAmount: 0.9, edge: [0, 0] }));
     stem.position.set(xs[i], up ? 1.72 : 1.39, wallZ);
     group.add(card, pin, dot, stem);
-    tagInteractive(front, { kind: 'card', id: `experience-${i}`, paint: [mat] });
-    tagInteractive(back, { kind: 'card', id: `experience-${i}`, paint: [backMat] });
+    tagInteractive(card, { kind: 'card', id: `experience-${i}`, paint: [mat, backMat], inspect: true });
     interactives.push(front, back);
   });
 
@@ -96,34 +98,21 @@ export async function build(_ctx: RoomBuildContext): Promise<RoomContent> {
   arrow.position.set(2.75, 1.82, wallZ + 0.01); // above the line, over the empty slot
   group.add(arrow);
 
-  const flip = (c: Card, on: boolean) => {
-    c.flipped = on;
-    const d = reducedMotion ? 0 : 1;
-    const tl = gsap.timeline({ onUpdate: () => c.pivot.updateMatrixWorld(true) });
-    gsap.killTweensOf([c.pivot.position, c.pivot.rotation, c.pivot.scale]);
-    // off the wall first (so the turning card never cuts into it), turn, then settle
-    tl.to(c.pivot.position, { z: c.z0 + 0.75, duration: 0.3 * d, ease: 'power2.out' })
-      .to(c.pivot.rotation, { y: on ? Math.PI : 0, duration: 0.6 * d, ease: 'power2.inOut' }, '-=0.05')
-      .to(c.pivot.position, { z: c.z0 + (on ? 0.4 : 0), duration: 0.35 * d, ease: 'power2.inOut' })
-      // a flipped card comes up a little bigger, so the summary reads from where you stand
-      .to(c.pivot.scale, { x: on ? 1.22 : 1, y: on ? 1.22 : 1, duration: 0.35 * d, ease: 'power2.inOut' }, '<');
-  };
-
   return {
     group,
     interactives,
-    hover(object: Object3D, on: boolean) {
-      const c = cards.find((q) => q.front === object || q.back === object);
-      if (!c || reducedMotion || gsap.isTweening(c.pivot.rotation)) return;
-      const k = (c.flipped ? 1.22 : 1) * (on ? 1.04 : 1);
-      gsap.to(c.pivot.scale, { x: k, y: k, duration: 0.3, ease: 'power2.out', overwrite: true, onUpdate: () => c.pivot.updateMatrixWorld(true) });
-    },
-    click(object: Object3D) {
-      const c = cards.find((q) => q.front === object || q.back === object);
-      if (!c) return false;
-      for (const q of cards) if (q !== c && q.flipped) flip(q, false);
-      flip(c, !c.flipped);
-      return true;
+    inspect(root: Object3D, on: boolean, instant = false) {
+      const c = cards.find((q) => q.pivot === root);
+      if (!c) return;
+      gsap.killTweensOf(c.flipper.rotation);
+      const y = on ? Math.PI : 0;
+      if (instant || reducedMotion) {
+        c.flipper.rotation.y = y;
+        c.flipper.updateMatrixWorld(true);
+        return;
+      }
+      // turns over while it glides (inspect.ts takes ~0.55 s), summary side ends up facing you
+      gsap.to(c.flipper.rotation, { y, duration: 0.75, delay: on ? 0.12 : 0, ease: 'power2.inOut', onUpdate: () => c.flipper.updateMatrixWorld(true) });
     },
   };
 }

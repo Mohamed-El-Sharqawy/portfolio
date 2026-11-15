@@ -71,6 +71,8 @@ export function sketchMaterial(o: SketchOptions = {}): SketchMaterial {
     fragmentShader: sketchFrag,
     uniforms: {
       ...shared,
+      // own copy of the light, so one object can be lit differently (inspect.ts lights what you're reading)
+      uLightDir: { value: shared.uLightDir.value.clone() },
       uMap: { value: o.map ?? blank },
       uHasMap: { value: o.map ? 1 : 0 },
       uProgress: { value: reducedMotion ? 1 : 0.2 },
