@@ -113,18 +113,19 @@ export async function start({ reducedMotion }: { reducedMotion: boolean }) {
   let currentRoom: DoorId | null = null;
   let busy = false; // a scripted move is running
   /** Panels the visitor closed with × (until they reopen them or move on). */
-  const dismissed = new Set<PanelId>();
+  /** Panels the visitor asked to see. Nothing opens by itself: a highlighted "Show …" button offers it. */
+  const wanted = new Set<PanelId>();
   const overlays = createOverlays({
     onBack: () => void exitRoom(),
     onClose: (id) => {
-      dismissed.add(id);
+      wanted.delete(id);
       overlays.hide(id);
       overlays.setReopen(id, true);
       // room panel closed: give the whole screen back to the room
       if (mode === 'room' && currentRoom === id) gsap.to(viewShift, { v: 0, duration: reducedMotion ? 0 : 0.6, ease: 'power2.inOut' });
     },
     onReopen: (id) => {
-      dismissed.delete(id);
+      wanted.add(id);
       overlays.setReopen(null);
       overlays.show(id, true);
       if (mode === 'room' && currentRoom === id) gsap.to(viewShift, { v: 1, duration: reducedMotion ? 0 : 0.6, ease: 'power2.inOut' });
@@ -140,13 +141,20 @@ export async function start({ reducedMotion }: { reducedMotion: boolean }) {
 
   // Look-around response: gentle near the centre of the screen, stronger
   // towards the edges (so small mouse moves don't swing the view).
+  const TOUCH_YAW_MAX = (95 * Math.PI) / 180, TOUCH_PITCH_MAX = (28 * Math.PI) / 180;
   const shape = (v: number) => Math.sign(v) * Math.pow(Math.abs(v), 1.35);
   // Outside, a smaller look range keeps the front of the building steady while
   // you hover things; it eases up to the full range once you're inside.
   let lookScale = 0.3;
   const setCamera = (pos: Vector3, yaw: number, pitch: number) => {
     camera.position.copy(pos);
-    camera.rotation.set(pitch + shape(look.y) * LOOK_PITCH_MAX * lookScale, yaw - shape(look.x) * LOOK_YAW_MAX * lookScale, 0);
+    // touch: you turn the view by dragging, further than the mouse can, and it stays where you left it
+    const touch = input.state.pointerType !== 'mouse' && !input.state.gyro;
+    camera.rotation.set(
+      pitch + shape(look.y) * (touch ? TOUCH_PITCH_MAX : LOOK_PITCH_MAX) * lookScale,
+      yaw - shape(look.x) * (touch ? TOUCH_YAW_MAX : LOOK_YAW_MAX) * (touch ? Math.max(lookScale, 0.6) : lookScale),
+      0,
+    );
   };
   // Walking: you always face down the corridor (forward), whether you walk
   // forward or back. The heading eases toward the path direction with a
@@ -204,7 +212,7 @@ export async function start({ reducedMotion }: { reducedMotion: boolean }) {
   };
 
   // ?debug exposes the camera for automated motion checks
-  if (/[?&]debug\b/.test(location.search)) (window as unknown as { __camera: PerspectiveCamera }).__camera = camera;
+  if (/[?&]debug\b/.test(location.search)) Object.assign(window, { __camera: camera, __input: input, __rooms: rooms });
 
   path.pose(0, pathPos, pathTarget);
   // start outside, looking at the front of the building
@@ -256,7 +264,7 @@ export async function start({ reducedMotion }: { reducedMotion: boolean }) {
     hovered = next;
     // pointer only for things that do something when clicked
     canvas.style.cursor = next && next.info.kind !== 'card' && next.info.kind !== 'prop' ? 'pointer' : '';
-    if (next && (next.info.kind === 'skill' || next.info.kind === 'poster')) canvas.style.cursor = 'pointer';
+    if (next && (next.info.kind === 'skill' || next.info.kind === 'poster' || next.info.id.startsWith('experience-'))) canvas.style.cursor = 'pointer';
     if (next) {
       roomContent?.hover?.(next.object, true);
       paint(next.info.paint, next.uv ?? new Vector2(0.5, 0.5), true, reducedMotion);
@@ -291,17 +299,25 @@ export async function start({ reducedMotion }: { reducedMotion: boolean }) {
     else if (kind === 'project') overlays.openProject(id);
     else if (kind === 'easel') {
       interacted = true;
-      dismissed.delete('about');
+      wanted.add('about');
       input.lenis.scrollTo(0, { duration: reducedMotion ? 0 : 1.2 });
     } else if (kind === 'avatar') {
       avatarById.get(id)?.wave();
       interacted = true;
-      dismissed.delete(id === 'hello' ? 'about' : 'faq');
+      wanted.add(id === 'hello' ? 'about' : 'faq');
     } else if (kind === 'board') {
-      dismissed.delete('faq');
-      input.lenis.scrollTo('bottom', { duration: reducedMotion ? 0 : 1.6 });
-    } else if (kind === 'letter') document.querySelector<HTMLAnchorElement>('#contact a[href^="mailto:"]')?.focus();
+      // the board itself answers: next question (no panel needed)
+      corridor.nextFaq();
+      gsap.to({}, { duration: 0.2 }); // keeps the on-demand renderer drawing while the texture uploads
+    } else if (kind === 'link') openLink(id);
+    else if (kind === 'letter') document.querySelector<HTMLAnchorElement>('#contact a[href^="mailto:"]')?.focus();
   });
+
+  /** Interactive links in the scene: mail/phone open in place, everything else in a new tab. */
+  function openLink(url: string) {
+    if (/^(mailto|tel):/i.test(url)) location.href = url;
+    else window.open(url, '_blank', 'noopener');
+  }
 
   /* ---------- walking: corridor + rooms ---------- */
   const corridorLength = path.curve.getLength();
@@ -390,10 +406,11 @@ export async function start({ reducedMotion }: { reducedMotion: boolean }) {
     if (mode !== 'corridor') return;
     busy = true;
     const door = doorById.get(id)!;
+    input.recenter(); // touch: face the door straight on (the turn you made stays until you go somewhere)
     setHover(null);
     overlays.hideAll();
     overlays.setReopen(null);
-    dismissed.delete(id);
+    wanted.delete(id);
     hint?.classList.add('is-hidden');
     const ready = rooms.get(id)!.load().then(() => warmUp(id));
 
@@ -435,13 +452,13 @@ export async function start({ reducedMotion }: { reducedMotion: boolean }) {
       },
     );
     glow(door.glow, false);
-    gsap.to(viewShift, { v: 1, duration: reducedMotion ? 0 : 0.8 / pace, ease: 'power2.inOut' });
     mode = 'room';
     currentRoom = id;
     busy = false;
-    overlays.show(id, true);
+    overlays.setReopen(id, true); // offer the panel, don't open it
     overlays.setBack(true);
     navLinks.forEach((a) => a.setAttribute('aria-current', String(a.dataset.door === id)));
+    syncTouchAction();
   }
 
   /** Turn around, walk out, let the door close behind you, carry on down the corridor. */
@@ -455,7 +472,7 @@ export async function start({ reducedMotion }: { reducedMotion: boolean }) {
     overlays.hide(id);
     overlays.setBack(false);
     overlays.setReopen(null);
-    dismissed.delete(id);
+    wanted.delete(id);
     navLinks.forEach((a) => a.removeAttribute('aria-current'));
     gsap.to(viewShift, { v: 0, duration: reducedMotion ? 0 : 0.6, ease: 'power2.inOut' });
 
@@ -482,6 +499,7 @@ export async function start({ reducedMotion }: { reducedMotion: boolean }) {
     currentRoom = null;
     mode = 'corridor';
     busy = false;
+    syncTouchAction();
     input.recenter();
     gsap.to(door.state, { flat: 0, duration: reducedMotion ? 0 : 0.9, delay: reducedMotion ? 0 : 0.5, ease: 'power2.inOut' });
     navLinks.find((a) => a.dataset.door === id)?.focus({ preventScroll: true });
@@ -532,38 +550,48 @@ export async function start({ reducedMotion }: { reducedMotion: boolean }) {
     return Math.abs(doorById.get(id)!.pivot.rotation.y) > 0.01;
   }
 
-  /* ---------- sideways input inside a room (the rooftop clothesline) ---------- */
-  const roomScroll = () => (mode === 'room' && currentRoom ? rooms.get(currentRoom)!.content?.scroll : undefined);
+  /* ---------- scroll input inside a room (clothesline: sideways · sky flight: up) ---------- */
+  const roomContent = () => (mode === 'room' && currentRoom ? rooms.get(currentRoom)!.content : null);
+  const roomScroll = () => roomContent()?.scroll;
+  const vertical = () => roomContent()?.scrollAxis === 'y';
   window.addEventListener('wheel', (e) => {
     const fn = roomScroll();
     if (!fn || (e.target as HTMLElement)?.closest?.('.panel, dialog')) return;
-    fn.call(null, (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY) * (e.deltaMode === 1 ? 30 : 1));
+    const d = vertical() ? e.deltaY : Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    fn.call(null, d * (e.deltaMode === 1 ? 30 : 1));
   }, { passive: true });
   window.addEventListener('keydown', (e) => {
     const fn = roomScroll();
-    if (!fn || (e.target as HTMLElement)?.closest?.('input, textarea, select, dialog')) return;
-    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+    if (!fn || (e.target as HTMLElement)?.closest?.('input, textarea, select, dialog, .panel')) return;
+    const keys: Record<string, number> = vertical()
+      ? { ArrowDown: 160, ArrowUp: -160, PageDown: 600, PageUp: -600, ' ': 600, s: 160, w: -160 }
+      : { ArrowRight: 140, ArrowLeft: -140 };
+    const d = keys[e.key];
+    if (d) {
       e.preventDefault();
-      fn(e.key === 'ArrowRight' ? 140 : -140);
+      fn(d);
     }
   });
-  // drag (mouse or touch) slides the line; a real drag swallows the click that follows
+  // drag (mouse or touch) drives the room; a real drag swallows the click that follows
   let dragX: number | null = null;
+  let dragY = 0;
   let dragged = false;
   let dragDist = 0;
   canvas.addEventListener('pointerdown', (e) => {
     dragged = false;
     dragDist = 0;
     dragX = roomScroll() ? e.clientX : null;
+    dragY = e.clientY;
   });
   canvas.addEventListener('pointermove', (e) => {
     const fn = roomScroll();
     if (dragX === null || !fn || (e.pointerType === 'mouse' && !(e.buttons & 1))) return;
-    const dx = e.clientX - dragX;
+    const dx = e.clientX - dragX, dy = e.clientY - dragY;
     dragX = e.clientX;
-    dragDist += Math.abs(dx);
+    dragY = e.clientY;
+    dragDist += Math.hypot(dx, dy);
     if (dragDist > 8) dragged = true;
-    fn(-dx * 2.2);
+    fn(vertical() ? -dy * 2.4 : -dx * 2.2);
   });
   const endRoomDrag = () => {
     dragX = null;
@@ -572,6 +600,9 @@ export async function start({ reducedMotion }: { reducedMotion: boolean }) {
   canvas.addEventListener('pointerup', endRoomDrag);
   canvas.addEventListener('pointercancel', endRoomDrag);
   input.state.dragLook = () => !roomScroll();
+  // in a room that scrolls, touch drags belong to the room (not the browser's pan)
+  const syncTouchAction = () => (canvas.style.touchAction = mode === 'room' ? 'none' : '');
+  input.state.dragPitch = () => mode === 'room' && !roomScroll();
 
   /* ---------- resize + visibility ---------- */
   window.addEventListener('resize', () => {
@@ -624,14 +655,14 @@ export async function start({ reducedMotion }: { reducedMotion: boolean }) {
         const inAbout = interacted && smoothT < 0.07;
         const inFaq = smoothT > 0.93;
         // leaving a zone forgets that its panel was closed
-        if (!inAbout) dismissed.delete('about');
-        if (!inFaq) dismissed.delete('faq');
-        const showAbout = inAbout && !dismissed.has('about');
-        const showFaq = inFaq && !dismissed.has('faq');
+        if (!inAbout) wanted.delete('about');
+        if (!inFaq) wanted.delete('faq');
+        const showAbout = inAbout && wanted.has('about');
+        const showFaq = inFaq && wanted.has('faq');
         overlays.setReopen(inAbout && !showAbout ? 'about' : inFaq && !showFaq ? 'faq' : null);
         if (showAbout !== overlays.isOpen('about')) (showAbout ? overlays.show('about') : overlays.hide('about'));
         if (showFaq !== overlays.isOpen('faq')) (showFaq ? overlays.show('faq') : overlays.hide('faq'));
-        hint?.classList.toggle('is-hidden', smoothT > 0.03 || dismissed.size > 0);
+        hint?.classList.toggle('is-hidden', smoothT > 0.03 || wanted.size > 0);
       }
 
       for (const a of avatars) if (a.update(dt, camera)) avatarsChanged = true;

@@ -1,12 +1,13 @@
 import { BoxGeometry, ConeGeometry, Group, Mesh, PlaneGeometry, SphereGeometry, type Object3D } from 'three';
 import { COLORS, CORRIDOR, DOOR, DOOR_LAYOUT } from './config';
 import { edgeFor, sketchify, sketchMaterial, trackSketches, type SketchMaterial } from './materials';
-import { canvasTexture, handText, roughLine, scribbleUnderline, bodyText, wash, TERRA, OCHRE } from './sketch-canvas';
+import { canvasTexture, handText, roughLine, scribbleUnderline, bodyText, wash, wrap, TERRA, OCHRE } from './sketch-canvas';
 import type { Assets } from './assets';
 import { profile } from '../../data/profile';
 
 export interface Interactive {
-  kind: 'door' | 'project' | 'skill' | 'poster' | 'easel' | 'board' | 'letter' | 'card' | 'avatar' | 'prop' | 'entrance' | 'window';
+  /** 'link': id is a URL (mailto:/tel: open in place, anything else in a new tab). */
+  kind: 'door' | 'project' | 'skill' | 'poster' | 'easel' | 'board' | 'letter' | 'card' | 'avatar' | 'prop' | 'entrance' | 'window' | 'link';
   id: string;
   paint: SketchMaterial[];
 }
@@ -21,8 +22,8 @@ function plane(w: number, h: number, mat: SketchMaterial) {
 
 /**
  * The corridor: tiled floor and ceiling, walls with door openings, ceiling
- * beams, hanging lamps, the About easel at the entrance and the FAQ board
- * at the far end.
+ * beams, hanging lamps, the About easel and bio board at the entrance, and
+ * the FAQ board at the far end (one question at a time; click for the next).
  */
 export function createCorridor() {
   const group = new Group();
@@ -114,16 +115,75 @@ export function createCorridor() {
     group.add(cord, shade, bulb);
   }
 
-  // FAQ board on the end wall.
-  const boardTex = canvasTexture(1024, 640, (ctx, w, h) => {
+  // Bio board on the right wall, opposite the About easel: who, where, available.
+  const bioTex = canvasTexture(1024, 800, (ctx, w, h) => {
+    ctx.fillStyle = '#fffdf8';
+    ctx.fillRect(0, 0, w, h);
+    wash(ctx, 34, 34, w - 68, h - 68, OCHRE, 0.12);
+    handText(ctx, `Hi, I'm ${profile.name.split(' ')[0]}`, 70, 100, 92, '#2b2b2b', 'left', w - 140);
+    scribbleUnderline(ctx, 70, 520, 160, TERRA, 7);
+    ctx.font = '500 31px Inter, system-ui, sans-serif';
+    const lines = wrap(ctx, profile.bio, w - 140);
+    lines.forEach((l, i) => bodyText(ctx, l, 70, 225 + i * 46, 31, '#2b2b2b', 'left'));
+    const y = Math.min(h - 120, 245 + lines.length * 46 + 30);
+    handText(ctx, profile.location, 70, y, 54, TERRA, 'left');
+    handText(ctx, profile.availability, w - 70, y, 54, '#3f7d4e', 'right');
+    roughLine(ctx, 50, 50, w - 50, 54);
+    roughLine(ctx, 50, h - 50, w - 50, h - 54);
+  });
+  const bioMat = sketchMaterial({ map: bioTex, edge: edgeFor(2.0, 1.56, 0.03), paintColor: COLORS.ochre });
+  const bio = plane(2.0, 1.56, bioMat);
+  bio.rotation.y = -Math.PI / 2; // on the right wall, facing into the corridor
+  bio.position.set(half - 0.035, 1.86, 2.8); // clear of the wainscot rail (y 0.95)
+  const bioFrame = new Mesh(new BoxGeometry(0.04, 1.72, 2.16), sketchMaterial({ tint: COLORS.ochre, tintAmount: 0.5, edge: [0.04, 0.04] }));
+  bioFrame.position.set(half, 1.86, 2.8); // spans x ∈ [half − 0.02, half + 0.02]: behind the board's face
+  group.add(bioFrame, bio);
+  tagInteractive(bio, { kind: 'card', id: 'bio', paint: [bioMat] });
+  interactives.push(bio);
+
+  // FAQ board on the end wall: one question + answer at a time, click for the next.
+  const faqs = Array.from(document.querySelectorAll<HTMLDetailsElement>('[data-faq] details')).map((d) => ({
+    q: d.querySelector('summary')?.textContent?.trim() ?? '',
+    a: d.querySelector('.faq__a, p')?.textContent?.trim() ?? '',
+  })).filter((f) => f.q);
+  let faqIndex = 0;
+  const drawFaq = (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = '#fafafa';
+    ctx.fillRect(0, 0, w, h);
     wash(ctx, 40, 40, w - 80, h - 80, OCHRE, 0.18);
-    handText(ctx, 'FAQ', w / 2, 190, 210);
-    scribbleUnderline(ctx, w / 2 - 170, w / 2 + 170, 300, TERRA, 9);
-    handText(ctx, 'questions & answers', w / 2, 400, 86, TERRA);
-    bodyText(ctx, 'click the board, or keep scrolling', w / 2, 530, 34, '#5a5652');
     roughLine(ctx, 60, 60, w - 60, 66);
     roughLine(ctx, 60, h - 60, w - 60, h - 64);
-  });
+    handText(ctx, 'FAQ', 90, 120, 96, '#2b2b2b', 'left');
+    if (!faqs.length) {
+      handText(ctx, 'questions & answers', w / 2, h / 2, 86, TERRA);
+      return;
+    }
+    handText(ctx, `${faqIndex + 1}/${faqs.length}`, w - 90, 120, 64, TERRA, 'right');
+    const { q, a } = faqs[faqIndex];
+    ctx.font = '700 58px Caveat, cursive';
+    const ql = wrap(ctx, q, w - 180).slice(0, 2);
+    ql.forEach((l, i) => handText(ctx, l, 90, 215 + i * 62, 58, TERRA, 'left'));
+    const y = 215 + ql.length * 62 + 26;
+    // biggest type that fits above "click for next"
+    let size = 46;
+    let al: string[] = [];
+    for (; size > 24; size -= 2) {
+      ctx.font = `500 ${size}px Inter, system-ui, sans-serif`;
+      al = wrap(ctx, a, w - 180);
+      if (y + al.length * size * 1.35 < h - 140) break;
+    }
+    al.forEach((l, i) => bodyText(ctx, l, 90, y + size * 0.5 + i * size * 1.35, size, '#2b2b2b', 'left'));
+    handText(ctx, 'click for next →', w - 90, h - 100, 46, '#5a5652', 'right');
+  };
+  const boardTex = canvasTexture(1024, 640, drawFaq);
+  const nextFaq = () => {
+    if (faqs.length < 2) return;
+    faqIndex = (faqIndex + 1) % faqs.length;
+    const c = boardTex.image as HTMLCanvasElement;
+    drawFaq(c.getContext('2d')!, c.width, c.height);
+    boardTex.needsUpdate = true;
+  };
   const boardMat = sketchMaterial({ map: boardTex, edge: edgeFor(3, 1.9, 0.04), paintColor: COLORS.ochre });
   const board = plane(3, 1.9, boardMat);
   board.position.set(0, 1.75, end + 0.045);
@@ -134,7 +194,7 @@ export function createCorridor() {
   interactives.push(board);
 
   trackSketches(group);
-  return { group, interactives };
+  return { group, interactives, nextFaq };
 }
 
 /** The About easel at the entrance (glTF, loaded with the initial assets). */

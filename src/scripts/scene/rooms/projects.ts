@@ -16,8 +16,8 @@ import type { RoomBuildContext, RoomContent } from './index';
  * Projects: the door opens onto a rooftop. The projects hang as posters on a
  * clothesline between two stair huts, with the city behind the railing.
  * Scroll / drag / ← → slides the line (it loops); posters swing as they move.
- * Click a poster to flip it (tech + summary on the back), click the back for
- * the full details.
+ * Click a poster to flip it (tech + summary on the back), click the back to
+ * open the repo on GitHub.
  */
 const HUT_X = 7.4; // inner faces of the two huts
 const LINE_Z = -4.5;
@@ -236,7 +236,14 @@ export async function build({ assets }: RoomBuildContext): Promise<RoomContent> 
     click(object: Object3D) {
       const p = posters.find((q) => q.backFace === object || q.front.parent === object.parent);
       if (!p) return false;
-      if (object === p.backFace) return false; // back side: main opens the details
+      if (object === p.backFace) {
+        // back side: straight to the code
+        const slug = (object.userData.interactive as { id: string }).id;
+        const href = document.querySelector<HTMLAnchorElement>(`#project-${slug} a.btn-link`)?.href;
+        if (!href) return false; // no repo link: main opens the details instead
+        window.open(href, '_blank', 'noopener');
+        return true;
+      }
       for (const q of posters) if (q !== p && q.flipped) flip(q, false);
       flip(p, true);
       return true;
@@ -352,7 +359,7 @@ function cardBack(title: string, tagline: string, tags: string[]) {
     ctx.strokeStyle = INK;
     ctx.lineWidth = 4;
     ctx.stroke();
-    handText(ctx, 'click for details →', w / 2, by + bh / 2 + 2, 44, '#fffdf8');
+    handText(ctx, 'open on GitHub →', w / 2, by + bh / 2 + 2, 44, '#fffdf8');
   });
 }
 

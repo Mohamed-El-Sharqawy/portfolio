@@ -11,6 +11,8 @@ export const profile = {
   availability: 'Available immediately',
   bio: 'Full-Stack Engineer with 4+ years of experience shipping production products — React and TypeScript frontends, Node.js and NestJS backends — for SaaS, ERP, and government platforms built for 1M+ potential users. I build production UI from Figma designs and REST/GraphQL APIs with Redis and NATS, tested with Jest, Cypress and TDD.',
   email: 'dev.elsharqawy@gmail.com',
+  /** Optional, e.g. '+971 50 123 4567'. When set, the phone in the Contact room dials it; empty = it opens the email. */
+  phone: '' as string,
   links: {
     github: 'https://github.com/Mohamed-El-Sharqawy',
     linkedin: 'https://linkedin.com/in/mohamed-ahmed-elsharqawy',

@@ -9,6 +9,12 @@ import { profile } from '../data/profile';
       Email:{' '}
       <a href={`mailto:${profile.email}`}>{profile.email}</a>
     </p>
+    {profile.phone && (
+      <p>
+        Phone:{' '}
+        <a href={`tel:${profile.phone.replace(/[^\d+]/g, '')}`}>{profile.phone}</a>
+      </p>
+    )}
     <ul class="links">
       <li><a href={profile.links.github} rel="me noopener" target="_blank">GitHub</a></li>
       <li><a href={profile.links.linkedin} rel="me noopener" target="_blank">LinkedIn</a></li>

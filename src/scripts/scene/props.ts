@@ -36,6 +36,7 @@ function blocked(side: -1 | 1): Array<[number, number]> {
   const ranges: Array<[number, number]> = [];
   for (const d of Object.values(DOOR_LAYOUT)) if (d.side === side) ranges.push([d.z - 1.8, d.z + 1.8]);
   if (side < 0) ranges.push([0.2, 4.4]); // About easel + avatar
+  if (side > 0) ranges.push([1.2, 4.4]); // bio board
   ranges.push([-60, side < 0 ? -42.8 : -45.4]); // FAQ board + goodbye avatar
   ranges.push([6.2, 60]); // behind the start position
   return ranges;
