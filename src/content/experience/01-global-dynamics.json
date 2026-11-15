@@ -1,0 +1,9 @@
+{
+  "order": 1,
+  "role": "Full-Stack Engineer",
+  "company": "Global Dynamics",
+  "location": "Remote, Antalya",
+  "start": "May 2025",
+  "end": "Oct 2026",
+  "summary": "Led frontend for 3 national-scale government systems in Iraq: a police-academy LMS with real-time chat and role-based access, a nationwide Training Center system with dashboards, and a high-security Crime & Legal Center built for 1M+ potential users. Cut page-load times ~40% using code-splitting, caching and memoization."
+}

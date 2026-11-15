@@ -1,0 +1,9 @@
+{
+  "order": 4,
+  "role": "Frontend Engineer",
+  "company": "ASDC, formerly RASID",
+  "location": "Cairo",
+  "start": "Oct 2022",
+  "end": "Mar 2024",
+  "summary": "Delivered a Facility Management ERP over 18 months, with 5 modules (staff, shifts, payroll, leave, financial reporting). Cut duplicated code ~30% with a design-system refactor."
+}

@@ -1,0 +1,11 @@
+{
+  "order": 2,
+  "title": "WinningKart",
+  "status": "in active development",
+  "tagline": "Self-hosted performance-marketing SaaS. TypeScript monorepo with 4 shared packages that attributes Meta ad revenue and monitors campaigns.",
+  "tags": ["TypeScript", "Monorepo", "SaaS", "Meta Ads", "Attribution"],
+  "repo": "https://github.com/Mohamed-El-Sharqawy",
+  "thumbnail": "../../assets/projects/winningkart.png",
+  "thumbnailAlt": "Pencil sketch of a rising bar chart next to a shopping cart",
+  "texture": "/textures/projects/winningkart.ktx2"
+}

@@ -1,0 +1,21 @@
+---
+import { profile } from '../data/profile';
+---
+<!--
+  Paper-tear intro. Only visible when the head script added .try-3d
+  (WebGL2 likely available). The tear itself is built in transitions.ts
+  as two SVG-clipped copies of this sheet with a jagged noise edge.
+-->
+<div id="intro" class="intro" aria-hidden="true">
+  <div class="intro__sheet" id="intro-sheet">
+    <svg class="intro__name" viewBox="0 0 900 220" role="presentation">
+      <text x="450" y="140" text-anchor="middle">{profile.name}</text>
+      <path class="intro__underline" d="M170 172 C 330 158, 560 186, 735 166" />
+    </svg>
+    <p class="intro__sub">{profile.title}</p>
+    <div class="intro__loader">
+      <div class="intro__bar"><span id="intro-progress"></span></div>
+      <p class="intro__label" id="intro-label">sharpening pencils…</p>
+    </div>
+  </div>
+</div>

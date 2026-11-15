@@ -1,0 +1,10 @@
+{
+  "order": 3,
+  "title": "Masary",
+  "tagline": "React Native (Expo, NativeWind) expense tracker with a conversational voice interface: log a full expense in one spoken sentence instead of 10+ form fields, synced live to a dashboard.",
+  "tags": ["React Native", "Expo", "NativeWind", "Voice UI", "Live sync"],
+  "repo": "https://github.com/Mohamed-El-Sharqawy",
+  "thumbnail": "../../assets/projects/masary.png",
+  "thumbnailAlt": "Pencil sketch of a phone with sound waves and a coin",
+  "texture": "/textures/projects/masary.ktx2"
+}

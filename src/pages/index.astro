@@ -1,22 +1,41 @@
 ---
 import Base from '../layouts/Base.astro';
-import Hero from '../components/Hero.astro';
-import Companies from '../components/Companies.astro';
-import Work from '../components/Work.astro';
-import Agents from '../components/Agents.astro';
+import Intro from '../components/Intro.astro';
+import SceneUI from '../components/SceneUI.astro';
+import About from '../components/About.astro';
+import Projects from '../components/Projects.astro';
+import Skills from '../components/Skills.astro';
 import Experience from '../components/Experience.astro';
-import GitHub from '../components/GitHub.astro';
-import Stack from '../components/Stack.astro';
+import Education from '../components/Education.astro';
+import Faq from '../components/Faq.astro';
 import Contact from '../components/Contact.astro';
 ---
-
 <Base>
-  <Hero />
-  <Companies />
-  <Work />
-  <Agents />
-  <Experience />
-  <GitHub />
-  <Stack />
-  <Contact />
+  <Intro />
+  <canvas id="scene" class="scene" aria-hidden="true"></canvas>
+  <SceneUI />
+
+  <main id="content">
+    <About />
+    <Projects />
+    <Skills />
+    <Experience />
+    <Education />
+    <Faq />
+    <Contact />
+  </main>
+
+  <!-- Gives Lenis something to scroll in 3D mode; collapsed otherwise. -->
+  <div id="scroll-track" class="scroll-track" aria-hidden="true"></div>
+
+  <noscript>
+    <p class="noscript-note">
+      You're seeing the plain version of this portfolio. Turn on JavaScript to walk through the
+      sketchbook corridor.
+    </p>
+  </noscript>
+
+  <script>
+    import '../scripts/boot';
+  </script>
 </Base>

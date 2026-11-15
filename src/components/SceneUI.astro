@@ -1,0 +1,43 @@
+---
+import { doors } from '../data/profile';
+---
+<!--
+  Controls for the 3D layer. In the plain HTML version the door links are
+  ordinary in-page anchors. In 3D mode scene/main.ts intercepts them:
+  focusing a link walks to the door and lights it, Enter/click opens the room.
+-->
+<header class="hud">
+  <a class="skip-link" href="#content">Skip to content</a>
+  <nav class="doors-nav" aria-label="Rooms">
+    <ul>
+      {doors.map((d) => (
+        <li><a href={`#${d.id}`} data-door={d.id}>{d.label}</a></li>
+      ))}
+    </ul>
+  </nav>
+  <!-- 3D ⇄ plain toggle. Hidden until boot.ts knows which way it can go. -->
+  <a class="view-toggle" id="view-toggle" href="?flat" hidden>Plain version</a>
+</header>
+
+<div class="scene-actions">
+  <button type="button" class="back-btn" id="back-btn" hidden>
+    <span aria-hidden="true">←</span> Back <span class="sr-only">to the corridor</span>
+  </button>
+  <!-- Re-opens a panel the visitor closed (label set by overlays.ts). -->
+  <button type="button" class="panel-open-btn" id="panel-open" hidden></button>
+</div>
+
+<button type="button" class="gyro-btn" id="gyro-btn" hidden>Enable motion look</button>
+
+<!-- Outside the building: the way in (also: click the door, scroll, or press ↓ / Space). -->
+<button type="button" class="enter-card" id="enter-card" hidden>
+  <span class="enter-card__title">Explorer</span>
+  <span class="enter-card__text">Click the door to come in <span aria-hidden="true">→</span></span>
+</button>
+
+<p class="hint" id="hint" aria-hidden="true">scroll or ↑ ↓ to walk · click the easel or a door</p>
+
+<dialog class="detail sheet" id="project-dialog" aria-labelledby="project-dialog-title">
+  <div class="detail__body" id="project-dialog-body"></div>
+  <button type="button" class="detail__close" data-close>Close</button>
+</dialog>

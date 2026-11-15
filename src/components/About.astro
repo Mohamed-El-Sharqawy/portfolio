@@ -1,0 +1,29 @@
+---
+import { profile } from '../data/profile';
+---
+<section id="about" class="panel panel--about" aria-labelledby="about-title" data-lenis-prevent>
+  <p class="eyebrow">Hello, I'm</p>
+  <h1 id="about-title" class="display" tabindex="-1">{profile.name}</h1>
+  <p class="role">{profile.title}</p>
+  <p class="meta">{profile.location} · {profile.availability}</p>
+  <p class="bio">{profile.bio}</p>
+
+  <h2 class="h-sketch">Toolkit</h2>
+  <dl class="toolkit">
+    {profile.toolkit.map((g) => (
+      <div class="toolkit__row">
+        <dt>{g.group}</dt>
+        <dd>
+          <ul class="tags">
+            {g.items.map((t) => <li class="tag">{t}</li>)}
+          </ul>
+        </dd>
+      </div>
+    ))}
+  </dl>
+
+  <ul class="links">
+    <li><a href={profile.links.github} rel="me noopener" target="_blank">GitHub</a></li>
+    <li><a href={profile.links.linkedin} rel="me noopener" target="_blank">LinkedIn</a></li>
+  </ul>
+</section>

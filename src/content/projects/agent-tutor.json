@@ -1,0 +1,10 @@
+{
+  "order": 4,
+  "title": "Agent-Tutor",
+  "tagline": "Agent-agnostic AI tutor skill, used daily, that works with 70+ AI agents.",
+  "tags": ["AI agents", "Skills", "Agent-agnostic", "Tutoring"],
+  "repo": "https://github.com/Mohamed-El-Sharqawy",
+  "thumbnail": "../../assets/projects/agent-tutor.png",
+  "thumbnailAlt": "Pencil sketch of a graduation cap connected to a network of nodes",
+  "texture": "/textures/projects/agent-tutor.ktx2"
+}

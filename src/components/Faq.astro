@@ -1,0 +1,20 @@
+---
+import { getCollection } from 'astro:content';
+const faqs = (await getCollection('faq')).sort((a, b) => a.data.order - b.data.order);
+---
+<section id="faq" class="panel panel--faq" aria-labelledby="faq-title" data-lenis-prevent>
+  <h2 id="faq-title" class="h-room" tabindex="-1">FAQ</h2>
+  <div class="faq" data-faq>
+    {faqs.map(({ data }) => (
+      <details class="faq__item">
+        <summary class="faq__q">{data.question}</summary>
+        <div class="faq__a"><p>{data.answer}</p></div>
+      </details>
+    ))}
+  </div>
+</section>
+
+<script>
+  import { initFaq } from '../scripts/ui/faq';
+  initFaq();
+</script>

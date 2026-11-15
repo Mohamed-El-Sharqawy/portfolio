@@ -1,0 +1,44 @@
+---
+import { getCollection } from 'astro:content';
+import { Picture } from 'astro:assets';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+---
+<section id="projects" class="panel panel--room" aria-labelledby="projects-title" data-lenis-prevent>
+  <h2 id="projects-title" class="h-room" tabindex="-1">Projects</h2>
+  <div class="projects">
+    {projects.map(({ id, data }, i) => (
+      <article
+        class="project sheet"
+        id={`project-${id}`}
+        data-project
+        data-slug={id}
+        data-title={data.title}
+        data-texture={data.texture}
+        aria-labelledby={`project-${id}-title`}
+      >
+        <Picture
+          class="project__img"
+          src={data.thumbnail}
+          alt={data.thumbnailAlt}
+          formats={['avif', 'webp']}
+          widths={[320, 640, 960]}
+          sizes="(min-width: 900px) 420px, 92vw"
+          loading={i === 0 ? 'eager' : 'lazy'}
+          decoding="async"
+        />
+        <h3 id={`project-${id}-title`} class="project__title">
+          {data.title}
+          {data.status && <span class="project__status">({data.status})</span>}
+        </h3>
+        <p class="project__tagline">{data.tagline}</p>
+        <ul class="tags" aria-label="Tech">
+          {data.tags.map((t) => <li class="tag">{t}</li>)}
+        </ul>
+        <a class="btn-link" href={data.repo} target="_blank" rel="noopener">
+          View repo<span class="sr-only"> for {data.title}</span>
+        </a>
+      </article>
+    ))}
+  </div>
+</section>

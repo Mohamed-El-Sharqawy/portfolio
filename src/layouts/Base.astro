@@ -1,103 +1,95 @@
 ---
-import { Font } from 'astro:assets';
 import '../styles/global.css';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import WhatsApp from '../components/WhatsApp.astro';
-import { SITE_URL, siteDescription, siteTitle, profile } from '../data/site';
-import { jsonLd, personSchema } from '../lib/seo';
+import { profile, seo, SITE_URL } from '../data/profile';
 
-interface Props {
-  title?: string;
-  description?: string;
-  /** Path of the OG image under the site root, e.g. `/og/index.png`. */
-  ogImage?: string;
-  ogImageAlt?: string;
-  ogType?: 'website' | 'article';
-  schema?: Record<string, unknown>;
-  noindex?: boolean;
-}
+const canonical = new URL(Astro.url.pathname, SITE_URL).href;
+const ogImage = new URL(seo.ogImage, SITE_URL).href;
 
-const {
-  title = siteTitle,
-  description = siteDescription,
-  ogImage = '/og/index.png',
-  ogImageAlt = `${profile.name} — ${profile.role}`,
-  ogType = 'website',
-  schema,
-  noindex = false,
-} = Astro.props;
-
-const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE_URL).href;
-const ogUrl = new URL(ogImage, Astro.site ?? SITE_URL).href;
-const schemas = schema ? [personSchema, schema] : [personSchema];
+const personLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  jobTitle: profile.title,
+  email: `mailto:${profile.email}`,
+  url: SITE_URL,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Dubai',
+    addressCountry: 'AE',
+  },
+  sameAs: [profile.links.github, profile.links.linkedin],
+};
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{seo.title}</title>
+    <meta name="description" content={seo.description} />
+    <meta name="theme-color" content={seo.themeColor} />
+    <meta name="color-scheme" content="light" />
     <link rel="canonical" href={canonical} />
-    {noindex && <meta name="robots" content="noindex" />}
-    <meta name="author" content={profile.name} />
-    <meta name="theme-color" content="#f7f8fa" />
-    <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="manifest" href="/manifest.webmanifest" />
-    <meta name="apple-mobile-web-app-title" content={profile.name} />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
-    <meta property="og:type" content={ogType} />
-    <meta property="og:site_name" content={profile.name} />
-    <meta property="og:locale" content="en_US" />
+    <!-- Self-hosted WOFF2 subsets. Caveat is the display/LCP font, so it is preloaded. -->
+    <link rel="preload" href="/fonts/caveat-700.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
+    <style is:inline>
+      @font-face {
+        font-family: 'Caveat';
+        src: url('/fonts/caveat-700.woff2') format('woff2');
+        font-weight: 400 700;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Inter';
+        src: url('/fonts/inter-var.woff2') format('woff2');
+        font-weight: 400 700;
+        font-style: normal;
+        font-display: swap;
+      }
+    </style>
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:image" content={ogUrl} />
+    <meta property="og:title" content={seo.title} />
+    <meta property="og:description" content={seo.description} />
+    <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={ogImageAlt} />
+    <meta property="og:image:alt" content="Mohamed Ahmed, Full-Stack Engineer, sketched on paper" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogUrl} />
+    <meta name="twitter:title" content={seo.title} />
+    <meta name="twitter:description" content={seo.description} />
+    <meta name="twitter:image" content={ogImage} />
 
-    <Font cssVariable="--font-sans" preload />
-    <Font cssVariable="--font-mono" />
+    <script type="application/ld+json" set:html={JSON.stringify(personLd)} />
 
-    {schemas.map((s) => (
-      <script is:inline type="application/ld+json" set:html={jsonLd(s)} />
-    ))}
+    <!--
+      Runs before first paint. Decides whether the paper intro is shown.
+      Cheap feature check only; the real WebGL2 context test happens in boot.ts.
+      ?flat (or the saved toggle choice) shows the plain HTML version; ?3d overrides the saved choice.
+    -->
+    <script is:inline>
+      (function () {
+        var d = document.documentElement;
+        d.classList.add('js');
+        if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('rm');
+        // View choice: ?flat / ?3d in the URL win; otherwise the toggle's saved choice.
+        var q = location.search, pref = null;
+        try { pref = localStorage.getItem('portfolio-view'); } catch (e) {}
+        var flat = /[?&]flat\b/.test(q) || (pref === 'flat' && !/[?&](3d|force3d)\b/.test(q));
+        if (flat) d.classList.add('flat-choice');
+        else if ('WebGL2RenderingContext' in window) d.classList.add('try-3d');
+      })();
+    </script>
   </head>
   <body>
-    <a class="skip-link" href="#main">
-      Skip to content
-    </a>
-    <Header />
-    <main id="main" tabindex="-1">
-      <slot />
-    </main>
-    <Footer />
-    <WhatsApp />
-
-    <script>
-      // PWA: register the service worker after load so it never competes with the page.
-      if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-        addEventListener('load', () => navigator.serviceWorker.register('/sw.js'), { once: true });
-      }
-
-      // Pause decorative shape animations while their section is off-screen.
-      const groups = document.querySelectorAll<HTMLElement>('.shapes');
-      if (groups.length && 'IntersectionObserver' in window) {
-        const io = new IntersectionObserver((entries) => {
-          for (const e of entries) e.target.toggleAttribute('data-paused', !e.isIntersecting);
-        });
-        groups.forEach((g) => io.observe(g));
-      }
-    </script>
+    <slot />
   </body>
 </html>

@@ -1,0 +1,10 @@
+{
+  "order": 1,
+  "title": "Ain Rider",
+  "tagline": "Ride-hailing platform for Egypt. 8-service event-driven backend (NATS JetStream with dead-letter queues and idempotency, Redis Cluster, PostgreSQL 17 + TimescaleDB, database-per-service, Prisma), Expo + React Native rider app, and an Arabic-first RTL admin dashboard.",
+  "tags": ["NATS JetStream", "Redis Cluster", "PostgreSQL 17", "TimescaleDB", "Prisma", "Expo", "React Native", "RTL"],
+  "repo": "https://github.com/Mohamed-El-Sharqawy",
+  "thumbnail": "../../assets/projects/ain-rider.png",
+  "thumbnailAlt": "Pencil sketch of a car following a dotted route between two map pins",
+  "texture": "/textures/projects/ain-rider.ktx2"
+}

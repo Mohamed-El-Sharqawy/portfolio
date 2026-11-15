@@ -1,0 +1,5 @@
+{
+  "order": 5,
+  "question": "Do you do frontend or backend?",
+  "answer": "Both: production UI from Figma designs, plus APIs, microservices, and cloud infrastructure."
+}

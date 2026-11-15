@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content';
+import { profile } from '../data/profile';
+const items = (await getCollection('education')).sort((a, b) => a.data.order - b.data.order);
+---
+<section id="education" class="panel panel--room" aria-labelledby="education-title" data-lenis-prevent>
+  <h2 id="education-title" class="h-room" tabindex="-1">Education</h2>
+  <ul class="certs">
+    {items.map(({ data }) => (
+      <li
+        class={`cert sheet cert--${data.kind}`}
+        data-education
+        data-title={data.title}
+        data-institution={data.institution}
+        data-period={data.period ?? ''}
+      >
+        <h3 class="cert__title">{data.title}</h3>
+        <p class="cert__inst">
+          {data.institution}{data.detail && <>, {data.detail}</>}
+        </p>
+        {data.period && <p class="cert__period">{data.period}</p>}
+      </li>
+    ))}
+  </ul>
+  <h3 class="h-sketch">Languages</h3>
+  <p class="langs">
+    {profile.languages.map((l, i) => (
+      <>{i > 0 && ', '}{l.name} ({l.level})</>
+    ))}
+  </p>
+</section>

@@ -1,0 +1,50 @@
+---
+import * as simpleIcons from 'simple-icons';
+import { skills, SKILL_GROUPS, type Skill } from '../data/skills';
+
+const SI = Object.fromEntries(
+  Object.values(simpleIcons as Record<string, { slug?: string; path: string; hex: string }>)
+    .filter((x) => x && x.slug)
+    .map((x) => [x.slug!, x]),
+);
+const icon = (s: Skill) => {
+  if (typeof s.icon === 'string') {
+    const ic = SI[s.icon];
+    return { color: `#${ic.hex}`, svg: `<path d="${ic.path}" fill="currentColor"/>` };
+  }
+  const word = s.icon.text
+    ? `<text x="12" y="13.2" text-anchor="middle" font-size="11.5" font-weight="800" font-family="Inter, system-ui, sans-serif" fill="#232f3e">${s.icon.text}</text>`
+    : '';
+  return {
+    color: s.icon.color,
+    svg: `${word}<path d="${s.icon.d}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
+  };
+};
+// dark brand colours read as near-black on paper; lift them a little
+const ink = (hex: string) => {
+  const n = parseInt(hex.slice(1), 16);
+  const l = (0.2126 * (n >> 16) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255)) / 255;
+  return l < 0.12 ? '#2b2b2b' : hex;
+};
+---
+<section id="skills" class="panel panel--room" aria-labelledby="skills-title" data-lenis-prevent>
+  <h2 id="skills-title" class="h-room" tabindex="-1">Skills</h2>
+  <p class="skills__lede">The tools I ship production work with, grouped by where they live in the stack.</p>
+  {SKILL_GROUPS.map((group) => (
+    <div class="skills__group">
+      <h3 class="skills__heading">{group}</h3>
+      <ul class="skills__list">
+        {skills.map((s, i) => ({ s, i })).filter(({ s }) => s.group === group).map(({ s, i }) => {
+          const ic = icon(s);
+          return (
+            <li class={`skill skill--${s.size.toLowerCase()}`} id={`skill-${i}`} data-skill data-cell={i} data-size={s.size} data-group={s.group} data-name={s.name}>
+              <svg class="skill__icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" style={`color:${ink(ic.color)}`} set:html={ic.svg} />
+              <span class="skill__name">{s.name}</span>
+              {s.detail && <span class="skill__detail">{s.detail}</span>}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  ))}
+</section>

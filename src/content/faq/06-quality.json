@@ -1,0 +1,5 @@
+{
+  "order": 6,
+  "question": "How do you ensure quality?",
+  "answer": "Jest and Cypress testing, TDD, and CI/CD pipelines."
+}
